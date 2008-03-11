@@ -19,7 +19,7 @@ class Package(object):
 		)
 		stdout, stderr = pkgconfig.communicate()
 		if pkgconfig.returncode:
-			raise IOError('[pkg-config] ' + stderr.strip())
+			raise IOError(stderr.strip())
 		return stdout.strip()
 
 # vim:ts=4 sw=4 noet
