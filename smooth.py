@@ -92,7 +92,7 @@ class MainWindow(wx.Frame):
 	def handle_message(self, event):
 		message = event.message
 		# TODO: remove debug prints
-		if message.document != self.document:
+		if message.document is not self.document:
 			print 'IGNORED',
 		print self, message
 		self.update_title()
