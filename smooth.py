@@ -10,6 +10,14 @@ import djvu.decode
 
 MENU_ICON_SIZE = (16, 16)
 
+wx.EVT_DJVU_MESSAGE = wx.NewId()
+
+class WxDjVuMessage(wx.PyEvent):
+	def __init__(self, message):
+		wx.PyEvent.__init__(self)
+		self.SetEventType(wx.EVT_DJVU_MESSAGE)
+		self.message = message
+
 class OpenDialog(wx.FileDialog):
 
 	def __init__(self, parent):
@@ -28,6 +36,8 @@ class MainWindow(wx.Frame):
 
 	def __init__(self):
 		wx.Frame.__init__(self, None, size=wx.Size(640, 480))
+		self.Connect(-1, -1, wx.EVT_DJVU_MESSAGE, self.handle_message)
+		self.context = Context(self)
 		self.base_title = 'DjVuSmooth'
 		self.do_open(None)
 		if not __debug__:
@@ -60,19 +70,48 @@ class MainWindow(wx.Frame):
 			self.do_open(dialog.GetPath())
 	
 	def do_open(self, path):
-		self.path = None
+		self.path = path
 		if path is None:
-			self.SetTitle(self.base_title)
+			self.document = None
 		else:
-			self.SetTitle(u'%s — %s' % (self.base_title, os.path.basename(path)))
+			self.document = self.context.new_document(djvu.decode.FileURI(path))
+		self.update_title()
+	
+	def update_title(self):
+		if self.path is None:
+			title = self.base_title
+		else:
+			title = u'%s — %s' % (self.base_title, os.path.basename(self.path))
+			if self.document.decoding_done:
+				title += ' [decoding done]'
+		self.SetTitle(title)
 
 	def on_about(self, event):
 		raise NotImplementedError # TODO
-				
+	
+	def handle_message(self, event):
+		message = event.message
+		# TODO: remove debug prints
+		if message.document != self.document:
+			print 'IGNORED',
+		print self, message
+		self.update_title()
+
+class Context(djvu.decode.Context):
+
+	def __new__(self, window):
+		return djvu.decode.Context.__new__(self)
+
+	def __init__(self, window):
+		djvu.decode.Context.__init__(self)
+		self.window = window
+
+	def handle_message(self, message):
+		wx.PostEvent(self.window, WxDjVuMessage(message))
+
 class SmoothApp(wx.App):
 
 	def OnInit(self):
-		self.context = djvu.decode.Context()
 		window = MainWindow()
 		window.Show(True)
 		return True
