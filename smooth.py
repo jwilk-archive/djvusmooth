@@ -10,6 +10,11 @@ import djvu.decode
 
 MENU_ICON_SIZE = (16, 16)
 
+class OpenDialog(wx.FileDialog):
+
+	def __init__(self, parent):
+		wx.FileDialog.__init__(self, parent, style = wx.OPEN, wildcard = 'DjVu files (*.djvu, *.djv)|*.djvu|All files|*')
+            
 class MainWindow(wx.Frame):
 	
 	def new_menu_item(self, menu, text, help, method, icon = None):
@@ -22,7 +27,9 @@ class MainWindow(wx.Frame):
 		return item
 
 	def __init__(self):
-		wx.Frame.__init__(self, None, title='DjVuSmooth', size=wx.Size(640, 480))
+		wx.Frame.__init__(self, None, size=wx.Size(640, 480))
+		self.base_title = 'DjVuSmooth'
+		self.do_open(None)
 		if not __debug__:
 			sys.excepthook = self.except_hook
 		menu_bar = wx.MenuBar()
@@ -48,7 +55,16 @@ class MainWindow(wx.Frame):
 		self.Close(True)
 	
 	def on_open(self, event):
-		raise NotImplementedError # TODO
+		dialog = OpenDialog(self)
+		if dialog.ShowModal():
+			self.do_open(dialog.GetPath())
+	
+	def do_open(self, path):
+		self.path = None
+		if path is None:
+			self.SetTitle(self.base_title)
+		else:
+			self.SetTitle(u'%s — %s' % (self.base_title, os.path.basename(path)))
 
 	def on_about(self, event):
 		raise NotImplementedError # TODO
