@@ -22,7 +22,7 @@ class MainWindow(wx.Frame):
 		return item
 
 	def __init__(self):
-		wx.Frame.__init__(self, None, -1, title='DjVuSmooth', size=wx.Size(640, 480))
+		wx.Frame.__init__(self, None, title='DjVuSmooth', size=wx.Size(640, 480))
 		if not __debug__:
 			sys.excepthook = self.except_hook
 		menu_bar = wx.MenuBar()
