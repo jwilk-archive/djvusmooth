@@ -13,7 +13,7 @@ MENU_ICON_SIZE = (16, 16)
 class OpenDialog(wx.FileDialog):
 
 	def __init__(self, parent):
-		wx.FileDialog.__init__(self, parent, style = wx.OPEN, wildcard = 'DjVu files (*.djvu, *.djv)|*.djvu|All files|*')
+		wx.FileDialog.__init__(self, parent, style = wx.OPEN, wildcard = 'DjVu files (*.djvu, *.djv)|*.djvu;*.djv|All files|*')
             
 class MainWindow(wx.Frame):
 	
