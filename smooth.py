@@ -160,7 +160,7 @@ class MainWindow(wx.Frame):
 			print 'IGNORED',
 		print self, message
 		self.update_title()
-		if isinstance(message, decode.ChunkMessage) and message.page_job is not None:
+		if isinstance(message, (decode.RedisplayMessage, decode.RelayoutMessage)):
 			self.update_page_widget(message.page_job)
 
 class Context(decode.Context):
