@@ -59,7 +59,10 @@ class PageWidget(wx.Panel):
 		page_job = self.page_job
 		my_width, my_height = self.width, self.height
 		dc = wx.BufferedDC(wx.ClientDC(self), self._buffer)
+		self.clear_dc(dc)
 		try:
+			# TODO: don't render the whole area,
+			# just the part that needs to be redrawn
 			if page_job is None:
 				raise decode.NotAvailable
 			dpi = float(page_job.dpi)
@@ -78,9 +81,8 @@ class PageWidget(wx.Panel):
 			image = wx.EmptyImage(my_width, my_height)
 			image.SetData(data)
 			dc.DrawBitmap(image.ConvertToBitmap(), 0, 0)
-			self._buffer = image.ConvertToBitmap()
 		except decode.NotAvailable, ex:
-			self.clear_dc(dc)
+			pass
 	
 	def set_page_job(self, page_job):
 		self.page_job = page_job
