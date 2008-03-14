@@ -62,10 +62,15 @@ class PageWidget(wx.Panel):
 		try:
 			if page_job is None:
 				raise decode.NotAvailable
+			dpi = float(page_job.dpi)
 			page_width, page_height = page_job.width, page_job.height
+			page_width = page_job.width * 100.0 / dpi
+			page_height = page_job.height * 100.0 / dpi
+			my_width = min(my_width, page_width)
+			my_height = min(my_height, page_height)
 			data = page_job.render(
 				decode.RENDER_COLOR,
-				(0, 0, my_width, my_height),
+				(0, 0, page_width, page_height),
 				(0, 0, my_width, my_height),
 				PIXEL_FORMAT,
 				1
