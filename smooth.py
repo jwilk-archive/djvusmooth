@@ -6,7 +6,7 @@ import sys
 import os.path
 
 import wx
-import djvu.decode
+from djvu import decode
 
 MENU_ICON_SIZE = (16, 16)
 
@@ -23,7 +23,7 @@ class OpenDialog(wx.FileDialog):
 	def __init__(self, parent):
 		wx.FileDialog.__init__(self, parent, style = wx.OPEN, wildcard = 'DjVu files (*.djvu, *.djv)|*.djvu;*.djv|All files|*')
 
-PIXEL_FORMAT = djvu.decode.PixelFormatRgb()
+PIXEL_FORMAT = decode.PixelFormatRgb()
 PIXEL_FORMAT.rows_top_to_bottom = 1
 PIXEL_FORMAT.y_top_to_bottom = 1
 
@@ -50,10 +50,10 @@ class PageWidget(wx.Panel):
 		dc = wx.BufferedDC(wx.ClientDC(self), self._buffer)
 		try:
 			if page_job is None:
-				raise djvu.decode.NotAvailable
+				raise decode.NotAvailable
 			page_width, page_height = page_job.width, page_job.height
 			data = page_job.render(
-				djvu.decode.RENDER_COLOR,
+				decode.RENDER_COLOR,
 				(0, 0, my_width, my_height),
 				(0, 0, my_width, my_height),
 				PIXEL_FORMAT,
@@ -63,7 +63,7 @@ class PageWidget(wx.Panel):
 			image.SetData(data)
 			dc.DrawBitmap(image.ConvertToBitmap(), 0, 0)
 			self._buffer = image.ConvertToBitmap()
-		except djvu.decode.NotAvailable, ex:
+		except decode.NotAvailable, ex:
 			N = 16
 			dc.Clear()
 			dc.SetBrush(wx.Brush((0x80, 0x80, 0x80)))
@@ -130,7 +130,7 @@ class MainWindow(wx.Frame):
 		if path is None:
 			self.document = None
 		else:
-			self.document = self.context.new_document(djvu.decode.FileURI(path))
+			self.document = self.context.new_document(decode.FileURI(path))
 		self.update_title()
 		self.update_page_widget()
 	
@@ -160,16 +160,16 @@ class MainWindow(wx.Frame):
 			print 'IGNORED',
 		print self, message
 		self.update_title()
-		if isinstance(message, djvu.decode.ChunkMessage) and message.page_job is not None:
+		if isinstance(message, decode.ChunkMessage) and message.page_job is not None:
 			self.update_page_widget(message.page_job)
 
-class Context(djvu.decode.Context):
+class Context(decode.Context):
 
 	def __new__(self, window):
-		return djvu.decode.Context.__new__(self)
+		return decode.Context.__new__(self)
 
 	def __init__(self, window):
-		djvu.decode.Context.__init__(self)
+		decode.Context.__init__(self)
 		self.window = window
 
 	def handle_message(self, message):
