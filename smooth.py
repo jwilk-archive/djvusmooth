@@ -34,6 +34,7 @@ class PageWidget(wx.Panel):
 		self.page_job = None
 		self.Bind(wx.EVT_PAINT, self.on_paint)
 		self.Bind(wx.EVT_SIZE, self.on_size)
+		self.Bind(wx.EVT_ERASE_BACKGROUND, lambda *args, **kwargs: None)
 		self.on_size(None)
 	
 	def on_size(self, event):
