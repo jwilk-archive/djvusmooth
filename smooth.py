@@ -44,6 +44,17 @@ class PageWidget(wx.Panel):
 	def on_paint(self, event):
 		wx.BufferedPaintDC(self, self._buffer)
 
+	def clear_dc(self, dc):
+		N = 16
+		dc.Clear()
+		dc.SetBrush(wx.Brush((0x80, 0x80, 0x80)))
+		dc.SetPen(wx.Pen((0x80, 0x80, 0x80)))
+		for y in xrange((self.height + N - 1) // N):
+			for x in xrange((self.width + N - 1) // N):
+				if (x ^ y) & 1:
+					continue
+				dc.DrawRectangle(x * N, y * N, N, N)
+		
 	def update_drawing(self):
 		page_job = self.page_job
 		my_width, my_height = self.width, self.height
@@ -64,15 +75,7 @@ class PageWidget(wx.Panel):
 			dc.DrawBitmap(image.ConvertToBitmap(), 0, 0)
 			self._buffer = image.ConvertToBitmap()
 		except decode.NotAvailable, ex:
-			N = 16
-			dc.Clear()
-			dc.SetBrush(wx.Brush((0x80, 0x80, 0x80)))
-			dc.SetPen(wx.Pen((0x80, 0x80, 0x80)))
-			for y in xrange((self.height + N - 1) // N):
-				for x in xrange((self.width + N - 1) // N):
-					if (x ^ y) & 1:
-						continue
-					dc.DrawRectangle(x * N, y * N, N, N)
+			self.clear_dc(dc)
 	
 	def set_page_job(self, page_job):
 		self.page_job = page_job
