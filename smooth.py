@@ -288,8 +288,7 @@ class MainWindow(wx.Frame):
 		message = event.message
 		# TODO: remove debug prints
 		if message.document is not self.document:
-			print 'IGNORED',
-		print self, message
+			print 'IGNORED', message
 		self.update_title()
 		if isinstance(message, (decode.RedisplayMessage, decode.RelayoutMessage)):
 			if self.page_job is message.page_job:
