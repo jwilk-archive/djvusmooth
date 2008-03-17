@@ -33,11 +33,31 @@ class PageWidget(wx.ScrolledWindow):
 		wx.ScrolledWindow.__init__(self, *args, **kwargs)
 		dc = wx.ClientDC(self)
 		self.page_job = None
+		self._render_mode = decode.RENDER_COLOR
+		self._render_text = False
 		self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
 		self.Bind(wx.EVT_ERASE_BACKGROUND, self.on_erase_background)
 		self.Bind(wx.EVT_PAINT, self.on_paint)
 		self.need_refresh()
-	
+
+	@apply
+	def render_mode():
+		def get(self):
+			return self._render_mode
+		def set(self, value):
+			self._render_mode = value
+			self.Refresh()
+		return property(get, set)
+
+	@apply
+	def render_text():
+		def get(self):
+			return self._render_text
+		def set(self, value):
+			self._render_text = value
+			self.Refresh()
+		return property(get, set)
+
 	def on_paint(self, event):
 		dc = wx.PaintDC(self)
 		self.PrepareDC(dc)
@@ -107,7 +127,7 @@ class PageWidget(wx.ScrolledWindow):
 			if y + h > page_height:
 				h = page_height - y
 			data = page_job.render(
-				decode.RENDER_COLOR,
+				self.render_mode,
 				(0, 0, page_width, page_height),
 				(x, y, w, h),
 				PIXEL_FORMAT,
@@ -133,8 +153,8 @@ class PageWidget(wx.ScrolledWindow):
 
 class MainWindow(wx.Frame):
 	
-	def new_menu_item(self, menu, text, help, method, icon = None):
-		item = wx.MenuItem(menu, wx.ID_ANY, text, help)
+	def new_menu_item(self, menu, text, help, method, style = wx.ITEM_NORMAL, icon = None):
+		item = wx.MenuItem(menu, wx.ID_ANY, text, help, style)
 		if icon is not None:
 			image = wx.Image(os.path.join('icons', '%s.png' % icon))
 			image.Rescale(*MENU_ICON_SIZE)
@@ -153,10 +173,25 @@ class MainWindow(wx.Frame):
 			sys.excepthook = self.except_hook
 		menu_bar = wx.MenuBar()
 		menu = wx.Menu()
-		menu.AppendItem(self.new_menu_item(menu, '&Open\tCtrl+O', 'Open a DjVu document', self.on_open, 'file_open'))
+		menu.AppendItem(self.new_menu_item(menu, '&Open\tCtrl+O', 'Open a DjVu document', self.on_open, icon='file_open'))
 		menu.AppendSeparator()
-		menu.AppendItem(self.new_menu_item(menu, '&Quit\tCtrl+Q', 'Quit the application', self.on_exit, 'file_quit'))
+		menu.AppendItem(self.new_menu_item(menu, '&Quit\tCtrl+Q', 'Quit the application', self.on_exit, icon='file_quit'))
 		menu_bar.Append(menu, '&File');
+		menu = wx.Menu()
+		submenu = wx.Menu()
+		for text, help, method in \
+		[
+			('&Color', 'Display everything', self.on_display_everything),
+			('&Stencil', 'Display only the document bitonal stencil', self.on_display_stencil),
+			('&Foreground', 'Display only the foreground layer', self.on_display_foreground),
+			('&Background', 'Display only the foreground layer', self.on_display_background)
+		]:
+			submenu.AppendItem(self.new_menu_item(submenu, text, help, method, style=wx.ITEM_RADIO))
+		submenu.AppendSeparator()
+		submenu.AppendItem(self.new_menu_item(submenu, '&Text', 'Display the „hidden” text', self.on_display_text, style=wx.ITEM_CHECK))
+		menu.AppendMenu(-1, '&Display', submenu)
+		menu.AppendItem(self.new_menu_item(menu, '&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh))
+		menu_bar.Append(menu, '&View');
 		menu = wx.Menu()
 		menu.AppendItem(self.new_menu_item(menu, '&About', 'More information about this program', self.on_about))
 		menu_bar.Append(menu, '&Help');
@@ -178,6 +213,24 @@ class MainWindow(wx.Frame):
 		if dialog.ShowModal():
 			self.do_open(dialog.GetPath())
 	
+	def on_display_everything(self, event):
+		self.page_widget.render_mode = decode.RENDER_COLOR
+	
+	def on_display_foreground(self, event):
+		self.page_widget.render_mode = decode.RENDER_FOREGROUND
+
+	def on_display_background(self, event):
+		self.page_widget.render_mode = decode.RENDER_BACKGROUND
+	
+	def on_display_stencil(self, event):
+		self.page_widget.render_mode = decode.RENDER_BLACK
+	
+	def on_display_text(self, event):
+		self.page_widget.render_text = event.IsChecked()
+	
+	def on_refresh(self, event):
+		self.page_widget.need_refresh()
+
 	def do_open(self, path):
 		self.path = path
 		if path is None:
