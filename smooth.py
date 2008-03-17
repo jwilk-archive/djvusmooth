@@ -137,7 +137,6 @@ class PageWidget(wx.Panel):
 			)
 			image = wx.EmptyImage(w, h)
 			image.SetData(data)
-			dc.DrawRectangle(x, y, w, h)
 			dc.DrawBitmap(image.ConvertToBitmap(), x, y)
 		except decode.NotAvailable, ex:
 			pass
