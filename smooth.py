@@ -153,9 +153,8 @@ class MainWindow(wx.Frame):
 	def new_menu_item(self, menu, text, help, method, style = wx.ITEM_NORMAL, icon = None):
 		item = wx.MenuItem(menu, wx.ID_ANY, text, help, style)
 		if icon is not None:
-			image = wx.Image(os.path.join('icons', '%s.png' % icon))
-			image.Rescale(*MENU_ICON_SIZE)
-			item.SetBitmap(image.ConvertToBitmap())
+			bitmap = wx.ArtProvider_GetBitmap(icon, wx.ART_MENU, MENU_ICON_SIZE)
+			item.SetBitmap(bitmap)
 		self.Bind(wx.EVT_MENU, method, item)
 		return item
 
@@ -176,9 +175,9 @@ class MainWindow(wx.Frame):
 			sys.excepthook = self.except_hook
 		menu_bar = wx.MenuBar()
 		menu = wx.Menu()
-		menu.AppendItem(self.new_menu_item(menu, '&Open\tCtrl+O', 'Open a DjVu document', self.on_open, icon='file_open'))
+		menu.AppendItem(self.new_menu_item(menu, '&Open\tCtrl+O', 'Open a DjVu document', self.on_open, icon=wx.ART_FILE_OPEN))
 		menu.AppendSeparator()
-		menu.AppendItem(self.new_menu_item(menu, '&Quit\tCtrl+Q', 'Quit the application', self.on_exit, icon='file_quit'))
+		menu.AppendItem(self.new_menu_item(menu, '&Quit\tCtrl+Q', 'Quit the application', self.on_exit, icon=wx.ART_QUIT))
 		menu_bar.Append(menu, '&File');
 		menu = wx.Menu()
 		submenu = wx.Menu()
@@ -193,13 +192,13 @@ class MainWindow(wx.Frame):
 		submenu.AppendSeparator()
 		submenu.AppendItem(self.new_menu_item(submenu, '&Text', 'Display the „hidden” text', self.on_display_text, style=wx.ITEM_CHECK))
 		menu.AppendMenu(-1, '&Display', submenu)
-		for text, help, method in \
+		for text, help, method, icon in \
 		[
-			('&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh),
-			('&Next page\tPgDn', '', self.on_next_page),
-			('&Previous page\tPgUp', '', self.on_previous_page),
+			('&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh, None),
+			('&Next page\tPgDn', '', self.on_next_page, wx.ART_GO_UP),
+			('&Previous page\tPgUp', '', self.on_previous_page, wx.ART_GO_DOWN),
 		]:
-			menu.AppendItem(self.new_menu_item(menu, text, help, method))
+			menu.AppendItem(self.new_menu_item(menu, text, help, method, icon=icon))
 		menu_bar.Append(menu, '&View');
 		menu = wx.Menu()
 		menu.AppendItem(self.new_menu_item(menu, '&About', 'More information about this program', self.on_about))
