@@ -308,16 +308,23 @@ class Context(decode.Context):
 
 class SmoothApp(wx.App):
 
+	def __init__(self, argv):
+		self._argv = argv
+		wx.App.__init__(self)
+
 	def OnInit(self):
 		window = MainWindow()
 		window.Show(True)
+		if self._argv:
+			window.do_open(self._argv.pop(0))
 		return True
 
-def main():
-	app = SmoothApp(0)
+def main(argv):
+	app = SmoothApp(argv)
 	app.MainLoop()
 
 if __name__ == '__main__':
-	main()
+	from sys import argv
+	main(argv[1:])
 
 # vim:ts=4 sw=4
