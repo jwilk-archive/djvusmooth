@@ -32,13 +32,12 @@ class PageWidget(wx.ScrolledWindow):
 	def __init__(self, *args, **kwargs):
 		wx.ScrolledWindow.__init__(self, *args, **kwargs)
 		dc = wx.ClientDC(self)
-		self.page_job = None
 		self._render_mode = decode.RENDER_COLOR
 		self._render_text = False
 		self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
 		self.Bind(wx.EVT_ERASE_BACKGROUND, self.on_erase_background)
 		self.Bind(wx.EVT_PAINT, self.on_paint)
-		self.need_refresh()
+		self.page_job = None
 
 	@apply
 	def render_mode():
@@ -63,21 +62,24 @@ class PageWidget(wx.ScrolledWindow):
 		self.PrepareDC(dc)
 		self.draw(dc, self.GetUpdateRegion())
 	
-	def need_refresh(self):
-		page_job = self.page_job
-		try:
-			if page_job is None:
-				raise decode.NotAvailable
-			dpi = float(page_job.dpi)
-			page_width, page_height = page_job.width, page_job.height
-			page_width = page_job.width * 100.0 / dpi
-			page_height = page_job.height * 100.0 / dpi
-			self.page_size = page_width, page_height
-			self.SetVirtualSize(self.page_size)
-			self.SetScrollRate(1, 1)
-		except decode.NotAvailable:
-			pass
-		self.Refresh()
+	@apply
+	def page_job():
+		def set(self, page_job):
+			try:
+				if page_job is None:
+					raise decode.NotAvailable
+				dpi = float(page_job.dpi)
+				page_width, page_height = page_job.width, page_job.height
+				page_width = page_job.width * 100.0 / dpi
+				page_height = page_job.height * 100.0 / dpi
+				self.page_size = page_width, page_height
+				self.SetVirtualSize(self.page_size)
+				self.SetScrollRate(1, 1)
+			except decode.NotAvailable:
+				pass
+			self._page_job = page_job
+			self.Refresh()
+		return property(fset = set)
 
 	def on_erase_background(self, evt):
 		dc = evt.GetDC()
@@ -113,7 +115,7 @@ class PageWidget(wx.ScrolledWindow):
 		dc.BeginDrawing()
 		x, y, w, h = region.GetBox()
 		x, y = self.CalcUnscrolledPosition((x, y))
-		page_job = self.page_job
+		page_job = self._page_job
 		try:
 			if page_job is None:
 				raise decode.NotAvailable
@@ -142,15 +144,11 @@ class PageWidget(wx.ScrolledWindow):
 		dc.EndDrawing()
 
 	def update_drawing(self):
-		page_job = self.page_job
+		page_job = self._page_job
 		my_width, my_height = self.width, self.height
 		dc = wx.BufferedDC(wx.ClientDC(self), self._buffer)
 		self.clear_dc(dc, (0, 0, my_width, my_height))
 	
-	def set_page_job(self, page_job):
-		self.page_job = page_job
-		self.need_refresh()
-
 class MainWindow(wx.Frame):
 	
 	def new_menu_item(self, menu, text, help, method, style = wx.ITEM_NORMAL, icon = None):
@@ -229,7 +227,7 @@ class MainWindow(wx.Frame):
 		self.page_widget.render_text = event.IsChecked()
 	
 	def on_refresh(self, event):
-		self.page_widget.need_refresh()
+		self.Refresh()
 
 	def do_open(self, path):
 		self.path = path
@@ -245,7 +243,7 @@ class MainWindow(wx.Frame):
 			page_job = None
 		elif page_job is None:
 			page_job = self.document.pages[0].decode(wait = False)
-		self.page_widget.set_page_job(page_job)
+		self.page_widget.page_job = page_job
 
 	def update_title(self):
 		if self.path is None:
