@@ -265,7 +265,7 @@ class MainWindow(wx.Frame):
 		else:
 			self.document = self.context.new_document(decode.FileURI(path))
 		self.update_title()
-		self.update_page_widget()
+		self.update_page_widget(new_page_job=True)
 	
 	def update_page_widget(self, new_page_job=False):
 		if self.document is None:
