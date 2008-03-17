@@ -194,13 +194,19 @@ class MainWindow(wx.Frame):
 		submenu.AppendSeparator()
 		submenu.AppendItem(self.new_menu_item(submenu, '&Text', 'Display the „hidden” text', self.on_display_text, style=wx.ITEM_CHECK))
 		menu.AppendMenu(-1, '&Display', submenu)
-		menu.AppendItem(self.new_menu_item(menu, '&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh))
+		for text, help, method in \
+		[
+			('&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh),
+			('&Next page\tPgDn', '', self.on_next_page),
+			('&Previous page\tPgUp', '', self.on_previous_page),
+		]:
+			menu.AppendItem(self.new_menu_item(menu, text, help, method))
 		menu_bar.Append(menu, '&View');
 		menu = wx.Menu()
 		menu.AppendItem(self.new_menu_item(menu, '&About', 'More information about this program', self.on_about))
 		menu_bar.Append(menu, '&Help');
 		self.SetMenuBar(menu_bar)
-	
+
 	def error_box(self, message, caption = 'Error'):
 		wx.MessageBox(message = message, caption = caption, style = wx.OK | wx.ICON_ERROR, parent = self)
 
@@ -235,8 +241,17 @@ class MainWindow(wx.Frame):
 	def on_refresh(self, event):
 		self.Refresh()
 
+	def on_next_page(self, event):
+		self.page_no += 1
+		self.update_page_widget(True)
+
+	def on_previous_page(self, event):
+		self.page_no -= 1
+		self.update_page_widget(True)
+
 	def do_open(self, path):
 		self.path = path
+		self.page_no = 0
 		if path is None:
 			self.document = None
 		else:
@@ -244,12 +259,12 @@ class MainWindow(wx.Frame):
 		self.update_title()
 		self.update_page_widget()
 	
-	def update_page_widget(self, page_job = None):
+	def update_page_widget(self, new_page_job=False):
 		if self.document is None:
-			page_job = None
-		elif page_job is None:
-			page_job = self.document.pages[0].decode(wait = False)
-		self.page_widget.page_job = page_job
+			self.page_job = None
+		elif self.page_job is None or new_page_job:
+			self.page_job = self.document.pages[self.page_no].decode(wait = False)
+		self.page_widget.page_job = self.page_job
 
 	def update_title(self):
 		if self.path is None:
@@ -271,7 +286,8 @@ class MainWindow(wx.Frame):
 		print self, message
 		self.update_title()
 		if isinstance(message, (decode.RedisplayMessage, decode.RelayoutMessage)):
-			self.update_page_widget(message.page_job)
+			if self.page_job is message.page_job:
+				self.update_page_widget()
 
 class Context(decode.Context):
 
