@@ -242,11 +242,21 @@ class MainWindow(wx.Frame):
 		self.Refresh()
 
 	def on_next_page(self, event):
-		self.page_no += 1
+		if self.document is None:
+			return
+		page_no = self.page_no + 1
+		if page_no >= len(self.document.pages):
+			return
+		self.page_no += page_no
 		self.update_page_widget(True)
 
 	def on_previous_page(self, event):
-		self.page_no -= 1
+		if self.document is None:
+			return
+		page_no = self.page_no - 1
+		if page_no < 0:
+			return
+		self.page_no = page_no
 		self.update_page_widget(True)
 
 	def do_open(self, path):
