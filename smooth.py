@@ -271,8 +271,6 @@ class MainWindow(wx.Frame):
 			title = self.base_title
 		else:
 			title = u'%s — %s' % (self.base_title, os.path.basename(self.path))
-			if self.document.decoding_done:
-				title += ' [decoding done]'
 		self.SetTitle(title)
 
 	def on_about(self, event):
