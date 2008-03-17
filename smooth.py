@@ -121,11 +121,11 @@ class PageWidget(wx.Panel):
 				raise decode.NotAvailable
 			page_width, page_height = self.page_size
 			if x >= page_width:
-				raise NotAvailable
+				raise decode.NotAvailable
 			if x + w > page_width:
 				w = page_width - x
 			if y >= page_height:
-				raise NotAvailable
+				raise decode.NotAvailable
 			if y + h > page_height:
 				h = page_height - y
 			data = page_job.render(
