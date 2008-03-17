@@ -6,6 +6,8 @@ import sys
 import os.path
 
 import wx
+import wx.lib.scrolledpanel
+
 from djvu import decode
 
 MENU_ICON_SIZE = (16, 16)
@@ -27,10 +29,10 @@ PIXEL_FORMAT = decode.PixelFormatRgb()
 PIXEL_FORMAT.rows_top_to_bottom = 1
 PIXEL_FORMAT.y_top_to_bottom = 1
 
-class PageWidget(wx.ScrolledWindow):
+class PageWidget(wx.Panel):
 
 	def __init__(self, *args, **kwargs):
-		wx.ScrolledWindow.__init__(self, *args, **kwargs)
+		wx.Panel.__init__(self, *args, **kwargs)
 		dc = wx.ClientDC(self)
 		self._render_mode = decode.RENDER_COLOR
 		self._render_text = False
@@ -73,8 +75,10 @@ class PageWidget(wx.ScrolledWindow):
 				page_width = page_job.width * 100.0 / dpi
 				page_height = page_job.height * 100.0 / dpi
 				self.page_size = page_width, page_height
-				self.SetVirtualSize(self.page_size)
-				self.SetScrollRate(1, 1)
+				self.SetSize(self.page_size)
+				self.SetBestFittingSize(self.page_size)
+				self.GetParent().Layout()
+				self.GetParent().SetupScrolling()
 			except decode.NotAvailable:
 				pass
 			self._page_job = page_job
@@ -95,14 +99,11 @@ class PageWidget(wx.ScrolledWindow):
 		dc.SetBrush(wx.Brush((0x80, 0x80, 0x80)))
 		dc.SetPen(wx.Pen((0x80, 0x80, 0x80)))
 		w, h = self.GetClientSize()
-		x, y = self.CalcUnscrolledPosition((0, 0))
-		dx, dy  = x % N, y % N
-		o = ((x / N) ^ (y / N)) & 1
-		oo = o
-		y = -dy
+		o = oo = False
+		y = 0
 		while y < h:
 			o = not oo
-			x = -dx
+			x = 0
 			while x < w:
 				if o:
 					dc.DrawRectangle(x, y, N, N)
@@ -114,7 +115,6 @@ class PageWidget(wx.ScrolledWindow):
 	def draw(self, dc, region):
 		dc.BeginDrawing()
 		x, y, w, h = region.GetBox()
-		x, y = self.CalcUnscrolledPosition((x, y))
 		page_job = self._page_job
 		try:
 			if page_job is None:
@@ -148,7 +148,7 @@ class PageWidget(wx.ScrolledWindow):
 		my_width, my_height = self.width, self.height
 		dc = wx.BufferedDC(wx.ClientDC(self), self._buffer)
 		self.clear_dc(dc, (0, 0, my_width, my_height))
-	
+
 class MainWindow(wx.Frame):
 	
 	def new_menu_item(self, menu, text, help, method, style = wx.ITEM_NORMAL, icon = None):
@@ -165,7 +165,13 @@ class MainWindow(wx.Frame):
 		self.Connect(-1, -1, wx.EVT_DJVU_MESSAGE, self.handle_message)
 		self.context = Context(self)
 		self.base_title = 'DjVuSmooth'
-		self.page_widget = PageWidget(self)
+		self.scrolled_panel = wx.lib.scrolledpanel.ScrolledPanel(self, -1)
+		sizer = wx.BoxSizer(wx.VERTICAL)
+		self.scrolled_panel.SetSizer(sizer)
+		self.scrolled_panel.SetAutoLayout(True)
+		self.scrolled_panel.SetupScrolling()
+		self.page_widget = PageWidget(self.scrolled_panel)
+		sizer.Add(self.page_widget, 0, wx.ALL | wx.EXPAND)
 		self.do_open(None)
 		if not __debug__:
 			sys.excepthook = self.except_hook
