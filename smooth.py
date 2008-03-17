@@ -27,67 +27,109 @@ PIXEL_FORMAT = decode.PixelFormatRgb()
 PIXEL_FORMAT.rows_top_to_bottom = 1
 PIXEL_FORMAT.y_top_to_bottom = 1
 
-class PageWidget(wx.Panel):
+class PageWidget(wx.ScrolledWindow):
 
 	def __init__(self, *args, **kwargs):
-		wx.Panel.__init__(self, *args, **kwargs)
+		wx.ScrolledWindow.__init__(self, *args, **kwargs)
+		dc = wx.ClientDC(self)
 		self.page_job = None
+		self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
+		self.Bind(wx.EVT_ERASE_BACKGROUND, self.on_erase_background)
 		self.Bind(wx.EVT_PAINT, self.on_paint)
-		self.Bind(wx.EVT_SIZE, self.on_size)
-		self.Bind(wx.EVT_ERASE_BACKGROUND, lambda *args, **kwargs: None)
-		self.on_size(None)
-	
-	def on_size(self, event):
-		self.width, self.height = self.GetClientSizeTuple()
-		self._buffer = wx.EmptyBitmap(self.width, self.height)
-		self.update_drawing()
+		self.need_refresh()
 	
 	def on_paint(self, event):
-		wx.BufferedPaintDC(self, self._buffer)
-
-	def clear_dc(self, dc):
-		N = 16
-		dc.Clear()
-		dc.SetBrush(wx.Brush((0x80, 0x80, 0x80)))
-		dc.SetPen(wx.Pen((0x80, 0x80, 0x80)))
-		for y in xrange((self.height + N - 1) // N):
-			for x in xrange((self.width + N - 1) // N):
-				if (x ^ y) & 1:
-					continue
-				dc.DrawRectangle(x * N, y * N, N, N)
-		
-	def update_drawing(self):
+		dc = wx.PaintDC(self)
+		self.PrepareDC(dc)
+		self.draw(dc, self.GetUpdateRegion())
+	
+	def need_refresh(self):
 		page_job = self.page_job
-		my_width, my_height = self.width, self.height
-		dc = wx.BufferedDC(wx.ClientDC(self), self._buffer)
-		self.clear_dc(dc)
 		try:
-			# TODO: don't render the whole area,
-			# just the part that needs to be redrawn
 			if page_job is None:
 				raise decode.NotAvailable
 			dpi = float(page_job.dpi)
 			page_width, page_height = page_job.width, page_job.height
 			page_width = page_job.width * 100.0 / dpi
 			page_height = page_job.height * 100.0 / dpi
-			my_width = min(my_width, page_width)
-			my_height = min(my_height, page_height)
+			self.page_size = page_width, page_height
+			self.SetVirtualSize(self.page_size)
+			self.SetScrollRate(1, 1)
+		except decode.NotAvailable:
+			pass
+		self.Refresh()
+
+	def on_erase_background(self, evt):
+		dc = evt.GetDC()
+		if not dc:
+			dc = wx.ClientDC(self)
+			rect = self.GetUpdateRegion().GetBox()
+			dc.SetClippingRect(rect)
+		self.clear_dc(dc)
+
+	def clear_dc(self, dc):
+		N = 16
+		dc.Clear()
+		dc.SetBrush(wx.Brush((0x80, 0x80, 0x80)))
+		dc.SetPen(wx.Pen((0x80, 0x80, 0x80)))
+		w, h = self.GetClientSize()
+		x, y = self.CalcUnscrolledPosition((0, 0))
+		dx, dy  = x % N, y % N
+		o = ((x / N) ^ (y / N)) & 1
+		oo = o
+		y = -dy
+		while y < h:
+			o = not oo
+			x = -dx
+			while x < w:
+				if o:
+					dc.DrawRectangle(x, y, N, N)
+				x += N
+				o = not o
+			y += N
+			oo = not oo
+		
+	def draw(self, dc, region):
+		dc.BeginDrawing()
+		x, y, w, h = region.GetBox()
+		x, y = self.CalcUnscrolledPosition((x, y))
+		page_job = self.page_job
+		try:
+			if page_job is None:
+				raise decode.NotAvailable
+			page_width, page_height = self.page_size
+			if x >= page_width:
+				raise NotAvailable
+			if x + w > page_width:
+				w = page_width - x
+			if y >= page_height:
+				raise NotAvailable
+			if y + h > page_height:
+				h = page_height - y
 			data = page_job.render(
 				decode.RENDER_COLOR,
 				(0, 0, page_width, page_height),
-				(0, 0, my_width, my_height),
+				(x, y, w, h),
 				PIXEL_FORMAT,
 				1
 			)
-			image = wx.EmptyImage(my_width, my_height)
+			image = wx.EmptyImage(w, h)
 			image.SetData(data)
-			dc.DrawBitmap(image.ConvertToBitmap(), 0, 0)
+			dc.DrawRectangle(x, y, w, h)
+			dc.DrawBitmap(image.ConvertToBitmap(), x, y)
 		except decode.NotAvailable, ex:
 			pass
+		dc.EndDrawing()
+
+	def update_drawing(self):
+		page_job = self.page_job
+		my_width, my_height = self.width, self.height
+		dc = wx.BufferedDC(wx.ClientDC(self), self._buffer)
+		self.clear_dc(dc, (0, 0, my_width, my_height))
 	
 	def set_page_job(self, page_job):
 		self.page_job = page_job
-		self.on_size(None)
+		self.need_refresh()
 
 class MainWindow(wx.Frame):
 	
@@ -119,10 +161,10 @@ class MainWindow(wx.Frame):
 		menu.AppendItem(self.new_menu_item(menu, '&About', 'More information about this program', self.on_about))
 		menu_bar.Append(menu, '&Help');
 		self.SetMenuBar(menu_bar)
-
+	
 	def error_box(self, message, caption = 'Error'):
 		wx.MessageBox(message = message, caption = caption, style = wx.OK | wx.ICON_ERROR, parent = self)
-   
+
 	def except_hook(self, type, value, traceback):
 		from traceback import format_exception
 		message = ''.join(format_exception(type, value, traceback))
