@@ -49,7 +49,7 @@ class PageMetadata(dict):
 		djvused.set_meta(self)
 
 	def revert(self, key = None):
-		if key in None:
+		if key is None:
 			self.clear()
 			self.update(self._old_data)
 			self._dirty = False
@@ -70,9 +70,6 @@ class PageMetadata(dict):
 
 class SharedMetadata(PageMetadata):
 	
-	def __init__(self):
-		PageMetadata.__init__(self, None)
-
 	def export_select(self, djvused):
 		djvused.select_shared_annotations()
 
