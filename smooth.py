@@ -11,6 +11,8 @@ import wx.lib.scrolledpanel
 from djvu import decode
 
 from gui.page import PageWidget
+from gui.metadata import MetadataDialog
+from models.metadata import SharedMetadata
 
 MENU_ICON_SIZE = (16, 16)
 
@@ -85,7 +87,6 @@ class MainWindow(wx.Frame):
 		menu.AppendItem(self.new_menu_item(menu, '&About', 'More information about this program', self.on_about))
 		menu_bar.Append(menu, '&Help');
 		self.SetMenuBar(menu_bar)
-		self.metadata_dialog = wx.Dialog(self, -1, 'Edit metadata')
 		self.do_open(None)
 	
 	def enable_edit_menu(self, enable=True):
@@ -146,8 +147,11 @@ class MainWindow(wx.Frame):
 	def on_edit_metadata(self, event):
 		annotations = self.document.annotations
 		annotations.wait()
-		print annotations.metadata.items()
-		self.metadata_dialog.ShowModal()
+		model = SharedMetadata(None, annotations.metadata)
+		model.update(self.metadata_model)
+		dialog = MetadataDialog(self, model=model)
+		if dialog.ShowModal():
+			self.metadata_model = model
 
 	def do_open(self, path):
 		self.path = path
@@ -157,6 +161,7 @@ class MainWindow(wx.Frame):
 			self.enable_edit_menu(False)
 		else:
 			self.document = self.context.new_document(decode.FileURI(path))
+			self.metadata_model = SharedMetadata(None, ())
 			self.enable_edit_menu(True)
 		self.update_title()
 		self.update_page_widget(new_page_job=True)
