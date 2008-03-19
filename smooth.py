@@ -10,6 +10,8 @@ import wx.lib.scrolledpanel
 
 from djvu import decode
 
+from gui.page import PageWidget
+
 MENU_ICON_SIZE = (16, 16)
 
 wx.EVT_DJVU_MESSAGE = wx.NewId()
@@ -24,129 +26,6 @@ class OpenDialog(wx.FileDialog):
 
 	def __init__(self, parent):
 		wx.FileDialog.__init__(self, parent, style = wx.OPEN, wildcard = 'DjVu files (*.djvu, *.djv)|*.djvu;*.djv|All files|*')
-
-PIXEL_FORMAT = decode.PixelFormatRgb()
-PIXEL_FORMAT.rows_top_to_bottom = 1
-PIXEL_FORMAT.y_top_to_bottom = 1
-
-class PageWidget(wx.Panel):
-
-	def __init__(self, *args, **kwargs):
-		wx.Panel.__init__(self, *args, **kwargs)
-		dc = wx.ClientDC(self)
-		self._render_mode = decode.RENDER_COLOR
-		self._render_text = False
-		self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
-		self.Bind(wx.EVT_ERASE_BACKGROUND, self.on_erase_background)
-		self.Bind(wx.EVT_PAINT, self.on_paint)
-		self.page_job = None
-
-	@apply
-	def render_mode():
-		def get(self):
-			return self._render_mode
-		def set(self, value):
-			self._render_mode = value
-			self.Refresh()
-		return property(get, set)
-
-	@apply
-	def render_text():
-		def get(self):
-			return self._render_text
-		def set(self, value):
-			self._render_text = value
-			self.Refresh()
-		return property(get, set)
-
-	def on_paint(self, event):
-		dc = wx.PaintDC(self)
-		self.PrepareDC(dc)
-		self.draw(dc, self.GetUpdateRegion())
-	
-	@apply
-	def page_job():
-		def set(self, page_job):
-			try:
-				if page_job is None:
-					raise decode.NotAvailable
-				dpi = float(page_job.dpi)
-				page_width, page_height = page_job.width, page_job.height
-				page_width = page_job.width * 100.0 / dpi
-				page_height = page_job.height * 100.0 / dpi
-				self.page_size = page_width, page_height
-				self.SetSize(self.page_size)
-				self.SetBestFittingSize(self.page_size)
-				self.GetParent().Layout()
-				self.GetParent().SetupScrolling()
-			except decode.NotAvailable:
-				pass
-			self._page_job = page_job
-			self.Refresh()
-		return property(fset = set)
-
-	def on_erase_background(self, evt):
-		dc = evt.GetDC()
-		if not dc:
-			dc = wx.ClientDC(self)
-			rect = self.GetUpdateRegion().GetBox()
-			dc.SetClippingRect(rect)
-		self.clear_dc(dc)
-
-	def clear_dc(self, dc):
-		N = 16
-		dc.Clear()
-		dc.SetBrush(wx.Brush((0x80, 0x80, 0x80)))
-		dc.SetPen(wx.Pen((0x80, 0x80, 0x80)))
-		w, h = self.GetClientSize()
-		o = oo = False
-		y = 0
-		while y < h:
-			o = not oo
-			x = 0
-			while x < w:
-				if o:
-					dc.DrawRectangle(x, y, N, N)
-				x += N
-				o = not o
-			y += N
-			oo = not oo
-		
-	def draw(self, dc, region):
-		dc.BeginDrawing()
-		x, y, w, h = region.GetBox()
-		page_job = self._page_job
-		try:
-			if page_job is None:
-				raise decode.NotAvailable
-			page_width, page_height = self.page_size
-			if x >= page_width:
-				raise decode.NotAvailable
-			if x + w > page_width:
-				w = page_width - x
-			if y >= page_height:
-				raise decode.NotAvailable
-			if y + h > page_height:
-				h = page_height - y
-			data = page_job.render(
-				self.render_mode,
-				(0, 0, page_width, page_height),
-				(x, y, w, h),
-				PIXEL_FORMAT,
-				1
-			)
-			image = wx.EmptyImage(w, h)
-			image.SetData(data)
-			dc.DrawBitmap(image.ConvertToBitmap(), x, y)
-		except decode.NotAvailable, ex:
-			pass
-		dc.EndDrawing()
-
-	def update_drawing(self):
-		page_job = self._page_job
-		my_width, my_height = self.width, self.height
-		dc = wx.BufferedDC(wx.ClientDC(self), self._buffer)
-		self.clear_dc(dc, (0, 0, my_width, my_height))
 
 class MainWindow(wx.Frame):
 	
