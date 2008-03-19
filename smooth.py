@@ -170,7 +170,6 @@ class MainWindow(wx.Frame):
 		self.scrolled_panel.SetupScrolling()
 		self.page_widget = PageWidget(self.scrolled_panel)
 		sizer.Add(self.page_widget, 0, wx.ALL | wx.EXPAND)
-		self.do_open(None)
 		if not __debug__:
 			sys.excepthook = self.except_hook
 		menu_bar = wx.MenuBar()
@@ -179,6 +178,9 @@ class MainWindow(wx.Frame):
 		menu.AppendSeparator()
 		menu.AppendItem(self.new_menu_item(menu, '&Quit\tCtrl+Q', 'Quit the application', self.on_exit, icon=wx.ART_QUIT))
 		menu_bar.Append(menu, '&File');
+		menu = wx.Menu()
+		menu.AppendItem(self.new_menu_item(menu, '&Metadata\tCtrl+M', 'Edit the document or page metadata', self.on_edit_metadata))
+		menu_bar.Append(menu, '&Edit');
 		menu = wx.Menu()
 		submenu = wx.Menu()
 		for text, help, method in \
@@ -204,6 +206,11 @@ class MainWindow(wx.Frame):
 		menu.AppendItem(self.new_menu_item(menu, '&About', 'More information about this program', self.on_about))
 		menu_bar.Append(menu, '&Help');
 		self.SetMenuBar(menu_bar)
+		self.metadata_dialog = wx.Dialog(self, -1, 'Edit metadata')
+		self.do_open(None)
+	
+	def enable_edit_menu(self, enable=True):
+		self.GetMenuBar().EnableTop(1, enable)
 
 	def error_box(self, message, caption = 'Error'):
 		wx.MessageBox(message = message, caption = caption, style = wx.OK | wx.ICON_ERROR, parent = self)
@@ -257,13 +264,21 @@ class MainWindow(wx.Frame):
 		self.page_no = page_no
 		self.update_page_widget(True)
 
+	def on_edit_metadata(self, event):
+		annotations = self.document.annotations
+		annotations.wait()
+		print annotations.metadata.items()
+		self.metadata_dialog.ShowModal()
+
 	def do_open(self, path):
 		self.path = path
 		self.page_no = 0
 		if path is None:
 			self.document = None
+			self.enable_edit_menu(False)
 		else:
 			self.document = self.context.new_document(decode.FileURI(path))
+			self.enable_edit_menu(True)
 		self.update_title()
 		self.update_page_widget(new_page_job=True)
 	
