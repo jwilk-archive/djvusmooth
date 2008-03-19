@@ -47,7 +47,7 @@ class StreamEditor(object):
 		self._add('set-meta')
 		for key, value in meta.iteritems():
 			value = unicode(value)
-			self._add('%s\t%s' % (str(key), Expression(value)))
+			self._add('%s\t%s' % (Expression(key), Expression(value)))
 		self._add('.')
 
 	def remove_metadata(self):
