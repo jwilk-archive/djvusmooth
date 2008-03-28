@@ -154,10 +154,11 @@ class MainWindow(wx.Frame):
 		self.update_page_widget(True)
 
 	def on_edit_metadata(self, event):
-		annotations = self.document.annotations
-		annotations.wait()
-		model = SharedMetadata(None, annotations.metadata)
-		model.update(self.metadata_model)
+		if self.metadata_model is None:
+			annotations = self.document.annotations
+			annotations.wait()
+			self.metadata_model = SharedMetadata(None, annotations.metadata)
+		model = self.metadata_model.clone()
 		dialog = MetadataDialog(self, model=model)
 		if dialog.ShowModal():
 			self.metadata_model = model
@@ -170,7 +171,7 @@ class MainWindow(wx.Frame):
 			self.enable_edit(False)
 		else:
 			self.document = self.context.new_document(decode.FileURI(path))
-			self.metadata_model = SharedMetadata(None, ())
+			self.metadata_model = None
 			self.enable_edit(True)
 		self.update_title()
 		self.update_page_widget(new_page_job=True)
