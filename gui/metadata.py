@@ -13,6 +13,7 @@ class MetadataTable(wx.grid.PyGridTableBase):
 		wx.grid.PyGridTableBase.__init__(self)
 		self._model = model
 		self._keys = sorted(model)
+		self._keys.append(None)
 
 	def GetColLabelValue(self, n):
 		return LABELS[n]
@@ -24,11 +25,16 @@ class MetadataTable(wx.grid.PyGridTableBase):
 		return 2
 
 	def GetValue(self, y, x):
-		key = self._keys[y]
-		if x:
-			value = self._model[key]
-		else:
-			value = key
+		try:
+			key = self._keys[y]
+			if key is None:
+				value = ''
+			elif x:
+				value = self._model[key]
+			else:
+				value = key
+		except IndexError:
+			value = ''
 		return value
 
 	def set_value(self, key, value):
@@ -38,16 +44,35 @@ class MetadataTable(wx.grid.PyGridTableBase):
 		del self._model[self._keys[y]]
 		self._model[new_key] = value
 		self._keys[y] = new_key
+	
+	def add_new_key(self, new_key):
+		self._model[new_key] = ''
+		y = len(self._keys) - 1
+		self._keys[y:] = new_key, None
+		self.GetView().ProcessTableMessage(wx.grid.GridTableMessage(self, wx.grid.GRIDTABLE_NOTIFY_ROWS_APPENDED, 1))
+	
+	def delete_key(self, y):
+		key = self._keys[y]
+		del self._model[key]
+		del self._keys[y]
+		self.GetView().ProcessTableMessage(wx.grid.GridTableMessage(self, wx.grid.GRIDTABLE_NOTIFY_ROWS_DELETED, y, 1))
 
 	def SetValue(self, y, x, value):
 		key = self._keys[y]
 		if x == 0:
 			if value == key:
 				pass
+			elif not value:
+				self.delete_key(y)
+				# Delete a row
 			elif value in self._model:
 				pass # TODO: raise an exception
 			else:
-				self.set_new_key(y, value, self._model[key])
+				if key is None:
+					# Add a row
+					self.add_new_key(value)
+				else:
+					self.set_new_key(y, value, self._model[key])
 		elif x == 1:
 			self.set_value(key, value)
 
