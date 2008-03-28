@@ -9,6 +9,7 @@ import wx
 import wx.lib.scrolledpanel
 
 from djvu import decode
+import djvu.const
 
 from gui.page import PageWidget
 from gui.metadata import MetadataDialog
@@ -159,7 +160,7 @@ class MainWindow(wx.Frame):
 			annotations.wait()
 			self.metadata_model = SharedMetadata(None, annotations.metadata)
 		model = self.metadata_model.clone()
-		dialog = MetadataDialog(self, model=model)
+		dialog = MetadataDialog(self, model=model, known_keys=djvu.const.METADATA_KEYS)
 		if dialog.ShowModal():
 			self.metadata_model = model
 

@@ -9,11 +9,26 @@ import wx.lib.mixins.grid
 LABELS = 'key value'.split()
 
 class MetadataTable(wx.grid.PyGridTableBase):
-	def __init__(self, model):
+	def __init__(self, model, known_keys):
 		wx.grid.PyGridTableBase.__init__(self)
 		self._model = model
 		self._keys = sorted(model)
 		self._keys.append(None)
+		attr_normal = wx.grid.GridCellAttr()
+		attr_known = wx.grid.GridCellAttr()
+		font = attr_known.GetFont()
+		font_pixel_size = font.GetPixelSize()
+		font.SetWeight(wx.FONTWEIGHT_BOLD)
+		font.SetPixelSize(font_pixel_size)
+		attr_known.SetFont(font)
+		self._attrs = attr_normal, attr_known
+		self._known_keys = known_keys
+
+	def GetAttr(self, y, x, kind):
+		key = self._keys[y]
+		attr = self._attrs[x == 0 and key in self._known_keys]
+		attr.IncRef()
+		return attr
 
 	def GetColLabelValue(self, n):
 		return LABELS[n]
@@ -77,9 +92,9 @@ class MetadataTable(wx.grid.PyGridTableBase):
 			self.set_value(key, value)
 
 class MetadataGrid(wx.grid.Grid, wx.lib.mixins.grid.GridAutoEditMixin):
-	def __init__(self, parent, model):
+	def __init__(self, parent, model, known_keys):
 		wx.grid.Grid.__init__(self, parent, size=(480, 360))
-		table = MetadataTable(model)
+		table = MetadataTable(model, known_keys)
 		self.SetTable(table)
 		self.SetRowLabelSize(0)
 		self.SetDefaultEditor(wx.grid.GridCellAutoWrapStringEditor())
@@ -87,11 +102,11 @@ class MetadataGrid(wx.grid.Grid, wx.lib.mixins.grid.GridAutoEditMixin):
 
 class MetadataDialog(wx.Dialog):
 
-	def __init__(self, parent, model):
+	def __init__(self, parent, model, known_keys):
 		wx.Dialog.__init__(self, parent, title='Edit metadata', style = wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
 		self._model = model
 		sizer = wx.BoxSizer(wx.VERTICAL)
-		grid = MetadataGrid(self, model)
+		grid = MetadataGrid(self, model, known_keys)
 		sizer.Add(grid, 1, wx.EXPAND | wx.ALL, 5)
 		line = wx.StaticLine(self, -1, style = wx.LI_HORIZONTAL)
 		sizer.Add(line, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP, 5)
