@@ -21,6 +21,7 @@ class PageWidget(wx.Panel):
 		self.Bind(wx.EVT_ERASE_BACKGROUND, self.on_erase_background)
 		self.Bind(wx.EVT_PAINT, self.on_paint)
 		self.page_job = None
+		self.page_size = -1, -1
 
 	@apply
 	def render_mode():
@@ -61,7 +62,7 @@ class PageWidget(wx.Panel):
 				self.GetParent().Layout()
 				self.GetParent().SetupScrolling()
 			except decode.NotAvailable:
-				pass
+				self.page_size = -1, -1
 			self._page_job = page_job
 			self.Refresh()
 		return property(fset = set)
