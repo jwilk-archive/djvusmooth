@@ -33,6 +33,10 @@ class PageMetadata(dict):
 		self._dirty = False
 		self._n = n
 		self.load(original_data, overwrite=True)
+	
+	def clone(self):
+		from copy import copy
+		return copy(self)
 
 	def load(self, original_data, overwrite=False):
 		if self._old_data is not None or overwrite:
