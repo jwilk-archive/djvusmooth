@@ -16,8 +16,11 @@ class Metadata(object):
 			cls = PageMetadata
 			if n == SHARED_ANNOTATIONS:
 				cls = SharedMetadata
-			metadata = self._pages[n] = cls(n, self.acquire_metadata(self, n))
-		return metadata
+			metadata = self._pages[n] = cls(n, self.acquire_metadata(n))
+		return self._pages[n]
+	
+	def __setitem__(self, n, model):
+		self._pages[n] = model
 
 	def acquire_metadata(self, n):
 		return {}
