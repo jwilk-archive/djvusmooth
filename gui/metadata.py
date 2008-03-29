@@ -93,7 +93,7 @@ class MetadataTable(wx.grid.PyGridTableBase):
 
 class MetadataGrid(wx.grid.Grid, wx.lib.mixins.grid.GridAutoEditMixin):
 	def __init__(self, parent, model, known_keys):
-		wx.grid.Grid.__init__(self, parent, size=(480, 360))
+		wx.grid.Grid.__init__(self, parent)
 		table = MetadataTable(model, known_keys)
 		self.SetTable(table)
 		self.SetRowLabelSize(0)
@@ -102,14 +102,16 @@ class MetadataGrid(wx.grid.Grid, wx.lib.mixins.grid.GridAutoEditMixin):
 
 class MetadataDialog(wx.Dialog):
 
-	def __init__(self, parent, model, known_keys):
+	def __init__(self, parent, models, known_keys):
 		wx.Dialog.__init__(self, parent, title='Edit metadata', style = wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
-		self._model = model
 		sizer = wx.BoxSizer(wx.VERTICAL)
-		grid = MetadataGrid(self, model, known_keys)
-		sizer.Add(grid, 1, wx.EXPAND | wx.ALL, 5)
+		tabs = wx.Notebook(self, -1)
+		for model in models:
+			grid = MetadataGrid(tabs, model, known_keys)
+			tabs.AddPage(grid, model.title)
+		sizer.Add(tabs, 1, wx.EXPAND | wx.ALL, 5)
 		line = wx.StaticLine(self, -1, style = wx.LI_HORIZONTAL)
-		sizer.Add(line, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP, 5)
+		sizer.Add(line, 0, wx.EXPAND | wx.GROW | wx.BOTTOM | wx.TOP, 5)
 		button_sizer = wx.StdDialogButtonSizer()
 		button = wx.Button(self, wx.ID_OK)
 		button.SetDefault()
@@ -117,7 +119,7 @@ class MetadataDialog(wx.Dialog):
 		button = wx.Button(self, wx.ID_CANCEL)
 		button_sizer.AddButton(button)
 		button_sizer.Realize()
-		sizer.Add(button_sizer, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+		sizer.Add(button_sizer, 0, wx.EXPAND | wx.ALL, 5)
 		self.SetSizer(sizer)
 		sizer.Fit(self)
 

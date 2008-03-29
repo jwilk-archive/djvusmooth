@@ -159,10 +159,13 @@ class MainWindow(wx.Frame):
 			annotations = self.document.annotations
 			annotations.wait()
 			self.metadata_model = SharedMetadata(None, annotations.metadata)
-		model = self.metadata_model.clone()
-		dialog = MetadataDialog(self, model=model, known_keys=djvu.const.METADATA_KEYS)
+		document_metadata_model = self.metadata_model.clone()
+		document_metadata_model.title = 'Document metadata'
+		page_metadata_model = SharedMetadata(None, {})
+		page_metadata_model.title = 'Page %d metadata' % (self.page_no + 1)
+		dialog = MetadataDialog(self, models=(document_metadata_model, page_metadata_model), known_keys=djvu.const.METADATA_KEYS)
 		if dialog.ShowModal():
-			self.metadata_model = model
+			self.metadata_model = document_metadata_model
 
 	def do_open(self, path):
 		self.path = path
