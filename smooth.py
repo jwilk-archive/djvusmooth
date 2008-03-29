@@ -13,7 +13,7 @@ import djvu.const
 
 from gui.page import PageWidget
 from gui.metadata import MetadataDialog
-from models.metadata import SharedMetadata
+import models.metadata
 
 MENU_ICON_SIZE = (16, 16)
 
@@ -29,6 +29,32 @@ class OpenDialog(wx.FileDialog):
 
 	def __init__(self, parent):
 		wx.FileDialog.__init__(self, parent, style = wx.OPEN, wildcard = 'DjVu files (*.djvu, *.djv)|*.djvu;*.djv|All files|*')
+
+class MetadataModel(models.metadata.Metadata):
+	def __init__(self, document):
+		models.metadata.Metadata.__init__(self)
+		self._document = document
+
+	def acquire_metadata(self, n):
+		document_annotations = self._document.annotations
+		document_annotations.wait()
+		document_metadata = document_annotations.metadata
+		if n is None:
+			result = document_metadata
+		else:
+			page_annotations = self._document.pages[n].annotations
+			page_annotations.wait()
+			page_metadata = page_annotations.metadata
+			result = {}
+			for k, v in page_metadata.iteritems():
+				if k not in document_metadata:
+					pass
+				elif v != document_metadata[k]:
+					pass
+				else:
+					continue
+				result[k] = v
+		return result
 
 class MainWindow(wx.Frame):
 	
@@ -159,13 +185,14 @@ class MainWindow(wx.Frame):
 			annotations = self.document.annotations
 			annotations.wait()
 			self.metadata_model = SharedMetadata(None, annotations.metadata)
-		document_metadata_model = self.metadata_model.clone()
+		document_metadata_model = self.metadata_model[None].clone()
 		document_metadata_model.title = 'Document metadata'
-		page_metadata_model = SharedMetadata(None, {})
+		page_metadata_model = self.metadata_model[self.page_no].clone()
 		page_metadata_model.title = 'Page %d metadata' % (self.page_no + 1)
 		dialog = MetadataDialog(self, models=(document_metadata_model, page_metadata_model), known_keys=djvu.const.METADATA_KEYS)
 		if dialog.ShowModal():
-			self.metadata_model = document_metadata_model
+			self.metadata_model[None] = document_metadata_model
+			self.metadata_model[self.page_no] = page_metadata_model
 
 	def do_open(self, path):
 		self.path = path
@@ -175,7 +202,7 @@ class MainWindow(wx.Frame):
 			self.enable_edit(False)
 		else:
 			self.document = self.context.new_document(decode.FileURI(path))
-			self.metadata_model = None
+			self.metadata_model = MetadataModel(self.document)
 			self.enable_edit(True)
 		self.update_title()
 		self.update_page_widget(new_page_job=True)
