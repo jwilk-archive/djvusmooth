@@ -2,6 +2,11 @@
 # encoding=UTF-8
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
+APPLICATION_NAME = 'DjVuSmooth'
+LICENSE = 'GPL-2'
+__version__ = '0.1'
+__author__ = 'Jakub Wilk <ubanus@users.sf.net>'
+
 import sys
 import os.path
 
@@ -70,7 +75,6 @@ class MainWindow(wx.Frame):
 		wx.Frame.__init__(self, None, size=wx.Size(640, 480))
 		self.Connect(-1, -1, wx.EVT_DJVU_MESSAGE, self.handle_message)
 		self.context = Context(self)
-		self.base_title = 'DjVuSmooth'
 		self.scrolled_panel = wx.lib.scrolledpanel.ScrolledPanel(self, -1)
 		sizer = wx.BoxSizer(wx.VERTICAL)
 		self.scrolled_panel.SetSizer(sizer)
@@ -115,7 +119,7 @@ class MainWindow(wx.Frame):
 			menu.AppendItem(self.new_menu_item(menu, text, help, method, icon=icon))
 		menu_bar.Append(menu, '&View');
 		menu = wx.Menu()
-		menu.AppendItem(self.new_menu_item(menu, '&About', 'More information about this program', self.on_about))
+		menu.AppendItem(self.new_menu_item(menu, '&About\tF1', 'More information about this program', self.on_about))
 		menu_bar.Append(menu, '&Help');
 		self.SetMenuBar(menu_bar)
 		self.do_open(None)
@@ -216,13 +220,17 @@ class MainWindow(wx.Frame):
 
 	def update_title(self):
 		if self.path is None:
-			title = self.base_title
+			title = APPLICATION_NAME
 		else:
-			title = u'%s — %s' % (self.base_title, os.path.basename(self.path))
+			title = u'%s — %s' % (APPLICATION_NAME, os.path.basename(self.path))
 		self.SetTitle(title)
 
 	def on_about(self, event):
-		raise NotImplementedError # TODO
+		message = '''\
+%(APPLICATION_NAME)s %(__version__)s
+Author: %(__author__)s
+License: %(LICENSE)s''' % globals()
+		wx.MessageBox(message, 'About…')
 	
 	def handle_message(self, event):
 		message = event.message
