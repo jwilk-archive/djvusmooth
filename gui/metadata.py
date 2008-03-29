@@ -111,7 +111,7 @@ class MetadataDialog(wx.Dialog):
 			tabs.AddPage(grid, model.title)
 		sizer.Add(tabs, 1, wx.EXPAND | wx.ALL, 5)
 		line = wx.StaticLine(self, -1, style = wx.LI_HORIZONTAL)
-		sizer.Add(line, 0, wx.EXPAND | wx.GROW | wx.BOTTOM | wx.TOP, 5)
+		sizer.Add(line, 0, wx.EXPAND | wx.BOTTOM | wx.TOP, 5)
 		button_sizer = wx.StdDialogButtonSizer()
 		button = wx.Button(self, wx.ID_OK)
 		button.SetDefault()
@@ -120,7 +120,6 @@ class MetadataDialog(wx.Dialog):
 		button_sizer.AddButton(button)
 		button_sizer.Realize()
 		sizer.Add(button_sizer, 0, wx.EXPAND | wx.ALL, 5)
-		self.SetSizer(sizer)
-		sizer.Fit(self)
+		self.SetSizerAndFit(sizer)
 
 # vim:ts=4 sw=4
