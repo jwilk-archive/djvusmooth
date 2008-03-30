@@ -20,6 +20,7 @@ from gui.metadata import MetadataDialog
 import models.metadata
 
 MENU_ICON_SIZE = (16, 16)
+DJVU_WILDCARD = 'DjVu files (*.djvu, *.djv)|*.djvu;*.djv|All files|*'
 
 wx.EVT_DJVU_MESSAGE = wx.NewId()
 
@@ -32,7 +33,7 @@ class WxDjVuMessage(wx.PyEvent):
 class OpenDialog(wx.FileDialog):
 
 	def __init__(self, parent):
-		wx.FileDialog.__init__(self, parent, style = wx.OPEN, wildcard = 'DjVu files (*.djvu, *.djv)|*.djvu;*.djv|All files|*')
+		wx.FileDialog.__init__(self, parent, style = wx.OPEN, wildcard=DJVU_WILDCARD)
 
 class MetadataModel(models.metadata.Metadata):
 	def __init__(self, document):
