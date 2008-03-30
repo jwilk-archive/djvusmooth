@@ -4,7 +4,7 @@
 
 from cStringIO import StringIO
 
-SHARED_ANNOTATIONS = -1
+SHARED_ANNOTATIONS_PAGENO = -1
 
 class Metadata(object):
 
@@ -14,7 +14,7 @@ class Metadata(object):
 	def __getitem__(self, n):
 		if n not in self._pages:
 			cls = PageMetadata
-			if n == SHARED_ANNOTATIONS:
+			if n == SHARED_ANNOTATIONS_PAGENO:
 				cls = SharedMetadata
 			metadata = self._pages[n] = cls(n, self.acquire_metadata(n))
 		return self._pages[n]
