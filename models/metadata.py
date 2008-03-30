@@ -36,7 +36,11 @@ class PageMetadata(dict):
 		self._dirty = False
 		self._n = n
 		self.load(original_data, overwrite=True)
-	
+
+	def __setitem__(self, key, value):
+		self._dirty = True
+		dict.__setitem__(self, key, value)
+
 	def clone(self):
 		from copy import copy
 		return copy(self)
@@ -52,8 +56,8 @@ class PageMetadata(dict):
 	def export(self, djvused):
 		if not self._dirty:
 			return
-		self.export_select(self)
-		djvused.set_meta(self)
+		self.export_select(djvused)
+		djvused.set_metadata(self)
 
 	def revert(self, key = None):
 		if key is None:
