@@ -18,7 +18,7 @@ class StreamEditor(object):
 	def __init__(self, file_name, autosave = False):
 		self._file_name = file_name
 		self._commands = []
-		self._autosave = False
+		self._autosave = autosave
 	
 	def _add(self, command):
 		if not isinstance(command, str):
