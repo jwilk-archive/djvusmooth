@@ -101,7 +101,7 @@ class StreamEditor(object):
 		stdin.close()
 		djvused.wait()
 		if djvused.returncode:
-			raise IOError(djvused.stderr.readline())
+			raise IOError(djvused.stderr.readline().lstrip('* '))
 		return djvused.stdout.read()
 		
 	def commit(self):
