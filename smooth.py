@@ -15,6 +15,7 @@ import wx.lib.scrolledpanel
 from djvu import decode
 import djvu.const
 
+from djvused import StreamEditor
 from gui.page import PageWidget
 from gui.metadata import MetadataDialog
 import models.metadata
@@ -44,7 +45,7 @@ class MetadataModel(models.metadata.Metadata):
 		document_annotations = self._document.annotations
 		document_annotations.wait()
 		document_metadata = document_annotations.metadata
-		if n is None:
+		if n == models.metadata.SHARED_ANNOTATIONS_PAGENO:
 			result = document_metadata
 		else:
 			page_annotations = self._document.pages[n].annotations
@@ -146,7 +147,12 @@ class MainWindow(wx.Frame):
 			self.do_open(dialog.GetPath())
 	
 	def on_save(self, event):
-		raise NotImplementedError
+		sed = StreamEditor(self.path, autosave=True)
+		if self.metadata_model is not None:
+			self.metadata_model.export(sed)
+		for l in sed._commands:
+			print l
+		sed.commit()
 	
 	def on_display_everything(self, event):
 		self.page_widget.render_mode = decode.RENDER_COLOR
@@ -185,17 +191,13 @@ class MainWindow(wx.Frame):
 		self.update_page_widget(True)
 
 	def on_edit_metadata(self, event):
-		if self.metadata_model is None:
-			annotations = self.document.annotations
-			annotations.wait()
-			self.metadata_model = SharedMetadata(None, annotations.metadata)
-		document_metadata_model = self.metadata_model[None].clone()
+		document_metadata_model = self.metadata_model[models.metadata.SHARED_ANNOTATIONS_PAGENO].clone()
 		document_metadata_model.title = 'Document metadata'
 		page_metadata_model = self.metadata_model[self.page_no].clone()
 		page_metadata_model.title = 'Page %d metadata' % (self.page_no + 1)
 		dialog = MetadataDialog(self, models=(document_metadata_model, page_metadata_model), known_keys=djvu.const.METADATA_KEYS)
 		if dialog.ShowModal():
-			self.metadata_model[None] = document_metadata_model
+			self.metadata_model[models.metadata.SHARED_ANNOTATIONS_PAGENO] = document_metadata_model
 			self.metadata_model[self.page_no] = page_metadata_model
 
 	def do_open(self, path):
