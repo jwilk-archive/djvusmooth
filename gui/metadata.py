@@ -16,10 +16,8 @@ class MetadataTable(wx.grid.PyGridTableBase):
 		self._keys.append(None)
 		attr_normal = wx.grid.GridCellAttr()
 		attr_known = wx.grid.GridCellAttr()
-		font = attr_known.GetFont()
-		font_pixel_size = font.GetPixelSize()
+		font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
 		font.SetWeight(wx.FONTWEIGHT_BOLD)
-		font.SetPixelSize(font_pixel_size)
 		attr_known.SetFont(font)
 		self._attrs = attr_normal, attr_known
 		self._known_keys = known_keys
