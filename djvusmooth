@@ -1,0 +1,12 @@
+#!/usr/bin/python
+# encoding=UTF-8
+# Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
+
+if __name__ == '__main__':
+	import sys
+	import smooth
+	smooth.main(sys.argv[1:])
+else:
+	raise ImportError('This module is not intended for import')
+
+# vim:ts=4 sw=4

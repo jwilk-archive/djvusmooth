@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # encoding=UTF-8
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
@@ -270,9 +269,5 @@ class SmoothApp(wx.App):
 def main(argv):
 	app = SmoothApp(argv)
 	app.MainLoop()
-
-if __name__ == '__main__':
-	from sys import argv
-	main(argv[1:])
 
 # vim:ts=4 sw=4
