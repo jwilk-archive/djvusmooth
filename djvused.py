@@ -5,7 +5,7 @@ import pkgconfig
 import os.path
 import subprocess
 
-from djvu.sexpr import Expression
+from djvu.sexpr import Expression, Symbol
 
 DJVULIBRE_BIN_PATH = os.path.join(pkgconfig.Package('ddjvuapi').variable('exec_prefix'), 'bin')
 DJVUSED_PATH = os.path.join(DJVULIBRE_BIN_PATH, 'djvused')
@@ -47,7 +47,7 @@ class StreamEditor(object):
 		self._add('set-meta')
 		for key, value in meta.iteritems():
 			value = unicode(value)
-			self._add('%s\t%s' % (Expression(key), Expression(value)))
+			self._add('%s\t%s' % (Expression(Symbol(key)), Expression(value)))
 		self._add('.')
 
 	def remove_metadata(self):
