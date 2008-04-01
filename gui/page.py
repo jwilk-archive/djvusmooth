@@ -22,6 +22,8 @@ class PageWidget(wx.Panel):
 		self.Bind(wx.EVT_ERASE_BACKGROUND, self.on_erase_background)
 		self.Bind(wx.EVT_PAINT, self.on_paint)
 		self.page = None
+		self._checkboard_brush = wx.Brush((0x88,) * 3, wx.SOLID)
+		self._text_pen = wx.Pen((0, 0, 0x88), 1)
 
 	@apply
 	def render_mode():
@@ -86,8 +88,8 @@ class PageWidget(wx.Panel):
 	def clear_dc(self, dc):
 		N = 16
 		dc.Clear()
-		dc.SetBrush(wx.Brush((0x80, 0x80, 0x80)))
-		dc.SetPen(wx.Pen((0x80, 0x80, 0x80)))
+		dc.SetBrush(self._checkboard_brush)
+		dc.SetPen(wx.TRANSPARENT_PEN)
 		w, h = self.GetClientSize()
 		o = oo = False
 		y = 0
@@ -134,8 +136,8 @@ class PageWidget(wx.Panel):
 			pass
 		if self.render_text:
 			try:
-				dc.SetBrush(wx.Brush(wx.WHITE, wx.TRANSPARENT))
-				dc.SetPen(wx.Pen((0x00, 0x00, 0x88)))
+				dc.SetBrush(wx.TRANSPARENT_BRUSH)
+				dc.SetPen(self._text_pen)
 				sexpr = self._page_text.sexpr
 				for (x, y, xp, yp), text in extract_text(sexpr):
 					rect = (x, y, xp - x, yp - y)
