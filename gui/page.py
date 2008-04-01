@@ -4,6 +4,8 @@
 
 import wx
 
+from math import floor
+
 from djvu import decode
 from models.text import extract_text
 
@@ -23,7 +25,8 @@ class PageWidget(wx.Panel):
 		self.Bind(wx.EVT_PAINT, self.on_paint)
 		self.page = None
 		self._checkboard_brush = wx.Brush((0x88,) * 3, wx.SOLID)
-		self._text_pen = wx.Pen((0, 0, 0x88), 1)
+		self._text_color = wx.Color(0, 0, 0x88)
+		self._text_pen = wx.Pen(self._text_color, 1)
 
 	@apply
 	def render_mode():
@@ -144,12 +147,23 @@ class PageWidget(wx.Panel):
 			try:
 				dc.SetBrush(wx.TRANSPARENT_BRUSH)
 				dc.SetPen(self._text_pen)
+				dc.SetTextForeground(self._text_color)
 				sexpr = self._page_text.sexpr
 				for (x, y, xp, yp), text in extract_text(sexpr):
 					rect = (x, y, xp - x, yp - y)
-					rect = xform_screen_to_real(rect)
-					dc.DrawRectangle(*rect)
-					dc.DrawText(text, rect[0], rect[1])
+					x, y, w, h = xform_screen_to_real(rect)
+					dc.DrawRectangle(x, y, w, h)
+					font = dc.GetFont()
+					font_size = h
+					font.SetPixelSize((font_size, font_size))
+					dc.SetFont(font)
+					w1, h1 = dc.GetTextExtent(text)
+					if w1 > w:
+						font_size = floor(font_size * 1.0 * w / w1)
+						font.SetPixelSize((font_size, font_size))
+						dc.SetFont(font)
+						w1, h1 = dc.GetTextExtent(text)
+					dc.DrawText(text, x, y)
 			except decode.NotAvailable, ex:
 				pass
 		dc.EndDrawing()
