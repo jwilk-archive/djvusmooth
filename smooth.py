@@ -211,14 +211,15 @@ class MainWindow(wx.Frame):
 			self.metadata_model = MetadataModel(self.document)
 			self.enable_edit(True)
 		self.update_title()
-		self.update_page_widget(new_page_job=True)
+		self.update_page_widget(new_page = True)
 	
-	def update_page_widget(self, new_page_job=False):
+	def update_page_widget(self, new_page = False):
 		if self.document is None:
-			self.page_job = None
-		elif self.page_job is None or new_page_job:
-			self.page_job = self.document.pages[self.page_no].decode(wait = False)
-		self.page_widget.page_job = self.page_job
+			self.page = self.page_job = None
+		elif self.page_job is None or new_page:
+			self.page = self.document.pages[self.page_no]
+			self.page_job = self.page.decode(wait = False)
+		self.page_widget.page = self.page
 
 	def update_title(self):
 		if self.path is None:

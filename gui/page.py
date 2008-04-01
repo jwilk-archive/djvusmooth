@@ -47,11 +47,13 @@ class PageWidget(wx.Panel):
 		self.draw(dc, self.GetUpdateRegion())
 	
 	@apply
-	def page_job():
-		def set(self, page_job):
+	def page():
+		def set(self, page):
 			try:
-				if page_job is None:
+				if page is None:
 					raise decode.NotAvailable
+				page_job = page.decode(wait = False)
+				page_text = page.text
 				dpi = float(page_job.dpi)
 				page_width, page_height = page_job.width, page_job.height
 				page_width = page_job.width * 100.0 / dpi
@@ -63,7 +65,10 @@ class PageWidget(wx.Panel):
 				self.GetParent().SetupScrolling()
 			except decode.NotAvailable:
 				self.page_size = -1, -1
+				page_job = None
+				page_text = None
 			self._page_job = page_job
+			self._page_text = page_text
 			self.Refresh()
 		return property(fset = set)
 
