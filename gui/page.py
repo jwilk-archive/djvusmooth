@@ -20,9 +20,7 @@ class PageWidget(wx.Panel):
 		self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
 		self.Bind(wx.EVT_ERASE_BACKGROUND, self.on_erase_background)
 		self.Bind(wx.EVT_PAINT, self.on_paint)
-		self._page_job = None
-		self._page_text = None
-		self._page_size = -1, -1
+		self.page = None
 
 	@apply
 	def render_mode():
@@ -56,16 +54,20 @@ class PageWidget(wx.Panel):
 				page_job = page.decode(wait = False)
 				page_text = page.text
 				dpi = float(page_job.dpi)
-				page_size = tuple(int(t * 100.0 / dpi) for t in (page_job.width, page_job.height))
-				self.SetSize(page_size)
-				self.SetBestFittingSize(page_size)
+				real_page_size = (page_job.width, page_job.height)
+				screen_page_size = tuple(int(t * 100.0 / dpi) for t in (real_page_size))
+				xform_screen_to_real = decode.AffineTransform((0, 0) + real_page_size, (0, 0) + screen_page_size)
+				self.SetSize(screen_page_size)
+				self.SetBestFittingSize(screen_page_size)
 				self.GetParent().Layout()
 				self.GetParent().SetupScrolling()
 			except decode.NotAvailable:
-				page_size = -1, -1
+				screen_page_size = -1, -1
+				xform_screen_to_real = decode.AffineTransform((0, 0, 1, 1), (0, 0, 1, 1))
 				page_job = None
 				page_text = None
-			self._page_size = page_size
+			self._screen_page_size = screen_page_size
+			self._xform_screen_to_real = xform_screen_to_real
 			self._page_job = page_job
 			self._page_text = page_text
 			self.Refresh()
@@ -105,7 +107,7 @@ class PageWidget(wx.Panel):
 		try:
 			if page_job is None:
 				raise decode.NotAvailable
-			page_width, page_height = self._page_size
+			page_width, page_height = self._screen_page_size
 			if x >= page_width:
 				raise decode.NotAvailable
 			if x + w > page_width:
