@@ -130,10 +130,4 @@ class PageWidget(wx.Panel):
 			pass
 		dc.EndDrawing()
 
-	def update_drawing(self):
-		page_job = self._page_job
-		my_width, my_height = self.width, self.height
-		dc = wx.BufferedDC(wx.ClientDC(self), self._buffer)
-		self.clear_dc(dc, (0, 0, my_width, my_height))
-
 # vim:ts=4 sw=4
