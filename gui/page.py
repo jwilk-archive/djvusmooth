@@ -56,10 +56,7 @@ class PageWidget(wx.Panel):
 				page_job = page.decode(wait = False)
 				page_text = page.text
 				dpi = float(page_job.dpi)
-				page_width, page_height = page_job.width, page_job.height
-				page_width = page_job.width * 100.0 / dpi
-				page_height = page_job.height * 100.0 / dpi
-				page_size = page_width, page_height
+				page_size = tuple(t * 100.0 / dpi for t in (page_job.width, page_job.height))
 				self.SetSize(page_size)
 				self.SetBestFittingSize(page_size)
 				self.GetParent().Layout()
