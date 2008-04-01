@@ -5,6 +5,7 @@
 import wx
 
 from djvu import decode
+from models.text import extract_text
 
 PIXEL_FORMAT = decode.PixelFormatRgb()
 PIXEL_FORMAT.rows_top_to_bottom = 1
@@ -57,6 +58,7 @@ class PageWidget(wx.Panel):
 				real_page_size = (page_job.width, page_job.height)
 				screen_page_size = tuple(int(t * 100.0 / dpi) for t in (real_page_size))
 				xform_screen_to_real = decode.AffineTransform((0, 0) + real_page_size, (0, 0) + screen_page_size)
+				xform_screen_to_real.mirror_y()
 				self.SetSize(screen_page_size)
 				self.SetBestFittingSize(screen_page_size)
 				self.GetParent().Layout()
@@ -104,6 +106,8 @@ class PageWidget(wx.Panel):
 		dc.BeginDrawing()
 		x, y, w, h = region.GetBox()
 		page_job = self._page_job
+		page_text = self._page_text
+		xform_screen_to_real = self._xform_screen_to_real
 		try:
 			if page_job is None:
 				raise decode.NotAvailable
@@ -128,6 +132,18 @@ class PageWidget(wx.Panel):
 			dc.DrawBitmap(image.ConvertToBitmap(), x, y)
 		except decode.NotAvailable, ex:
 			pass
+		if self.render_text:
+			try:
+				dc.SetBrush(wx.Brush(wx.WHITE, wx.TRANSPARENT))
+				dc.SetPen(wx.Pen((0x00, 0x00, 0x88)))
+				sexpr = self._page_text.sexpr
+				for (x, y, xp, yp), text in extract_text(sexpr):
+					rect = (x, y, xp - x, yp - y)
+					rect = xform_screen_to_real(rect)
+					dc.DrawRectangle(*rect)
+					dc.DrawText(text, rect[0], rect[1])
+			except decode.NotAvailable, ex:
+				pass
 		dc.EndDrawing()
 
 # vim:ts=4 sw=4
