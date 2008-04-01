@@ -20,8 +20,9 @@ class PageWidget(wx.Panel):
 		self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
 		self.Bind(wx.EVT_ERASE_BACKGROUND, self.on_erase_background)
 		self.Bind(wx.EVT_PAINT, self.on_paint)
-		self.page_job = None
-		self.page_size = -1, -1
+		self._page_job = None
+		self._page_text = None
+		self._page_size = -1, -1
 
 	@apply
 	def render_mode():
@@ -58,15 +59,16 @@ class PageWidget(wx.Panel):
 				page_width, page_height = page_job.width, page_job.height
 				page_width = page_job.width * 100.0 / dpi
 				page_height = page_job.height * 100.0 / dpi
-				self.page_size = page_width, page_height
-				self.SetSize(self.page_size)
-				self.SetBestFittingSize(self.page_size)
+				page_size = page_width, page_height
+				self.SetSize(page_size)
+				self.SetBestFittingSize(page_size)
 				self.GetParent().Layout()
 				self.GetParent().SetupScrolling()
 			except decode.NotAvailable:
-				self.page_size = -1, -1
+				page_size = -1, -1
 				page_job = None
 				page_text = None
+			self._page_size = page_size
 			self._page_job = page_job
 			self._page_text = page_text
 			self.Refresh()
@@ -106,7 +108,7 @@ class PageWidget(wx.Panel):
 		try:
 			if page_job is None:
 				raise decode.NotAvailable
-			page_width, page_height = self.page_size
+			page_width, page_height = self._page_size
 			if x >= page_width:
 				raise decode.NotAvailable
 			if x + w > page_width:
