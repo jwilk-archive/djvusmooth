@@ -122,16 +122,22 @@ class PageWidget(wx.Panel):
 				raise decode.NotAvailable
 			if y + h > page_height:
 				h = page_height - y
-			data = page_job.render(
-				self.render_mode,
-				(0, 0, page_width, page_height),
-				(x, y, w, h),
-				PIXEL_FORMAT,
-				1
-			)
-			image = wx.EmptyImage(w, h)
-			image.SetData(data)
-			dc.DrawBitmap(image.ConvertToBitmap(), x, y)
+			render_mode = self.render_mode
+			if self.render_mode is None:
+				dc.SetBrush(wx.WHITE_BRUSH)
+				dc.SetPen(wx.TRANSPARENT_PEN)
+				dc.DrawRectangle(x, y, w, h)
+			else:
+				data = page_job.render(
+					self.render_mode,
+					(0, 0, page_width, page_height),
+					(x, y, w, h),
+					PIXEL_FORMAT,
+					1
+				)
+				image = wx.EmptyImage(w, h)
+				image.SetData(data)
+				dc.DrawBitmap(image.ConvertToBitmap(), x, y)
 		except decode.NotAvailable, ex:
 			pass
 		if self.render_text:

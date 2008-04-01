@@ -105,7 +105,8 @@ class MainWindow(wx.Frame):
 			('&Color', 'Display everything', self.on_display_everything),
 			('&Stencil', 'Display only the document bitonal stencil', self.on_display_stencil),
 			('&Foreground', 'Display only the foreground layer', self.on_display_foreground),
-			('&Background', 'Display only the foreground layer', self.on_display_background)
+			('&Background', 'Display only the foreground layer', self.on_display_background),
+			('&None', 'Neither display forgeground layer nor background layer', self.on_display_none)
 		]:
 			submenu.AppendItem(self.new_menu_item(submenu, text, help, method, style=wx.ITEM_RADIO))
 		submenu.AppendSeparator()
@@ -163,6 +164,9 @@ class MainWindow(wx.Frame):
 	
 	def on_display_stencil(self, event):
 		self.page_widget.render_mode = decode.RENDER_BLACK
+	
+	def on_display_none(self, event):
+		self.page_widget.render_mode = None
 	
 	def on_display_text(self, event):
 		self.page_widget.render_text = event.IsChecked()
