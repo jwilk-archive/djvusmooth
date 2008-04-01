@@ -150,8 +150,6 @@ class MainWindow(wx.Frame):
 		sed = StreamEditor(self.path, autosave=True)
 		if self.metadata_model is not None:
 			self.metadata_model.export(sed)
-		for l in sed._commands:
-			print l
 		sed.commit()
 	
 	def on_display_everything(self, event):
