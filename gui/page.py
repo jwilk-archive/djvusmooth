@@ -143,23 +143,27 @@ class PageWidget(wx.Panel):
 
 	def on_erase_background(self, evt):
 		dc = evt.GetDC()
+		rect = self.GetUpdateRegion().GetBox()
 		if not dc:
 			dc = wx.ClientDC(self)
-			rect = self.GetUpdateRegion().GetBox()
 			dc.SetClippingRect(rect)
-		self.clear_dc(dc)
+		self._clear_dc(dc, rect)
 
-	def clear_dc(self, dc):
+	def _clear_dc(self, dc, rect):
 		N = 16
 		dc.Clear()
 		dc.SetBrush(self._checkboard_brush)
 		dc.SetPen(wx.TRANSPARENT_PEN)
-		w, h = self.GetClientSize()
-		o = oo = False
-		y = 0
+		x0, y0, w, h = rect
+		y1 = (y0 + w + N - 1) // N * N
+		y1 = (y0 + h + N - 1) // N * N
+		x0 = x0 // N * N
+		y0 = y0 // N * N
+		o = oo = (x0 ^ y0) & 1
+		y = y0
 		while y < h:
 			o = not oo
-			x = 0
+			x = x0
 			while x < w:
 				if o:
 					dc.DrawRectangle(x, y, N, N)
