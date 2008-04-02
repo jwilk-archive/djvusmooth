@@ -176,9 +176,14 @@ class PageWidget(wx.Panel):
 				dc.SetPen(self._text_pen)
 				dc.SetTextForeground(self._text_color)
 				sexpr = self._page_text.sexpr
+				rx, ry, rxp, ryp = x, y, x + w, y + h
 				for (x, y, xp, yp), text in extract_text(sexpr):
 					rect = (x, y, xp - x, yp - y)
 					x, y, w, h = xform_screen_to_real(rect)
+					if x > rxp or x + w < rx:
+						continue
+					if y > ryp or y + h < ry:
+						continue
 					dc.DrawRectangle(x, y, w, h)
 					font = dc.GetFont()
 					font_size = h
