@@ -18,7 +18,7 @@ class Zoom(object):
 	def get_page_screen_size(self, page_job, viewport_size):
 		raise NotImplementedError
 
-class PercentZoom(object):
+class PercentZoom(Zoom):
 
 	def __init__(self, percent = 100):
 		self._percent = float(percent)
@@ -29,16 +29,36 @@ class PercentZoom(object):
 		screen_page_size = tuple(int(t * self._percent / dpi) for t in (real_page_size))
 		return screen_page_size
 
-class OneToOneZoom(object):
+class OneToOneZoom(Zoom):
 
 	def get_page_screen_size(self, page_job, viewport_size):
 		real_page_size = (page_job.width, page_job.height)
 		return real_page_size
 
-class StretchZoom(object):
+class StretchZoom(Zoom):
 
 	def get_page_screen_size(self, page_job, viewport_size):
 		return viewport_size
+
+class FitWidthZoom(Zoom):
+
+	def get_page_screen_size(self, page_job, (viewport_width, viewport_height)):
+		real_width, real_height = (page_job.width, page_job.height)
+		ratio = 1.0 * real_height / real_width
+		return (viewport_width, int(viewport_width * ratio))
+
+class FitPageZoom(Zoom):
+
+	def get_page_screen_size(self, page_job, (viewport_width, viewport_height)):
+		real_width, real_height  = (page_job.width, page_job.height)
+		ratio = 1.0 * real_height / real_width
+		screen_height = int(viewport_width * ratio)
+		if screen_height <= viewport_height:
+			screen_width = viewport_width
+		else:
+			screen_width = int(viewport_height / ratio)
+			screen_height = viewport_height
+		return (screen_width, screen_height)
 
 class PageWidget(wx.Panel):
 
@@ -73,22 +93,36 @@ class PageWidget(wx.Panel):
 			self._render_text = value
 			self.Refresh()
 		return property(get, set)
+	
+	@apply
+	def zoom():
+		def get(self):
+			return self._zoom
+		def set(self, value):
+			self._zoom = value
+			self.page = True
+		return property(get, set)
 
 	def on_paint(self, event):
 		dc = wx.PaintDC(self)
 		self.PrepareDC(dc)
 		self.draw(dc, self.GetUpdateRegion())
-	
+
 	@apply
 	def page():
 		def set(self, page):
 			try:
 				if page is None:
 					raise decode.NotAvailable
-				page_job = page.decode(wait = False)
-				page_text = page.text
+				elif page is True:
+					page_job = self._page_job
+					page_text = self._page_text
+				else:
+					page_job = page.decode(wait = False)
+					page_text = page.text
 				real_page_size = (page_job.width, page_job.height)
-				screen_page_size = self._zoom.get_page_screen_size(page_job, None) # FIXME: provide real viewport size
+				viewport_size = tuple(self.GetParent().GetSize())
+				screen_page_size = self._zoom.get_page_screen_size(page_job, viewport_size)
 				xform_screen_to_real = decode.AffineTransform((0, 0) + real_page_size, (0, 0) + screen_page_size)
 				xform_screen_to_real.mirror_y()
 				self.SetSize(screen_page_size)
