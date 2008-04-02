@@ -13,6 +13,33 @@ PIXEL_FORMAT = decode.PixelFormatRgb()
 PIXEL_FORMAT.rows_top_to_bottom = 1
 PIXEL_FORMAT.y_top_to_bottom = 1
 
+class Zoom(object):
+
+	def get_page_screen_size(self, page_job, viewport_size):
+		raise NotImplementedError
+
+class PercentZoom(object):
+
+	def __init__(self, percent = 100):
+		self._percent = float(percent)
+
+	def get_page_screen_size(self, page_job, viewport_size):
+		dpi = float(page_job.dpi)
+		real_page_size = (page_job.width, page_job.height)
+		screen_page_size = tuple(int(t * self._percent / dpi) for t in (real_page_size))
+		return screen_page_size
+
+class OneToOneZoom(object):
+
+	def get_page_screen_size(self, page_job, viewport_size):
+		real_page_size = (page_job.width, page_job.height)
+		return real_page_size
+
+class StretchZoom(object):
+
+	def get_page_screen_size(self, page_job, viewport_size):
+		return viewport_size
+
 class PageWidget(wx.Panel):
 
 	def __init__(self, *args, **kwargs):
@@ -20,6 +47,7 @@ class PageWidget(wx.Panel):
 		dc = wx.ClientDC(self)
 		self._render_mode = decode.RENDER_COLOR
 		self._render_text = False
+		self._zoom = PercentZoom()
 		self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
 		self.Bind(wx.EVT_ERASE_BACKGROUND, self.on_erase_background)
 		self.Bind(wx.EVT_PAINT, self.on_paint)
@@ -59,9 +87,8 @@ class PageWidget(wx.Panel):
 					raise decode.NotAvailable
 				page_job = page.decode(wait = False)
 				page_text = page.text
-				dpi = float(page_job.dpi)
 				real_page_size = (page_job.width, page_job.height)
-				screen_page_size = tuple(int(t * 100.0 / dpi) for t in (real_page_size))
+				screen_page_size = self._zoom.get_page_screen_size(page_job, None) # FIXME: provide real viewport size
 				xform_screen_to_real = decode.AffineTransform((0, 0) + real_page_size, (0, 0) + screen_page_size)
 				xform_screen_to_real.mirror_y()
 				self.SetSize(screen_page_size)
