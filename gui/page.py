@@ -15,6 +15,9 @@ PIXEL_FORMAT.y_top_to_bottom = 1
 
 class Zoom(object):
 
+	def rezoom_on_resize(self):
+		raise NotImplementedError
+
 	def get_page_screen_size(self, page_job, viewport_size):
 		raise NotImplementedError
 
@@ -22,6 +25,9 @@ class PercentZoom(Zoom):
 
 	def __init__(self, percent = 100):
 		self._percent = float(percent)
+
+	def rezoom_on_resize(self):
+		return False
 
 	def get_page_screen_size(self, page_job, viewport_size):
 		dpi = float(page_job.dpi)
@@ -31,16 +37,25 @@ class PercentZoom(Zoom):
 
 class OneToOneZoom(Zoom):
 
+	def rezoom_on_resize(self):
+		return False
+
 	def get_page_screen_size(self, page_job, viewport_size):
 		real_page_size = (page_job.width, page_job.height)
 		return real_page_size
 
 class StretchZoom(Zoom):
 
+	def rezoom_on_resize(self):
+		return True
+
 	def get_page_screen_size(self, page_job, viewport_size):
 		return viewport_size
 
 class FitWidthZoom(Zoom):
+
+	def rezoom_on_resize(self):
+		return True
 
 	def get_page_screen_size(self, page_job, (viewport_width, viewport_height)):
 		real_width, real_height = (page_job.width, page_job.height)
@@ -48,6 +63,9 @@ class FitWidthZoom(Zoom):
 		return (viewport_width, int(viewport_width * ratio))
 
 class FitPageZoom(Zoom):
+
+	def rezoom_on_resize(self):
+		return True
 
 	def get_page_screen_size(self, page_job, (viewport_width, viewport_height)):
 		real_width, real_height  = (page_job.width, page_job.height)
@@ -71,10 +89,15 @@ class PageWidget(wx.Panel):
 		self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
 		self.Bind(wx.EVT_ERASE_BACKGROUND, self.on_erase_background)
 		self.Bind(wx.EVT_PAINT, self.on_paint)
+		self.GetParent().Bind(wx.EVT_SIZE, self.on_parent_resize)
 		self.page = None
 		self._checkboard_brush = wx.Brush((0x88,) * 3, wx.SOLID)
 		self._text_color = wx.Color(0, 0, 0x88)
 		self._text_pen = wx.Pen(self._text_color, 1)
+
+	def on_parent_resize(self, event):
+		if self._zoom.rezoom_on_resize():
+			self.zoom = self._zoom
 
 	@apply
 	def render_mode():

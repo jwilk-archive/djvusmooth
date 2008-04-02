@@ -82,6 +82,7 @@ class MainWindow(wx.Frame):
 		self.scrolled_panel.SetAutoLayout(True)
 		self.scrolled_panel.SetupScrolling()
 		self.page_widget = PageWidget(self.scrolled_panel)
+		self.scrolled_panel.Bind(wx.EVT_SIZE, self.page_widget.on_parent_resize)
 		sizer.Add(self.page_widget, 0, wx.ALL | wx.EXPAND)
 		if not __debug__:
 			sys.excepthook = self.except_hook
@@ -110,13 +111,16 @@ class MainWindow(wx.Frame):
 			submenu.AppendItem(self.new_menu_item(submenu, text, help, self.on_zoom(zoom), style=wx.ITEM_RADIO))
 		submenu.AppendSeparator()
 		for percent in 300, 200, 150, 100, 75, 50:
-			submenu.AppendItem(self.new_menu_item(
+			item = self.new_menu_item(
 				submenu,
 				'%d%%' % percent,
 				'Magnify %d%%' % percent,
 				self.on_zoom(PercentZoom(percent)),
-				style=wx.ITEM_RADIO)
+				style=wx.ITEM_RADIO
 			)
+			submenu.AppendItem(item)
+			if percent == 100:
+				item.Check()
 		menu.AppendMenu(-1, '&Zoom', submenu)
 
 		submenu = wx.Menu()
