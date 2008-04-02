@@ -16,7 +16,7 @@ from djvu import decode
 import djvu.const
 
 from djvused import StreamEditor
-from gui.page import PageWidget
+from gui.page import PageWidget, PercentZoom, OneToOneZoom, StretchZoom, FitWidthZoom, FitPageZoom
 from gui.metadata import MetadataDialog
 import models.metadata
 
@@ -99,6 +99,26 @@ class MainWindow(wx.Frame):
 		menu.AppendItem(self.new_menu_item(menu, '&Metadata\tCtrl+M', 'Edit the document or page metadata', self.on_edit_metadata))
 		menu_bar.Append(menu, '&Edit');
 		menu = wx.Menu()
+		submenu = wx.Menu()
+		for text, help, zoom in \
+		[
+			('Fit &width', 'Set magnification to fit page width', FitWidthZoom()),
+			('Fit &page', 'Set magnification to fit page', FitPageZoom()),
+			('&Stretch', 'Stretch the image to the window size', StretchZoom()),
+			('One to &one', 'Set full resolution magnification.', OneToOneZoom()),
+		]:
+			submenu.AppendItem(self.new_menu_item(submenu, text, help, self.on_zoom(zoom), style=wx.ITEM_RADIO))
+		submenu.AppendSeparator()
+		for percent in 300, 200, 150, 100, 75, 50:
+			submenu.AppendItem(self.new_menu_item(
+				submenu,
+				'%d%%' % percent,
+				'Magnify %d%%' % percent,
+				self.on_zoom(PercentZoom(percent)),
+				style=wx.ITEM_RADIO)
+			)
+		menu.AppendMenu(-1, '&Zoom', submenu)
+
 		submenu = wx.Menu()
 		for text, help, method in \
 		[
@@ -201,7 +221,12 @@ class MainWindow(wx.Frame):
 		if dialog.ShowModal():
 			self.metadata_model[models.metadata.SHARED_ANNOTATIONS_PAGENO] = document_metadata_model
 			self.metadata_model[self.page_no] = page_metadata_model
-
+	
+	def on_zoom(self, zoom):
+		def event_handler(event):
+			self.page_widget.zoom = zoom
+		return event_handler
+	
 	def do_open(self, path):
 		self.path = path
 		self.page_no = 0
