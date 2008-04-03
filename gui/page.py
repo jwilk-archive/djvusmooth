@@ -178,16 +178,16 @@ class PageWidget(wx.Panel):
 		dc.SetBrush(self._checkboard_brush)
 		dc.SetPen(wx.TRANSPARENT_PEN)
 		x0, y0, w, h = rect
-		y1 = (y0 + w + N - 1) // N * N
+		x1 = (x0 + w + N - 1) // N * N
 		y1 = (y0 + h + N - 1) // N * N
 		x0 = x0 // N * N
 		y0 = y0 // N * N
-		o = oo = (x0 ^ y0) & 1
+		o = oo = (x0//N ^ y0//N) & 1
 		y = y0
-		while y < h:
+		while y < y1:
 			o = not oo
 			x = x0
-			while x < w:
+			while x < x1:
 				if o:
 					dc.DrawRectangle(x, y, N, N)
 				x += N
