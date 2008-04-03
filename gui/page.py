@@ -89,7 +89,6 @@ class PageWidget(wx.Panel):
 		self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
 		self.Bind(wx.EVT_ERASE_BACKGROUND, self.on_erase_background)
 		self.Bind(wx.EVT_PAINT, self.on_paint)
-		self.GetParent().Bind(wx.EVT_SIZE, self.on_parent_resize)
 		self.page = None
 		self._checkboard_brush = wx.Brush((0x88,) * 3, wx.SOLID)
 		self._text_color = wx.Color(0, 0, 0x88)
