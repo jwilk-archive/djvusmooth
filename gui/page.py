@@ -97,6 +97,7 @@ class PageWidget(wx.Panel):
 	def on_parent_resize(self, event):
 		if self._zoom.rezoom_on_resize():
 			self.zoom = self._zoom
+		event.Skip()
 
 	@apply
 	def render_mode():
