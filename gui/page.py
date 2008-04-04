@@ -170,8 +170,8 @@ class PageWidget(wx.Panel):
 		self.GetParent().Layout()
 		self.GetParent().SetupScrolling()
 
-	def on_erase_background(self, evt):
-		dc = evt.GetDC()
+	def on_erase_background(self, event):
+		dc = event.GetDC()
 		rect = self.GetUpdateRegion().GetBox()
 		if not dc:
 			dc = wx.ClientDC(self)
