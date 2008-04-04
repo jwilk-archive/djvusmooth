@@ -76,11 +76,11 @@ class MainWindow(wx.Frame):
 		wx.Frame.__init__(self, None, size=wx.Size(640, 480))
 		self.Connect(-1, -1, wx.EVT_DJVU_MESSAGE, self.handle_message)
 		self.context = Context(self)
-		splitter = wx.SplitterWindow(self, -1, style=wx.SP_LIVE_UPDATE)
-		self.sidebar = wx.Panel(splitter, -1, size = (5, 5))
-		self.scrolled_panel = wx.lib.scrolledpanel.ScrolledPanel(splitter, -1)
-		splitter.SetSashGravity(0.1)
-		splitter.SplitVertically(self.sidebar, self.scrolled_panel, 160)
+		self.splitter = wx.SplitterWindow(self, -1, style = wx.SP_LIVE_UPDATE)
+		self.sidebar = wx.Panel(self.splitter, -1, size = (5, 5))
+		self.scrolled_panel = wx.lib.scrolledpanel.ScrolledPanel(self.splitter, -1)
+		self.splitter._default_position = 160
+		self.splitter.SetSashGravity(0.1)
 		sizer = wx.BoxSizer(wx.VERTICAL)
 		self.scrolled_panel.SetSizer(sizer)
 		self.scrolled_panel.SetAutoLayout(True)
@@ -150,6 +150,9 @@ class MainWindow(wx.Frame):
 			menu.AppendItem(self.new_menu_item(menu, text, help, method, icon=icon))
 		menu_bar.Append(menu, '&View');
 		menu = wx.Menu()
+		menu.AppendItem(self.new_menu_item(menu, 'Show &sidebar\tF9', 'Show/side the sidebar', self.on_show_sidebar, style=wx.ITEM_CHECK))
+		menu_bar.Append(menu, '&Settings');
+		menu = wx.Menu()
 		menu.AppendItem(self.new_menu_item(menu, '&About\tF1', 'More information about this program', self.on_about, id=wx.ID_ABOUT))
 		menu_bar.Append(menu, '&Help');
 		self.SetMenuBar(menu_bar)
@@ -193,7 +196,13 @@ class MainWindow(wx.Frame):
 			self.metadata_model.export(sed)
 		sed.commit()
 		self.dirty = False
-	
+
+	def on_show_sidebar(self, event):
+		if event.IsChecked():
+			self.splitter.SplitVertically(self.sidebar, self.scrolled_panel, self.splitter._default_position)
+		else:
+			self.splitter.Unsplit(self.sidebar)
+
 	def on_display_everything(self, event):
 		self.page_widget.render_mode = decode.RENDER_COLOR
 	
