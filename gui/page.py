@@ -82,6 +82,7 @@ class PageWidget(wx.Panel):
 
 	def __init__(self, *args, **kwargs):
 		wx.Panel.__init__(self, *args, **kwargs)
+		self._initial_size = self.GetSize()
 		dc = wx.ClientDC(self)
 		self._render_mode = decode.RENDER_COLOR
 		self._render_text = False
@@ -148,10 +149,7 @@ class PageWidget(wx.Panel):
 				screen_page_size = self._zoom.get_page_screen_size(page_job, viewport_size)
 				xform_screen_to_real = decode.AffineTransform((0, 0) + real_page_size, (0, 0) + screen_page_size)
 				xform_screen_to_real.mirror_y()
-				self.SetSize(screen_page_size)
-				self.SetBestFittingSize(screen_page_size)
-				self.GetParent().Layout()
-				self.GetParent().SetupScrolling()
+				self.set_size(screen_page_size)
 			except decode.NotAvailable:
 				screen_page_size = -1, -1
 				xform_screen_to_real = decode.AffineTransform((0, 0, 1, 1), (0, 0, 1, 1))
@@ -161,8 +159,16 @@ class PageWidget(wx.Panel):
 			self._xform_screen_to_real = xform_screen_to_real
 			self._page_job = page_job
 			self._page_text = page_text
+			if page is None:
+				self.set_size(self._initial_size)
 			self.Refresh()
 		return property(fset = set)
+
+	def set_size(self, size):
+		self.SetSize(size)
+		self.SetBestFittingSize(size)
+		self.GetParent().Layout()
+		self.GetParent().SetupScrolling()
 
 	def on_erase_background(self, evt):
 		dc = evt.GetDC()
