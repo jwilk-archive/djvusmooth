@@ -91,6 +91,7 @@ class MainWindow(wx.Frame):
 		menu = wx.Menu()
 		menu.AppendItem(self.new_menu_item(menu, '&Open\tCtrl+O', 'Open a DjVu document', self.on_open, icon=wx.ART_FILE_OPEN))
 		save_menu_item = self.new_menu_item(menu, '&Save\tCtrl+S', 'Save the document', self.on_save, icon=wx.ART_FILE_SAVE)
+		save_menu_item = self.new_menu_item(menu, '&Close\tCtrl+W', 'Close the document', self.on_close)
 		menu.AppendItem(save_menu_item)
 		self.editable_menu_items += save_menu_item,
 		menu.AppendSeparator()
@@ -170,7 +171,10 @@ class MainWindow(wx.Frame):
 		dialog = OpenDialog(self)
 		if dialog.ShowModal():
 			self.do_open(dialog.GetPath())
-	
+
+	def on_close(self, event):
+		self.do_open(None)
+
 	def on_save(self, event):
 		sed = StreamEditor(self.path, autosave=True)
 		if self.metadata_model is not None:
