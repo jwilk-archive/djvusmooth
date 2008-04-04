@@ -226,7 +226,7 @@ class MainWindow(wx.Frame):
 		page_metadata_model = self.metadata_model[self.page_no].clone()
 		page_metadata_model.title = 'Page %d metadata' % (self.page_no + 1)
 		dialog = MetadataDialog(self, models=(document_metadata_model, page_metadata_model), known_keys=djvu.const.METADATA_KEYS)
-		if dialog.ShowModal():
+		if dialog.ShowModal() == wx.ID_OK:
 			self.metadata_model[models.metadata.SHARED_ANNOTATIONS_PAGENO] = document_metadata_model
 			self.metadata_model[self.page_no] = page_metadata_model
 	
