@@ -149,6 +149,7 @@ class MainWindow(wx.Frame):
 		menu.AppendItem(self.new_menu_item(menu, '&About\tF1', 'More information about this program', self.on_about))
 		menu_bar.Append(menu, '&Help');
 		self.SetMenuBar(menu_bar)
+		self.dirty = False
 		self.do_open(None)
 	
 	def enable_edit(self, enable=True):
@@ -165,7 +166,8 @@ class MainWindow(wx.Frame):
 		self.error_box(message, 'Unhandled exception: %s [%s]' % (type, value))
 	
 	def on_exit(self, event):
-		self.Close(True)
+		if self.do_open(None):
+			self.Destroy()
 	
 	def on_open(self, event):
 		dialog = OpenDialog(self)
@@ -176,10 +178,14 @@ class MainWindow(wx.Frame):
 		self.do_open(None)
 
 	def on_save(self, event):
+		do_save()
+	
+	def do_save(self):
 		sed = StreamEditor(self.path, autosave=True)
 		if self.metadata_model is not None:
 			self.metadata_model.export(sed)
 		sed.commit()
+		self.dirty = False
 	
 	def on_display_everything(self, event):
 		self.page_widget.render_mode = decode.RENDER_COLOR
@@ -229,6 +235,7 @@ class MainWindow(wx.Frame):
 		if dialog.ShowModal() == wx.ID_OK:
 			self.metadata_model[models.metadata.SHARED_ANNOTATIONS_PAGENO] = document_metadata_model
 			self.metadata_model[self.page_no] = page_metadata_model
+			self.dirty = True
 	
 	def on_zoom(self, zoom):
 		def event_handler(event):
@@ -236,6 +243,18 @@ class MainWindow(wx.Frame):
 		return event_handler
 	
 	def do_open(self, path):
+		if self.dirty:
+			dialog = wx.MessageDialog(self, 'Do you want to save your changes?', '', wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+			try:
+				rc = dialog.ShowModal()
+				if rc == wx.ID_YES:
+					self.do_save()
+				elif rc == wx.ID_NO:
+					pass
+				elif rc == wx.ID_CANCEL:
+					return False
+			finally:
+				dialog.Destroy()
 		self.path = path
 		self.page_no = 0
 		if path is None:
@@ -247,6 +266,8 @@ class MainWindow(wx.Frame):
 			self.enable_edit(True)
 		self.update_title()
 		self.update_page_widget(new_page = True)
+		self.dirty = False
+		return True
 	
 	def update_page_widget(self, new_page = False):
 		if self.document is None:
