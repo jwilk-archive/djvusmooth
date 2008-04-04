@@ -64,8 +64,8 @@ class MetadataModel(models.metadata.Metadata):
 
 class MainWindow(wx.Frame):
 	
-	def new_menu_item(self, menu, text, help, method, style = wx.ITEM_NORMAL, icon = None):
-		item = wx.MenuItem(menu, wx.ID_ANY, text, help, style)
+	def new_menu_item(self, menu, text, help, method, style = wx.ITEM_NORMAL, icon = None, id = wx.ID_ANY):
+		item = wx.MenuItem(menu, id, text, help, style)
 		if icon is not None:
 			bitmap = wx.ArtProvider_GetBitmap(icon, wx.ART_MENU, MENU_ICON_SIZE)
 			item.SetBitmap(bitmap)
@@ -91,7 +91,7 @@ class MainWindow(wx.Frame):
 		menu = wx.Menu()
 		menu.AppendItem(self.new_menu_item(menu, '&Open\tCtrl+O', 'Open a DjVu document', self.on_open, icon=wx.ART_FILE_OPEN))
 		save_menu_item = self.new_menu_item(menu, '&Save\tCtrl+S', 'Save the document', self.on_save, icon=wx.ART_FILE_SAVE)
-		save_menu_item = self.new_menu_item(menu, '&Close\tCtrl+W', 'Close the document', self.on_close)
+		save_menu_item = self.new_menu_item(menu, '&Close\tCtrl+W', 'Close the document', self.on_close, id=wx.ID_CLOSE)
 		menu.AppendItem(save_menu_item)
 		self.editable_menu_items += save_menu_item,
 		menu.AppendSeparator()
@@ -102,14 +102,14 @@ class MainWindow(wx.Frame):
 		menu_bar.Append(menu, '&Edit');
 		menu = wx.Menu()
 		submenu = wx.Menu()
-		for text, help, zoom in \
+		for text, help, zoom, id in \
 		[
-			('Fit &width', 'Set magnification to fit page width', FitWidthZoom()),
-			('Fit &page', 'Set magnification to fit page', FitPageZoom()),
-			('&Stretch', 'Stretch the image to the window size', StretchZoom()),
-			('One to &one', 'Set full resolution magnification.', OneToOneZoom()),
+			('Fit &width', 'Set magnification to fit page width', FitWidthZoom(), None),
+			('Fit &page', 'Set magnification to fit page', FitPageZoom(), wx.ID_ZOOM_FIT),
+			('&Stretch', 'Stretch the image to the window size', StretchZoom(), None),
+			('One to &one', 'Set full resolution magnification.', OneToOneZoom(), wx.ID_ZOOM_100),
 		]:
-			submenu.AppendItem(self.new_menu_item(submenu, text, help, self.on_zoom(zoom), style=wx.ITEM_RADIO))
+			submenu.AppendItem(self.new_menu_item(submenu, text, help, self.on_zoom(zoom), style=wx.ITEM_RADIO, id = id or wx.ID_ANY))
 		submenu.AppendSeparator()
 		for percent in 300, 200, 150, 100, 75, 50:
 			item = self.new_menu_item(
@@ -146,7 +146,7 @@ class MainWindow(wx.Frame):
 			menu.AppendItem(self.new_menu_item(menu, text, help, method, icon=icon))
 		menu_bar.Append(menu, '&View');
 		menu = wx.Menu()
-		menu.AppendItem(self.new_menu_item(menu, '&About\tF1', 'More information about this program', self.on_about))
+		menu.AppendItem(self.new_menu_item(menu, '&About\tF1', 'More information about this program', self.on_about, id=wx.ID_ABOUT))
 		menu_bar.Append(menu, '&Help');
 		self.SetMenuBar(menu_bar)
 		self.dirty = False
