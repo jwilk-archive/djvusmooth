@@ -20,8 +20,12 @@ class ProgressDialog(wx.ProgressDialog):
 try:
 	NumberEntryDialog = wx.NumberEntryDialog
 except AttributeError:
-	class NumberEntryDialog(wx.Dialog):
+	class NumberEntryDialog(wx.SingleChoiceDialog):
 		def __init__(self, parent, message, prompt, caption, value, min, max, pos = wx.DefaultPosition):
-			wx.Dialog.__init__(self, parent=parent, pos=pos)
+			wx.SingleChoiceDialog.__init__(self, parent = parent, message = message, caption = caption, choices = map(str, xrange(min, max)), pos = pos)
+			self.SetSelection(value - min)
+
+		def GetValue(self):
+			return int(wx.SingleChoiceDialog.GetStringSelection(self))
 
 # vim:ts=4 sw=4
