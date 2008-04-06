@@ -159,14 +159,18 @@ class MainWindow(wx.Frame):
 		submenu.AppendSeparator()
 		submenu.AppendItem(self.new_menu_item(submenu, '&Text', 'Display the „hidden” text', self.on_display_text, style=wx.ITEM_CHECK))
 		menu.AppendMenu(-1, '&Display', submenu)
+		menu.AppendItem(self.new_menu_item(menu, '&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh))
+		menu_bar.Append(menu, '&View')
+		menu = wx.Menu()
 		for text, help, method, icon in \
 		[
-			('&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh, None),
-			('&Next page\tPgDn', '', self.on_next_page, wx.ART_GO_UP),
-			('&Previous page\tPgUp', '', self.on_previous_page, wx.ART_GO_DOWN),
+			('&First page\tCtrl-Home', 'Jump to first document page', self.on_first_page, None),
+			('&Previous page\tPgUp', 'Jump to previous document page', self.on_previous_page, wx.ART_GO_UP),
+			('&Next page\tPgDn', 'Jump to next document page', self.on_next_page, wx.ART_GO_DOWN),
+			('&Last page\tCtrl-End', 'Jump to last document page', self.on_last_page, None),
 		]:
-			menu.AppendItem(self.new_menu_item(menu, text, help, method, icon=icon))
-		menu_bar.Append(menu, '&View');
+			menu.AppendItem(self.new_menu_item(menu, text, help, method, icon = icon))
+		menu_bar.Append(menu, '&Go');
 		menu = wx.Menu()
 		menu.AppendItem(self.new_menu_item(menu, 'Show &sidebar\tF9', 'Show/side the sidebar', self.on_show_sidebar, style=wx.ITEM_CHECK))
 		menu_bar.Append(menu, '&Settings');
@@ -178,7 +182,8 @@ class MainWindow(wx.Frame):
 		self.do_open(None)
 	
 	def enable_edit(self, enable=True):
-		self.GetMenuBar().EnableTop(1, enable)
+		for i in 1, 3:
+			self.GetMenuBar().EnableTop(i, enable)
 		for menu_item in self.editable_menu_items:
 			menu_item.Enable(enable)
 
@@ -277,23 +282,32 @@ class MainWindow(wx.Frame):
 	def on_refresh(self, event):
 		self.Refresh()
 
+	@apply
+	def page_no():
+		def get(self):
+			return self._page_no
+
+		def set(self, n):
+			if self.document is None:
+				self._page_no = 0
+				return
+			if n < 0 or n >= len(self.document.pages):
+				return
+			self._page_no = n
+			self.update_page_widget(True)
+		return property(get, set)
+
+	def on_first_page(self, event):
+		self.page_no = 0
+
+	def on_last_page(self, event):
+		self.page_no = len(self.document.pages) - 1
+
 	def on_next_page(self, event):
-		if self.document is None:
-			return
-		page_no = self.page_no + 1
-		if page_no >= len(self.document.pages):
-			return
-		self.page_no += page_no
-		self.update_page_widget(True)
+		self.page_no += 1
 
 	def on_previous_page(self, event):
-		if self.document is None:
-			return
-		page_no = self.page_no - 1
-		if page_no < 0:
-			return
-		self.page_no = page_no
-		self.update_page_widget(True)
+		self.page_no -= 1
 
 	def on_edit_metadata(self, event):
 		document_metadata_model = self.metadata_model[models.metadata.SHARED_ANNOTATIONS_PAGENO].clone()
@@ -328,9 +342,9 @@ class MainWindow(wx.Frame):
 			finally:
 				dialog.Destroy()
 		self.path = path
+		self.document = None
 		self.page_no = 0
 		if path is None:
-			self.document = None
 			self.enable_edit(False)
 		else:
 			self.document = self.context.new_document(decode.FileURI(path))
