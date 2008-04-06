@@ -97,9 +97,9 @@ class MainWindow(wx.Frame):
 		menu = wx.Menu()
 		menu.AppendItem(self.new_menu_item(menu, '&Open\tCtrl+O', 'Open a DjVu document', self.on_open, icon=wx.ART_FILE_OPEN))
 		save_menu_item = self.new_menu_item(menu, '&Save\tCtrl+S', 'Save the document', self.on_save, icon=wx.ART_FILE_SAVE)
-		save_menu_item = self.new_menu_item(menu, '&Close\tCtrl+W', 'Close the document', self.on_close, id=wx.ID_CLOSE)
+		close_menu_item = self.new_menu_item(menu, '&Close\tCtrl+W', 'Close the document', self.on_close, id=wx.ID_CLOSE)
 		menu.AppendItem(save_menu_item)
-		self.editable_menu_items += save_menu_item,
+		self.editable_menu_items += save_menu_item, close_menu_item
 		menu.AppendSeparator()
 		menu.AppendItem(self.new_menu_item(menu, '&Quit\tCtrl+Q', 'Quit the application', self.on_exit, icon=wx.ART_QUIT))
 		menu_bar.Append(menu, '&File');
@@ -190,7 +190,7 @@ class MainWindow(wx.Frame):
 		self.do_open(None)
 
 	def on_save(self, event):
-		do_save()
+		self.do_save()
 	
 	def do_save(self):
 		sed = StreamEditor(self.path, autosave=True)
