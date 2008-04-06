@@ -301,7 +301,7 @@ class MainWindow(wx.Frame):
 		dialog = gui.dialogs.NumberEntryDialog(
 			parent = self,
 			message = 'Go to page:',
-			prompt = 'Go to page:',
+			prompt = '',
 			caption = 'Go to page',
 			value = self.page_no + 1,
 			min = 1,
