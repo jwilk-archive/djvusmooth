@@ -20,6 +20,7 @@ import djvu.const
 from djvused import StreamEditor
 from gui.page import PageWidget, PercentZoom, OneToOneZoom, StretchZoom, FitWidthZoom, FitPageZoom
 from gui.metadata import MetadataDialog
+import gui.dialogs
 import models.metadata
 
 MENU_ICON_SIZE = (16, 16)
@@ -32,20 +33,6 @@ class WxDjVuMessage(wx.PyEvent):
 		wx.PyEvent.__init__(self)
 		self.SetEventType(wx.EVT_DJVU_MESSAGE)
 		self.message = message
-
-class GaugeProgressDialog(wx.ProgressDialog):
-
-	def __init__(self, title, message, maximum = 100, parent = None, style = wx.PD_AUTO_HIDE | wx.PD_APP_MODAL):
-		wx.ProgressDialog.__init__(self, title, message, maximum, parent, style)
-		self.__max = maximum
-		self.__n = 0
-		
-	try:
-		wx.ProgressDialog.Pulse
-	except AttributeError:
-		def Pulse(self):
-			self.__n = (self.__n + 1) % self.__max
-			self.Update(self.__n)
 
 class OpenDialog(wx.FileDialog):
 
@@ -232,7 +219,7 @@ class MainWindow(wx.Frame):
 				queue.get(block = True, timeout = 0.1)
 				return
 			except QueueEmpty:
-				dialog = GaugeProgressDialog(
+				dialog = gui.dialogs.ProgressDialog(
 					title = 'Saving document',
 					message = u'Saving the document, please wait…',
 					parent = self,
