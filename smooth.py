@@ -153,7 +153,7 @@ class MainWindow(wx.Frame):
 			('&Stencil', 'Display only the document bitonal stencil', self.on_display_stencil),
 			('&Foreground', 'Display only the foreground layer', self.on_display_foreground),
 			('&Background', 'Display only the foreground layer', self.on_display_background),
-			('&None', 'Neither display forgeground layer nor background layer', self.on_display_none)
+			('&None', 'Neither display the foreground layer nor the background layer', self.on_display_none)
 		]:
 			submenu.AppendItem(self.new_menu_item(submenu, text, help, method, style=wx.ITEM_RADIO))
 		submenu.AppendSeparator()
