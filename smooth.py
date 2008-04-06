@@ -298,9 +298,17 @@ class MainWindow(wx.Frame):
 		self.page_no -= 1
 	
 	def on_goto_page(self, event):
-		dialog = wx.NumberEntryDialog()
+		dialog = gui.dialogs.NumberEntryDialog(
+			parent = self,
+			message = '',
+			prompt = '',
+			caption = '',
+			value = self.page_no,
+			min = 1,
+			max = len(self.document.pages)
+		)
 		try:
-			pass
+			dialog.ShowModal()
 		finally:
 			dialog.Destroy()
 

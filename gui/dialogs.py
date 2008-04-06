@@ -17,4 +17,11 @@ class ProgressDialog(wx.ProgressDialog):
 			self.__n = (self.__n + 1) % self.__max
 			self.Update(self.__n)
 
+try:
+	NumberEntryDialog = wx.NumberEntryDialog
+except AttributeError:
+	class NumberEntryDialog(wx.Dialog):
+		def __init__(self, parent, message, prompt, caption, value, min, max, pos = wx.DefaultPosition):
+			wx.Dialog.__init__(self, parent=parent, pos=pos)
+
 # vim:ts=4 sw=4
