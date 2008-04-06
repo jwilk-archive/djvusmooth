@@ -8,6 +8,8 @@ __author__ = 'Jakub Wilk <ubanus@users.sf.net>'
 
 import sys
 import os.path
+import threading
+from Queue import Queue, Empty as QueueEmpty
 
 import wx
 import wx.lib.scrolledpanel
@@ -30,6 +32,20 @@ class WxDjVuMessage(wx.PyEvent):
 		wx.PyEvent.__init__(self)
 		self.SetEventType(wx.EVT_DJVU_MESSAGE)
 		self.message = message
+
+class GaugeProgressDialog(wx.ProgressDialog):
+
+	def __init__(self, title, message, maximum = 100, parent = None, style = wx.PD_AUTO_HIDE | wx.PD_APP_MODAL):
+		wx.ProgressDialog.__init__(self, title, message, maximum, parent, style)
+		self.__max = maximum
+		self.__n = 0
+		
+	try:
+		wx.ProgressDialog.Pulse
+	except AttributeError:
+		def Pulse(self):
+			self.__n = (self.__n + 1) % self.__max
+			self.Update(self.__n)
 
 class OpenDialog(wx.FileDialog):
 
@@ -193,11 +209,40 @@ class MainWindow(wx.Frame):
 		self.do_save()
 	
 	def do_save(self):
+		if not self.dirty:
+			return
+		queue = Queue()
 		sed = StreamEditor(self.path, autosave=True)
 		if self.metadata_model is not None:
 			self.metadata_model.export(sed)
-		sed.commit()
-		self.dirty = False
+		def job():
+			sed.commit()
+			queue.put(True)
+		thread = threading.Thread(target = job)
+		thread.start()
+		dialog = None
+		try:
+			try:
+				queue.get(block = True, timeout = 0.1)
+				return
+			except QueueEmpty:
+				dialog = GaugeProgressDialog(
+					title = 'Saving document',
+					message = 'Saving the document, please wait…',
+					parent = self,
+					style = wx.PD_APP_MODAL | wx.PD_ELAPSED_TIME
+				)
+			while True:
+				try:
+					queue.get(block = True, timeout = 0.1)
+					break
+				except QueueEmpty:
+					dialog.Pulse()
+		finally:
+			thread.join()
+			self.dirty = False
+			if dialog is not None:
+				dialog.Destroy()
 
 	def on_show_sidebar(self, event):
 		if event.IsChecked():
