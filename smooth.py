@@ -157,7 +157,7 @@ class MainWindow(wx.Frame):
 		]:
 			submenu.AppendItem(self.new_menu_item(submenu, text, help, method, style=wx.ITEM_RADIO))
 		submenu.AppendSeparator()
-		submenu.AppendItem(self.new_menu_item(submenu, '&Text', 'Display the „hidden” text', self.on_display_text, style=wx.ITEM_CHECK))
+		submenu.AppendItem(self.new_menu_item(submenu, '&Text', u'Display the „hidden” text', self.on_display_text, style=wx.ITEM_CHECK))
 		menu.AppendMenu(-1, '&Display', submenu)
 		menu.AppendItem(self.new_menu_item(menu, '&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh))
 		menu_bar.Append(menu, '&View')
@@ -168,6 +168,7 @@ class MainWindow(wx.Frame):
 			('&Previous page\tPgUp', 'Jump to previous document page', self.on_previous_page, wx.ART_GO_UP),
 			('&Next page\tPgDn', 'Jump to next document page', self.on_next_page, wx.ART_GO_DOWN),
 			('&Last page\tCtrl-End', 'Jump to last document page', self.on_last_page, None),
+			(u'&Go to page…', u'Jump to page…', self.on_goto_page, None)
 		]:
 			menu.AppendItem(self.new_menu_item(menu, text, help, method, icon = icon))
 		menu_bar.Append(menu, '&Go');
@@ -233,7 +234,7 @@ class MainWindow(wx.Frame):
 			except QueueEmpty:
 				dialog = GaugeProgressDialog(
 					title = 'Saving document',
-					message = 'Saving the document, please wait…',
+					message = u'Saving the document, please wait…',
 					parent = self,
 					style = wx.PD_APP_MODAL | wx.PD_ELAPSED_TIME
 				)
@@ -308,6 +309,13 @@ class MainWindow(wx.Frame):
 
 	def on_previous_page(self, event):
 		self.page_no -= 1
+	
+	def on_goto_page(self, event):
+		dialog = wx.NumberEntryDialog()
+		try:
+			pass
+		finally:
+			dialog.Destroy()
 
 	def on_edit_metadata(self, event):
 		document_metadata_model = self.metadata_model[models.metadata.SHARED_ANNOTATIONS_PAGENO].clone()
@@ -375,7 +383,7 @@ class MainWindow(wx.Frame):
 %(APPLICATION_NAME)s %(__version__)s
 Author: %(__author__)s
 License: %(LICENSE)s''' % globals()
-		wx.MessageBox(message, 'About…')
+		wx.MessageBox(message, u'About…')
 	
 	def handle_message(self, event):
 		message = event.message
