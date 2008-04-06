@@ -274,7 +274,6 @@ class MainWindow(wx.Frame):
 	def page_no():
 		def get(self):
 			return self._page_no
-
 		def set(self, n):
 			if self.document is None:
 				self._page_no = 0
