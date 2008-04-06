@@ -81,6 +81,8 @@ class MainWindow(wx.Frame):
 		self.scrolled_panel = wx.lib.scrolledpanel.ScrolledPanel(self.splitter, -1)
 		self.splitter._default_position = 160
 		self.splitter.SetSashGravity(0.1)
+		self.do_show_sidebar()
+		self.do_hide_sidebar()
 		sizer = wx.BoxSizer(wx.VERTICAL)
 		self.scrolled_panel.SetSizer(sizer)
 		self.scrolled_panel.SetAutoLayout(True)
@@ -199,9 +201,15 @@ class MainWindow(wx.Frame):
 
 	def on_show_sidebar(self, event):
 		if event.IsChecked():
-			self.splitter.SplitVertically(self.sidebar, self.scrolled_panel, self.splitter._default_position)
+			self.do_show_sidebar()
 		else:
-			self.splitter.Unsplit(self.sidebar)
+			self.do_hide_sidebar()
+	
+	def do_show_sidebar(self):
+		self.splitter.SplitVertically(self.sidebar, self.scrolled_panel, self.splitter._default_position)
+	
+	def do_hide_sidebar(self):
+		self.splitter.Unsplit(self.sidebar)
 
 	def on_display_everything(self, event):
 		self.page_widget.render_mode = decode.RENDER_COLOR
