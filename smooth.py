@@ -13,6 +13,7 @@ from Queue import Queue, Empty as QueueEmpty
 
 import wx
 import wx.lib.scrolledpanel
+import tempfile
 
 from djvu import decode
 import djvu.const
@@ -20,8 +21,10 @@ import djvu.const
 from djvused import StreamEditor
 from gui.page import PageWidget, PercentZoom, OneToOneZoom, StretchZoom, FitWidthZoom, FitPageZoom
 from gui.metadata import MetadataDialog
+import text.mangle as text_mangle
 import gui.dialogs
 import models.metadata
+from external_editor import edit as external_edit
 
 MENU_ICON_SIZE = (16, 16)
 DJVU_WILDCARD = 'DjVu files (*.djvu, *.djv)|*.djvu;*.djv|All files|*'
@@ -108,6 +111,7 @@ class MainWindow(wx.Frame):
 		menu_bar.Append(menu, '&File');
 		menu = wx.Menu()
 		menu.AppendItem(self.new_menu_item(menu, '&Metadata\tCtrl+M', 'Edit the document or page metadata', self.on_edit_metadata))
+		menu.AppendItem(self.new_menu_item(menu, '&Text\tCtrl+T', 'Edit page text in an external editor', self.on_external_edit_text))
 		menu_bar.Append(menu, '&Edit');
 		menu = wx.Menu()
 		submenu = wx.Menu()
@@ -326,6 +330,19 @@ class MainWindow(wx.Frame):
 				self.dirty = True
 		finally:
 			dialog.Destroy()
+
+	def on_external_edit_text(self, event):
+		text = self.page.text
+		text.wait()
+		tmp_file = tempfile.NamedTemporaryFile()
+		try:
+			text_mangle.export(text, tmp_file)
+			tmp_file.flush()
+			external_edit(tmp_file.name)
+			tmp_file.seek(0)
+			print text_mangle.import_(text, tmp_file)
+		finally:
+			tmp_file.close()
 	
 	def on_zoom(self, zoom):
 		def event_handler(event):
