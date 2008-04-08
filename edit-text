@@ -1,0 +1,39 @@
+#!/usr/bin/python
+# encoding=UTF-8
+# Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
+
+import sys
+
+import djvu.decode
+import djvu.sexpr
+
+from text.mangle import import_, export
+
+def do_export(djvu_file_name, page_no = 0):
+	context = djvu.decode.Context()
+	document = context.new_document(djvu.decode.FileURI(djvu_file_name))
+	text = djvu.decode.PageText(document.pages[page_no], details = djvu.decode.TEXT_DETAILS_WORD)
+	text.wait()
+	export(text, sys.stdout)
+
+def do_import(djvu_file_name, page_no = 0):
+	context = djvu.decode.Context()
+	document = context.new_document(djvu.decode.FileURI(djvu_file_name))
+	text = djvu.decode.PageText(document.pages[0], details = djvu.decode.TEXT_DETAILS_WORD)
+	text.wait()
+	print import_(text, sys.stdin)
+
+def main():
+	from optparse import OptionParser
+	oparser = OptionParser(usage = '%prog {--import | --export}')
+	oparser.add_option('-x', '--export', dest='action', action='store_const', const=do_export)
+	oparser.add_option('-i', '--import', dest='action', action='store_const', const=do_import)
+	options, [djvu_file_name] = oparser.parse_args()
+	if options.action is None:
+		oparser.error('No action specified')
+	options.action(djvu_file_name)
+
+if __name__ == '__main__':
+	main()
+
+# vim:ts=4 sw=4 noet
