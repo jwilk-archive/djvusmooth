@@ -14,13 +14,13 @@ class Text(MultiPageModel):
 class PageText(object):
 
 	def __init__(self, n, original_data):
-		self._sexpr = self._original_sexpr = orignal_data
+		self._sexpr = self._original_sexpr = original_data
 		self._dirty = False
 		self._n = n
 
 	@apply
-	def value()
-		def get(self)
+	def value():
+		def get(self):
 			return self._sexpr
 		def set(self, value):
 			self._sexpr = value
