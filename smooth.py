@@ -104,8 +104,8 @@ class MetadataModel(models.metadata.Metadata):
 
 class MainWindow(wx.Frame):
 	
-	def new_menu_item(self, menu, text, help, method, style = wx.ITEM_NORMAL, icon = None, id = wx.ID_ANY):
-		item = wx.MenuItem(menu, id, text, help, style)
+	def new_menu_item(self, menu, caption, help, method, style = wx.ITEM_NORMAL, icon = None, id = wx.ID_ANY):
+		item = wx.MenuItem(menu, id, caption, help, style)
 		if icon is not None:
 			bitmap = wx.ArtProvider_GetBitmap(icon, wx.ART_MENU, MENU_ICON_SIZE)
 			item.SetBitmap(bitmap)
@@ -149,14 +149,14 @@ class MainWindow(wx.Frame):
 		menu_bar.Append(menu, '&Edit');
 		menu = wx.Menu()
 		submenu = wx.Menu()
-		for text, help, zoom, id in \
+		for caption, help, zoom, id in \
 		[
 			('Fit &width', 'Set magnification to fit page width', FitWidthZoom(), None),
 			('Fit &page', 'Set magnification to fit page', FitPageZoom(), wx.ID_ZOOM_FIT),
 			('&Stretch', 'Stretch the image to the window size', StretchZoom(), None),
 			('One to &one', 'Set full resolution magnification.', OneToOneZoom(), wx.ID_ZOOM_100),
 		]:
-			submenu.AppendItem(self.new_menu_item(submenu, text, help, self.on_zoom(zoom), style=wx.ITEM_RADIO, id = id or wx.ID_ANY))
+			submenu.AppendItem(self.new_menu_item(submenu, caption, help, self.on_zoom(zoom), style=wx.ITEM_RADIO, id = id or wx.ID_ANY))
 		submenu.AppendSeparator()
 		for percent in 300, 200, 150, 100, 75, 50:
 			item = self.new_menu_item(
@@ -172,7 +172,7 @@ class MainWindow(wx.Frame):
 		menu.AppendMenu(-1, '&Zoom', submenu)
 
 		submenu = wx.Menu()
-		for text, help, method in \
+		for caption, help, method in \
 		[
 			('&Color', 'Display everything', self.on_display_everything),
 			('&Stencil', 'Display only the document bitonal stencil', self.on_display_stencil),
@@ -180,14 +180,14 @@ class MainWindow(wx.Frame):
 			('&Background', 'Display only the foreground layer', self.on_display_background),
 			('&None', 'Neither display the foreground layer nor the background layer', self.on_display_none)
 		]:
-			submenu.AppendItem(self.new_menu_item(submenu, text, help, method, style=wx.ITEM_RADIO))
+			submenu.AppendItem(self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO))
 		submenu.AppendSeparator()
 		submenu.AppendItem(self.new_menu_item(submenu, '&Text', u'Display the „hidden” text', self.on_display_text, style=wx.ITEM_CHECK))
 		menu.AppendMenu(-1, '&Display', submenu)
 		menu.AppendItem(self.new_menu_item(menu, '&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh))
 		menu_bar.Append(menu, '&View')
 		menu = wx.Menu()
-		for text, help, method, icon in \
+		for caption, help, method, icon in \
 		[
 			('&First page\tCtrl-Home', 'Jump to first document page', self.on_first_page, None),
 			('&Previous page\tPgUp', 'Jump to previous document page', self.on_previous_page, wx.ART_GO_UP),
@@ -195,7 +195,7 @@ class MainWindow(wx.Frame):
 			('&Last page\tCtrl-End', 'Jump to last document page', self.on_last_page, None),
 			(u'&Go to page…', u'Jump to page…', self.on_goto_page, None)
 		]:
-			menu.AppendItem(self.new_menu_item(menu, text, help, method, icon = icon))
+			menu.AppendItem(self.new_menu_item(menu, caption, help, method, icon = icon))
 		menu_bar.Append(menu, '&Go');
 		menu = wx.Menu()
 		menu.AppendItem(self.new_menu_item(menu, 'Show &sidebar\tF9', 'Show/side the sidebar', self.on_show_sidebar, style=wx.ITEM_CHECK))
