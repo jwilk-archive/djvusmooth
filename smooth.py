@@ -261,6 +261,8 @@ class MainWindow(wx.Frame):
 		sed = StreamEditor(self.path, autosave=True)
 		if self.metadata_model is not None:
 			self.metadata_model.export(sed)
+		if self.text_model is not None:
+			self.text_model.export(sed)
 		def job():
 			sed.commit()
 			queue.put(True)
