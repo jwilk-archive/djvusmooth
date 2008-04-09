@@ -29,7 +29,7 @@ class TextBrowser(wx.TreeCtrl):
 			event.Veto()
 	
 	def do_begin_edit(self, item):
-		category, text = self.GetPyData(item)
+		category, text, sexpr = self.GetPyData(item)
 		if text is not None:
 			self.SetItemText(item, text)
 			return True
@@ -44,11 +44,12 @@ class TextBrowser(wx.TreeCtrl):
 			event.Veto()
 	
 	def do_end_edit(self, item, text):
-		category, old_text = self.GetPyData(item)
+		category, old_text, sexpr = self.GetPyData(item)
 		if text is None:
 			text = old_text
 		else:
 			self.SetPyData(item, (category, text))
+		sexpr[5] = text
 		text = djvu.sexpr.Expression(text)
 		wx.CallAfter(lambda: self.SetItemText(item, '%s %s' % (category, text)))
 		return True
@@ -59,11 +60,11 @@ class TextBrowser(wx.TreeCtrl):
 			if len(sexpr) == 6 and isinstance(sexpr[5], djvu.sexpr.StringExpression):
 				text = sexpr[5]
 				child_item = self.AppendItem(item, '%s %s' % (symbol, sexpr[5]))
-				self.SetPyData(child_item, (symbol, text.value.decode('UTF-8')))
+				self.SetPyData(child_item, (symbol, text.value.decode('UTF-8'), sexpr))
 			else:
 				child_item = self.AppendItem(item, str(sexpr[0]))
 				self._add_children(child_item, sexpr[5:])
-				self.SetPyData(child_item, (symbol, None))
+				self.SetPyData(child_item, (symbol, None, sexpr))
 
 	def _recreate_children(self):
 		root = self.GetRootItem()
