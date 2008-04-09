@@ -38,7 +38,7 @@ class PageMetadata(dict):
 			self.revert()
 	
 	def export_select(self, djvused):
-		djvused.select(self._n)
+		djvused.select(self._n + 1)
 
 	def export(self, djvused):
 		if not self._dirty:
