@@ -20,10 +20,11 @@ class StreamEditor(object):
 		self._commands = []
 		self._autosave = autosave
 	
-	def _add(self, command):
-		if not isinstance(command, str):
-			raise TypeError
-		self._commands += command,
+	def _add(self, *commands):
+		for command in commands:
+			if not isinstance(command, str):
+				raise TypeError
+		self._commands += commands
 
 	def select_all(self):
 		self._add('select')
