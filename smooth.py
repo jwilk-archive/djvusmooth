@@ -133,13 +133,15 @@ class MainWindow(wx.Frame):
 		if not __debug__:
 			sys.excepthook = self.except_hook
 		self.editable_menu_items = []
+		self.saveable_menu_items = []
 		menu_bar = wx.MenuBar()
 		menu = wx.Menu()
 		menu.AppendItem(self.new_menu_item(menu, '&Open\tCtrl+O', 'Open a DjVu document', self.on_open, icon=wx.ART_FILE_OPEN))
 		save_menu_item = self.new_menu_item(menu, '&Save\tCtrl+S', 'Save the document', self.on_save, icon=wx.ART_FILE_SAVE)
 		close_menu_item = self.new_menu_item(menu, '&Close\tCtrl+W', 'Close the document', self.on_close, id=wx.ID_CLOSE)
 		menu.AppendItem(save_menu_item)
-		self.editable_menu_items += save_menu_item, close_menu_item
+		self.editable_menu_items += close_menu_item,
+		self.saveable_menu_items += save_menu_item,
 		menu.AppendSeparator()
 		menu.AppendItem(self.new_menu_item(menu, '&Quit\tCtrl+Q', 'Quit the application', self.on_exit, icon=wx.ART_QUIT))
 		menu_bar.Append(menu, '&File');
@@ -212,6 +214,19 @@ class MainWindow(wx.Frame):
 			self.GetMenuBar().EnableTop(i, enable)
 		for menu_item in self.editable_menu_items:
 			menu_item.Enable(enable)
+
+	def enable_save(self, enable=True):
+		for menu_item in self.saveable_menu_items:
+			menu_item.Enable(enable)
+
+	@apply
+	def dirty():
+		def get(self):
+			return self._dirty
+		def set(self, value):
+			self._dirty = value
+			self.enable_save(value)
+		return property(get, set)
 
 	def error_box(self, message, caption = 'Error'):
 		wx.MessageBox(message = message, caption = caption, style = wx.OK | wx.ICON_ERROR, parent = self)
