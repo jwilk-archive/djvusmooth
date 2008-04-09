@@ -146,7 +146,7 @@ class PageWidget(wx.Panel):
 					page_job = self._page_job
 					page_text = self._page_text
 				else:
-					page_job = page.decode(wait = False)
+					page_job = page.page_job
 					page_text = page.text
 				real_page_size = (page_job.width, page_job.height)
 				viewport_size = tuple(self.GetParent().GetSize())
@@ -241,7 +241,7 @@ class PageWidget(wx.Panel):
 				dc.DrawBitmap(image.ConvertToBitmap(), x, y)
 		except decode.NotAvailable, ex:
 			pass
-		if self.render_text:
+		if self.render_text and self._page_text is not None:
 			try:
 				dc.SetBrush(wx.TRANSPARENT_BRUSH)
 				dc.SetPen(self._text_pen)

@@ -24,6 +24,7 @@ from gui.metadata import MetadataDialog
 import text.mangle as text_mangle
 import gui.dialogs
 import models.metadata
+import models.text
 from external_editor import edit as external_edit
 
 MENU_ICON_SIZE = (16, 16)
@@ -41,6 +42,39 @@ class OpenDialog(wx.FileDialog):
 
 	def __init__(self, parent):
 		wx.FileDialog.__init__(self, parent, style = wx.OPEN, wildcard=DJVU_WILDCARD)
+
+class TextModel(models.text.Text):
+	def __init__(self, document):
+		models.text.Text.__init__(self)
+		self._document = document
+	
+	def acquire_metadata(self, n):
+		text = self._document.pages[n].text
+		text.wait()
+		return text.sexpr
+
+class PageTextProxy(object):
+	def __init__(self, djvu_text, text_model):
+		self._djvu_text = djvu_text
+		self._text_model = text_model
+	
+	@property
+	def sexpr(self):
+		self._djvu_text.sexpr
+		return self._text_model.value
+
+class PageProxy(object):
+	def __init__(self, page, text_model):
+		self._page = page
+		self._text = PageTextProxy(page.text, text_model)
+	
+	@property
+	def page_job(self):
+		return self._page.decode(wait = False)
+	
+	@property
+	def text(self):
+		return self._text
 
 class MetadataModel(models.metadata.Metadata):
 	def __init__(self, document):
@@ -332,27 +366,31 @@ class MainWindow(wx.Frame):
 			dialog.Destroy()
 
 	def on_external_edit_text(self, event):
-		text = self.page.text
-		text.wait()
-		def job(text, dialog):
+		sexpr = self.text_model[self.page_no].value
+		def job(sexpr, dialog):
 			tmp_file = tempfile.NamedTemporaryFile()
 			try:
-				text_mangle.export(text, tmp_file)
+				text_mangle.export(sexpr, tmp_file)
 				tmp_file.flush()
 				external_edit(tmp_file.name)
 				tmp_file.seek(0)
-				print text_mangle.import_(text, tmp_file)
+				new_sexpr = text_mangle.import_(sexpr, tmp_file)
 			finally:
 				tmp_file.close()
-			wx.CallAfter(lambda: dialog.Destroy())
+			wx.CallAfter(lambda: self.after_external_edit_text(new_sexpr, dialog))
 		dialog = gui.dialogs.ProgressDialog(
 			title = 'Editing in external editor',
 			message = u'Please edit the „hidden” text in the external editor.',
 			parent = self,
 			style = wx.PD_APP_MODAL
 		)
-		thread = threading.Thread(target = job, args = (text, dialog))
+		thread = threading.Thread(target = job, args = (sexpr, dialog))
 		thread.start()
+	
+	def after_external_edit_text(self, sexpr, dialog):
+		self.text_model[self.page_no].value = sexpr
+		dialog.Destroy()
+		self.page_widget.refresh_text()
 	
 	def on_zoom(self, zoom):
 		def event_handler(event):
@@ -380,6 +418,7 @@ class MainWindow(wx.Frame):
 		else:
 			self.document = self.context.new_document(decode.FileURI(path))
 			self.metadata_model = MetadataModel(self.document)
+			self.text_model = TextModel(self.document)
 			self.enable_edit(True)
 		self.update_title()
 		self.update_page_widget(new_page = True)
@@ -388,11 +427,12 @@ class MainWindow(wx.Frame):
 	
 	def update_page_widget(self, new_page = False):
 		if self.document is None:
-			self.page = self.page_job = None
+			self.page = self.page_job = self.page_proxy = None
 		elif self.page_job is None or new_page:
 			self.page = self.document.pages[self.page_no]
 			self.page_job = self.page.decode(wait = False)
-		self.page_widget.page = self.page
+			self.page_proxy = PageProxy(self.page, self.text_model[self.page_no])
+		self.page_widget.page = self.page_proxy
 
 	def update_title(self):
 		if self.path is None:
