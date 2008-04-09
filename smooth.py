@@ -334,15 +334,36 @@ class MainWindow(wx.Frame):
 	def on_external_edit_text(self, event):
 		text = self.page.text
 		text.wait()
-		tmp_file = tempfile.NamedTemporaryFile()
+		queue = Queue()
+		def job():
+			tmp_file = tempfile.NamedTemporaryFile()
+			try:
+				text_mangle.export(text, tmp_file)
+				tmp_file.flush()
+				external_edit(tmp_file.name)
+				tmp_file.seek(0)
+				print text_mangle.import_(text, tmp_file)
+			finally:
+				tmp_file.close()
+			queue.put(True)
+		dialog = gui.dialogs.ProgressDialog(
+			title = 'Editing in external editor',
+			message = u'Please edit the „hidden” text in the external editor.',
+			parent = self,
+			style = wx.PD_APP_MODAL
+		)
+		thread = threading.Thread(target = job)
+		thread.start()
 		try:
-			text_mangle.export(text, tmp_file)
-			tmp_file.flush()
-			external_edit(tmp_file.name)
-			tmp_file.seek(0)
-			print text_mangle.import_(text, tmp_file)
+			while True:
+				try:
+					queue.get(block = True, timeout = 0.1)
+					break
+				except QueueEmpty:
+					wx.Yield()
 		finally:
-			tmp_file.close()
+			thread.join()
+			dialog.Destroy()
 	
 	def on_zoom(self, zoom):
 		def event_handler(event):
