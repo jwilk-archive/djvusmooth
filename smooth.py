@@ -21,6 +21,7 @@ import djvu.const
 from djvused import StreamEditor
 from gui.page import PageWidget, PercentZoom, OneToOneZoom, StretchZoom, FitWidthZoom, FitPageZoom
 from gui.metadata import MetadataDialog
+from gui.text_browser import TextBrowser
 import text.mangle as text_mangle
 import gui.dialogs
 import models.metadata
@@ -118,6 +119,10 @@ class MainWindow(wx.Frame):
 		self.context = Context(self)
 		self.splitter = wx.SplitterWindow(self, -1, style = wx.SP_LIVE_UPDATE)
 		self.sidebar = wx.Panel(self.splitter, -1, size = (5, 5))
+		self.text_browser = TextBrowser(self.sidebar)
+		sidebar_sizer = wx.BoxSizer(wx.VERTICAL)
+		self.sidebar.SetSizer(sidebar_sizer)
+		sidebar_sizer.Add(self.text_browser, 1, wx.ALL | wx.EXPAND)
 		self.scrolled_panel = wx.lib.scrolledpanel.ScrolledPanel(self.splitter, -1)
 		self.splitter._default_position = 160
 		self.splitter.SetSashGravity(0.1)
@@ -445,6 +450,7 @@ class MainWindow(wx.Frame):
 			self.page_job = self.page.decode(wait = False)
 			self.page_proxy = PageProxy(self.page, self.text_model[self.page_no])
 		self.page_widget.page = self.page_proxy
+		self.text_browser.page = self.page_proxy
 
 	def update_title(self):
 		if self.path is None:
