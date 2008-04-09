@@ -259,10 +259,8 @@ class MainWindow(wx.Frame):
 			return
 		queue = Queue()
 		sed = StreamEditor(self.path, autosave=True)
-		if self.metadata_model is not None:
-			self.metadata_model.export(sed)
-		if self.text_model is not None:
-			self.text_model.export(sed)
+		for model in self.models:
+			model.export(sed)
 		def job():
 			sed.commit()
 			queue.put(True)
@@ -432,11 +430,14 @@ class MainWindow(wx.Frame):
 		self.document = None
 		self.page_no = 0
 		if path is None:
+			self.metadata_model = self.text_model = None
+			self.models = ()
 			self.enable_edit(False)
 		else:
 			self.document = self.context.new_document(decode.FileURI(path))
 			self.metadata_model = MetadataModel(self.document)
 			self.text_model = TextModel(self.document)
+			self.models = self.metadata_model, self.text_model
 			self.enable_edit(True)
 		self.update_title()
 		self.update_page_widget(new_page = True)
