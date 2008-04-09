@@ -130,8 +130,6 @@ class MainWindow(wx.Frame):
 		self.page_widget = PageWidget(self.scrolled_panel)
 		self.scrolled_panel.Bind(wx.EVT_SIZE, self.page_widget.on_parent_resize)
 		sizer.Add(self.page_widget, 0, wx.ALL | wx.EXPAND)
-		if not __debug__:
-			sys.excepthook = self.except_hook
 		self.editable_menu_items = []
 		self.saveable_menu_items = []
 		menu_bar = wx.MenuBar()
@@ -208,6 +206,7 @@ class MainWindow(wx.Frame):
 		self.SetMenuBar(menu_bar)
 		self.dirty = False
 		self.do_open(None)
+		sys.excepthook = self.except_hook
 	
 	def enable_edit(self, enable=True):
 		for i in 1, 3:
@@ -234,7 +233,7 @@ class MainWindow(wx.Frame):
 	def except_hook(self, type, value, traceback):
 		from traceback import format_exception
 		message = ''.join(format_exception(type, value, traceback))
-		self.error_box(message, 'Unhandled exception: %s [%s]' % (type, value))
+		wx.CallAfter(lambda: self.error_box(message, 'Unhandled exception: %s [%s]' % (type, value)))
 	
 	def on_exit(self, event):
 		if self.do_open(None):
