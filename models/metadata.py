@@ -69,6 +69,6 @@ class PageMetadata(dict):
 class SharedMetadata(PageMetadata):
 	
 	def export_select(self, djvused):
-		djvused.select_shared_annotations()
+		djvused.create_shared_annotations()
 
 # vim:ts=4 sw=4
