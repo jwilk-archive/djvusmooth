@@ -118,6 +118,10 @@ class PageWidget(wx.Panel):
 			self.Refresh()
 		return property(get, set)
 	
+	def refresh_text(self):
+		if self.render_text:
+			self.Refresh()
+	
 	@apply
 	def zoom():
 		def get(self):
