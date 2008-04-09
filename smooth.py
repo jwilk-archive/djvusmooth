@@ -206,7 +206,6 @@ class MainWindow(wx.Frame):
 		self.SetMenuBar(menu_bar)
 		self.dirty = False
 		self.do_open(None)
-		sys.excepthook = self.except_hook
 	
 	def enable_edit(self, enable=True):
 		for i in 1, 3:
@@ -230,11 +229,6 @@ class MainWindow(wx.Frame):
 	def error_box(self, message, caption = 'Error'):
 		wx.MessageBox(message = message, caption = caption, style = wx.OK | wx.ICON_ERROR, parent = self)
 
-	def except_hook(self, type, value, traceback):
-		from traceback import format_exception
-		message = ''.join(format_exception(type, value, traceback))
-		wx.CallAfter(lambda: self.error_box(message, 'Unhandled exception: %s [%s]' % (type, value)))
-	
 	def on_exit(self, event):
 		if self.do_open(None):
 			self.Destroy()
