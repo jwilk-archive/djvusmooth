@@ -391,6 +391,7 @@ class MainWindow(wx.Frame):
 		self.text_model[self.page_no].value = sexpr
 		dialog.Destroy()
 		self.page_widget.refresh_text()
+		self.dirty = True
 	
 	def on_zoom(self, zoom):
 		def event_handler(event):
