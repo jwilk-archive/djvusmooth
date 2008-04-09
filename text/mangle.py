@@ -83,12 +83,11 @@ def linearlize_for_import(expr, line_symbol = djvu.sexpr.Symbol('line')):
 			for item in linearlize_for_import(subexpr):
 				yield item
 
-def export(text, stream):
-	for line in linearlize_for_export(text.sexpr):
+def export(sexpr, stream):
+	for line in linearlize_for_export(sexpr):
 		print >>stream, line
 
-def import_(text, stdin):
-	sexpr = text.sexpr
+def import_(sexpr, stdin):
 	exported = linearlize_for_export(sexpr)
 	inputs = linearlize_for_import(sexpr)
 	for n, line, xline, input in itertools.izip(itertools.count(1), stdin, exported, inputs):
