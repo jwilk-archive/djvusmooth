@@ -73,8 +73,9 @@ class TextBrowser(wx.TreeCtrl):
 		if self.page is None:
 			return
 		sexpr = self.page.text.sexpr
-		root = self.AddRoot(str(sexpr[0].value))
-		self._have_root= True
-		self._add_children(root, sexpr[5:])
+		if len(sexpr):
+			root = self.AddRoot(str(sexpr[0].value))
+			self._have_root= True
+			self._add_children(root, sexpr[5:])
 
 # vim:ts=4 sw=4

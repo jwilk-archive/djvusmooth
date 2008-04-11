@@ -383,6 +383,9 @@ class MainWindow(wx.Frame):
 
 	def on_external_edit_text(self, event):
 		sexpr = self.text_model[self.page_no].value
+		if not len(sexpr):
+			self.error_box('No “hidden” text to edit')
+			return
 		def job(sexpr, dialog):
 			tmp_file = tempfile.NamedTemporaryFile()
 			try:
