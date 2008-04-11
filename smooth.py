@@ -117,6 +117,7 @@ class MainWindow(wx.Frame):
 		wx.Frame.__init__(self, None, size=wx.Size(640, 480))
 		self.Connect(-1, -1, wx.EVT_DJVU_MESSAGE, self.handle_message)
 		self.context = Context(self)
+		self.status_bar = self.CreateStatusBar(1, style = wx.ST_SIZEGRIP)
 		self.splitter = wx.SplitterWindow(self, -1, style = wx.SP_LIVE_UPDATE)
 		self.sidebar = wx.Panel(self.splitter, -1, size = (5, 5))
 		self.text_browser = TextBrowser(self.sidebar)
@@ -328,10 +329,12 @@ class MainWindow(wx.Frame):
 		def set(self, n):
 			if self.document is None:
 				self._page_no = 0
+				self.status_bar.SetStatusText('', 0)
 				return
 			if n < 0 or n >= len(self.document.pages):
 				return
 			self._page_no = n
+			self.status_bar.SetStatusText('Page %d of %d' % ((n + 1), len(self.document.pages)), 0)
 			self.update_page_widget(True)
 		return property(get, set)
 
@@ -437,6 +440,7 @@ class MainWindow(wx.Frame):
 			self.text_model = TextModel(self.document)
 			self.models = self.metadata_model, self.text_model
 			self.enable_edit(True)
+		self.page_no = 0 # again, to set status bar text
 		self.update_title()
 		self.update_page_widget(new_page = True)
 		self.dirty = False
