@@ -90,10 +90,19 @@ def export(sexpr, stream):
 def import_(sexpr, stdin):
 	exported = linearlize_for_export(sexpr)
 	inputs = linearlize_for_import(sexpr)
+	dirty = False
 	for n, line, xline, input in itertools.izip(itertools.count(1), stdin, exported, inputs):
 		line = line.rstrip('\n')
 		if line != xline:
 			input[5:] = list(mangle(xline, line, input[5:]))
+			dirty = True
+	if not dirty:
+		raise NothingChanged
 	return sexpr
+
+class NothingChanged(Exception):
+	pass
+
+__all__ = 'import_', 'export', 'NothingChanged'
 
 # vim:ts=4 sw=4 noet

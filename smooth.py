@@ -393,7 +393,10 @@ class MainWindow(wx.Frame):
 				tmp_file.flush()
 				external_edit(tmp_file.name)
 				tmp_file.seek(0)
-				new_sexpr = text_mangle.import_(sexpr, tmp_file)
+				try:
+					new_sexpr = text_mangle.import_(sexpr, tmp_file)
+				except text_mangle.NothingChanged:
+					new_sexpr = None
 			finally:
 				tmp_file.close()
 			wx.CallAfter(lambda: self.after_external_edit_text(new_sexpr, dialog))
@@ -407,8 +410,11 @@ class MainWindow(wx.Frame):
 		thread.start()
 	
 	def after_external_edit_text(self, sexpr, dialog):
-		self.text_model[self.page_no].value = sexpr
 		dialog.Destroy()
+		if sexpr is None:
+			# nothing changed
+			return
+		self.text_model[self.page_no].value = sexpr
 		self.page_widget.refresh_text()
 		self.dirty = True
 	
