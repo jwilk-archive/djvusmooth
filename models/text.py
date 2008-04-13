@@ -52,8 +52,7 @@ class PageText(object):
 
 	def __init__(self, n, original_data):
 		self._original_sexpr = original_data
-		self._sexpr = ExpressionProxy(copy.deepcopy(original_data), self)
-		self._dirty = False
+		self.revert()
 		self._n = n
 		self._callbacks = weakref.WeakKeyDictionary()
 	
@@ -63,11 +62,17 @@ class PageText(object):
 	@apply
 	def value():
 		def get(self):
-			return self._sexpr
+			return self._proxy
 		def set(self, value):
-			self._sexpr = value
+			self._proxy = ExpressionProxy(value, self)
 			self._dirty = True
 		return property(get, set)
+	
+	@apply
+	def raw_value():
+		def get(self):
+			return self._proxy._sexpr
+		return property(get)
 	
 	def clone(self):
 		from copy import copy
@@ -75,10 +80,10 @@ class PageText(object):
 	
 	def export(self, djvused):
 		djvused.select(self._n + 1)
-		djvused.set_text(self._sexpr)
+		djvused.set_text(self.raw_value)
 	
 	def revert(self):
-		self._sexpr = self._original_sexpr
+		self._proxy = ExpressionProxy(copy.deepcopy(self._original_sexpr), self)
 		self._dirty = False
 	
 	def is_dirty(self):

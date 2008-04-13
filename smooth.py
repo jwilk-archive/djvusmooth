@@ -399,7 +399,7 @@ class MainWindow(wx.Frame):
 			dialog.Destroy()
 
 	def on_external_edit_text(self, event):
-		sexpr = self.text_model[self.page_no].value
+		sexpr = self.text_model[self.page_no].raw_value
 		if not len(sexpr):
 			self.error_box('No “hidden” text to edit')
 			return
