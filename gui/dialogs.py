@@ -28,4 +28,7 @@ except AttributeError:
 		def GetValue(self):
 			return int(wx.SingleChoiceDialog.GetStringSelection(self))
 
+
+__all__ = 'ProgressDialog', 'NumberEntryDialog'
+
 # vim:ts=4 sw=4

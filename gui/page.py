@@ -271,4 +271,9 @@ class PageWidget(wx.Panel):
 				pass
 		dc.EndDrawing()
 
+__all__ = (
+	'Zoom', 'PercentZoom', 'OneToOneZoom', 'StretchZoom', 'FitWidthZoom', 'FitPageZoom',
+	'PageWidget'
+)
+
 # vim:ts=4 sw=4
