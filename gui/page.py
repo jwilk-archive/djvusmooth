@@ -3,6 +3,7 @@
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
 import wx
+import wx.lib.ogl
 
 from math import floor
 
@@ -78,10 +79,12 @@ class FitPageZoom(Zoom):
 			screen_height = viewport_height
 		return (screen_width, screen_height)
 
-class PageWidget(wx.Panel):
+class PageWidget(wx.lib.ogl.ShapeCanvas):
 
-	def __init__(self, *args, **kwargs):
-		wx.Panel.__init__(self, *args, **kwargs)
+	def __init__(self, parent):
+		wx.lib.ogl.ShapeCanvas.__init__(self, parent)
+		self._diagram = wx.lib.ogl.Diagram()
+		self.SetDiagram(self._diagram)
 		self._initial_size = self.GetSize()
 		dc = wx.ClientDC(self)
 		self._render_mode = decode.RENDER_COLOR

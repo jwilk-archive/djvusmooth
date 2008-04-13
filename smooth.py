@@ -142,7 +142,7 @@ class MainWindow(wx.Frame):
 		self.scrolled_panel.SetupScrolling()
 		self.page_widget = PageWidget(self.scrolled_panel)
 		self.scrolled_panel.Bind(wx.EVT_SIZE, self.page_widget.on_parent_resize)
-		sizer.Add(self.page_widget, 0, wx.ALL | wx.EXPAND)
+		sizer.Add(self.page_widget, 0, wx.ALL, 0)
 		self.editable_menu_items = []
 		self.saveable_menu_items = []
 		menu_bar = wx.MenuBar()
