@@ -150,8 +150,8 @@ class MainWindow(wx.Frame):
 		menu.AppendItem(self.new_menu_item(menu, '&Open\tCtrl+O', 'Open a DjVu document', self.on_open, icon=wx.ART_FILE_OPEN))
 		save_menu_item = self.new_menu_item(menu, '&Save\tCtrl+S', 'Save the document', self.on_save, icon=wx.ART_FILE_SAVE)
 		close_menu_item = self.new_menu_item(menu, '&Close\tCtrl+W', 'Close the document', self.on_close, id=wx.ID_CLOSE)
-		menu.AppendItem(close_menu_item)
 		menu.AppendItem(save_menu_item)
+		menu.AppendItem(close_menu_item)
 		self.editable_menu_items += close_menu_item,
 		self.saveable_menu_items += save_menu_item,
 		menu.AppendSeparator()
