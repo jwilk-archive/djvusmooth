@@ -3,23 +3,62 @@
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
 import copy
+import weakref
 
 import djvu.sexpr
 
 from models import MultiPageModel
 
+class ExpressionProxy(object):
+
+	def __new__(cls, sexpr, owner):
+		if isinstance(sexpr, djvu.sexpr.ListExpression):
+			return object.__new__(ListExpressionProxy, sexpr, owner)
+		else:
+			return sexpr
+
+class ListExpressionProxy(ExpressionProxy):
+	
+	def __init__(self, sexpr, owner):
+		if not isinstance(sexpr, djvu.sexpr.ListExpression):
+			raise TypeError
+		self._sexpr = sexpr
+		self._owner = owner
+
+	def __len__(self):
+		return len(self._sexpr)
+	
+	def __nonzero__(self):
+		return bool(self._sexpr)
+	
+	def __iter__(self):
+		return (ExpressionProxy(item, self._owner) for item in self._sexpr)
+
+	def __getitem__(self, key):
+		return ExpressionProxy(self._sexpr[key], self._owner)
+	
+	def __setitem__(self, key, value):
+		if isinstance(value, ListExpressionProxy):
+			value = value._sexpr
+		self._sexpr[key] = value
+		self._owner.notify(self)
+
 class Text(MultiPageModel):
 
 	def get_page_model_class(self, n):
 		return PageText
-
+	
 class PageText(object):
 
 	def __init__(self, n, original_data):
 		self._original_sexpr = original_data
-		self._sexpr = copy.deepcopy(original_data)
+		self._sexpr = ExpressionProxy(copy.deepcopy(original_data), self)
 		self._dirty = False
 		self._n = n
+		self._callbacks = weakref.WeakKeyDictionary()
+	
+	def register_callback(self, callback):
+		self._callbacks[callback] = 1
 
 	@apply
 	def value():
@@ -44,6 +83,10 @@ class PageText(object):
 	
 	def is_dirty(self):
 		return self._dirty
+	
+	def notify(self, sexpr):
+		for callback in self._callbacks:
+			callback()
 	
 def extract_text(sexpr):
 	if len(sexpr) < 5:

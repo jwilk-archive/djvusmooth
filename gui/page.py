@@ -148,6 +148,7 @@ class PageWidget(wx.Panel):
 				else:
 					page_job = page.page_job
 					page_text = page.text
+					page_text.set_callback(self.refresh_text)
 				real_page_size = (page_job.width, page_job.height)
 				viewport_size = tuple(self.GetParent().GetSize())
 				screen_page_size = self._zoom.get_page_screen_size(page_job, viewport_size)

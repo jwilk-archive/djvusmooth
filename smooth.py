@@ -64,10 +64,15 @@ class PageTextProxy(object):
 		self._djvu_text.sexpr
 		return self._text_model.value
 
+	def set_callback(self, callback):
+		self._callback = lambda: callback()
+		self._text_model.register_callback(self._callback)
+
 class PageProxy(object):
 	def __init__(self, page, text_model):
 		self._page = page
 		self._text = PageTextProxy(page.text, text_model)
+		self._callback = None
 	
 	@property
 	def page_job(self):
