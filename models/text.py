@@ -2,6 +2,8 @@
 # encoding=UTF-8
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
+import copy
+
 import djvu.sexpr
 
 from models import MultiPageModel
@@ -14,7 +16,8 @@ class Text(MultiPageModel):
 class PageText(object):
 
 	def __init__(self, n, original_data):
-		self._sexpr = self._original_sexpr = original_data
+		self._original_sexpr = original_data
+		self._sexpr = copy.deepcopy(original_data)
 		self._dirty = False
 		self._n = n
 
@@ -51,5 +54,8 @@ def extract_text(sexpr):
 		for subexpr in sexpr[5:]:
 			for item in extract_text(subexpr):
 				yield item
+
+
+__all__ = 'Text', 'PageText', 'extract_text'
 
 # vim:ts=4 sw=4
