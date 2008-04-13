@@ -55,24 +55,26 @@ class TextModel(models.text.Text):
 		return text.sexpr
 
 class PageTextProxy(object):
-	def __init__(self, djvu_text, text_model):
+	def __init__(self, djvu_text, text_model, text_callback = None):
 		self._djvu_text = djvu_text
 		self._text_model = text_model
-	
+		if text_callback is not None:
+			self._major_callback = lambda: text_callback()
+			self._text_model.register_callback(self._major_callback)
+
 	@property
 	def sexpr(self):
 		self._djvu_text.sexpr
 		return self._text_model.value
 
 	def set_callback(self, callback):
-		self._callback = lambda: callback()
-		self._text_model.register_callback(self._callback)
+		self._minor_callback = lambda: callback()
+		self._text_model.register_callback(self._minor_callback)
 
 class PageProxy(object):
-	def __init__(self, page, text_model):
+	def __init__(self, page, text_model, text_callback):
 		self._page = page
-		self._text = PageTextProxy(page.text, text_model)
-		self._callback = None
+		self._text = PageTextProxy(page.text, text_model, text_callback)
 	
 	@property
 	def page_job(self):
@@ -237,6 +239,9 @@ class MainWindow(wx.Frame):
 			self.enable_save(value)
 		return property(get, set)
 
+	def set_dirty(self):
+		self.dirty = True
+
 	def error_box(self, message, caption = 'Error'):
 		wx.MessageBox(message = message, caption = caption, style = wx.OK | wx.ICON_ERROR, parent = self)
 
@@ -266,8 +271,13 @@ class MainWindow(wx.Frame):
 		for model in self.models:
 			model.export(sed)
 		def job():
-			sed.commit()
-			queue.put(True)
+			try:
+				sed.commit()
+			except Exception, exception:
+				pass
+			else:
+				exception = None
+			queue.put(exception)
 		thread = threading.Thread(target = job)
 		thread.start()
 		dialog = None
@@ -284,7 +294,9 @@ class MainWindow(wx.Frame):
 				)
 			while True:
 				try:
-					queue.get(block = True, timeout = 0.1)
+					exception = queue.get(block = True, timeout = 0.1)
+					if exception is not None:
+						raise exception
 					break
 				except QueueEmpty:
 					dialog.Pulse()
@@ -466,7 +478,10 @@ class MainWindow(wx.Frame):
 		elif self.page_job is None or new_page:
 			self.page = self.document.pages[self.page_no]
 			self.page_job = self.page.decode(wait = False)
-			self.page_proxy = PageProxy(self.page, self.text_model[self.page_no])
+			self.page_proxy = PageProxy(
+				page = self.page,
+				text_model = self.text_model[self.page_no],
+				text_callback = self.set_dirty)
 		self.page_widget.page = self.page_proxy
 		self.text_browser.page = self.page_proxy
 

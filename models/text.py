@@ -85,6 +85,7 @@ class PageText(object):
 		return self._dirty
 	
 	def notify(self, sexpr):
+		self._dirty = True
 		for callback in self._callbacks:
 			callback()
 	
