@@ -79,25 +79,89 @@ class FitPageZoom(Zoom):
 			screen_height = viewport_height
 		return (screen_width, screen_height)
 
+class PageImage(wx.lib.ogl.RectangleShape):
+
+	def __init__(self, parent, page_job, real_page_size, viewport_size, screen_page_size, xform_screen_to_real, render_mode, zoom):
+		self._render_mode = render_mode
+		self._zoom = zoom
+		self._screen_page_size = screen_page_size
+		self._xform_screen_to_real = xform_screen_to_real
+		self._page_job = page_job
+		wx.lib.ogl.RectangleShape.__init__(self, *screen_page_size)
+		self.SetX(self._width // 2)
+		self.SetY(self._height // 2)
+
+	def OnDraw(self, dc):
+		x, y, w, h = self.GetCanvas().GetUpdateRegion().GetBox()
+		if w < 0 or h < 0:
+			# This is not a regular refresh. 
+			# So just see what might have been overwritten.
+			x, y, w, h = dc.GetBoundingBox()
+		dc.BeginDrawing()
+		page_job = self._page_job
+		xform_screen_to_real = self._xform_screen_to_real
+		try:
+			if page_job is None:
+				raise decode.NotAvailable
+			page_width, page_height = self._screen_page_size
+			if x >= page_width:
+				raise decode.NotAvailable
+			if x + w > page_width:
+				w = page_width - x
+			if y >= page_height:
+				raise decode.NotAvailable
+			if y + h > page_height:
+				h = page_height - y
+			render_mode = self._render_mode
+			if render_mode is None:
+				raise decode.NotAvailable
+			else:
+				data = page_job.render(
+					render_mode,
+					(0, 0, page_width, page_height),
+					(x, y, w, h),
+					PIXEL_FORMAT,
+					1
+				)
+				image = wx.EmptyImage(w, h)
+				image.SetData(data)
+				dc.DrawBitmap(image.ConvertToBitmap(), x, y)
+		except decode.NotAvailable, ex:
+			dc.SetBrush(wx.WHITE_BRUSH)
+			dc.SetPen(wx.TRANSPARENT_PEN)
+			dc.DrawRectangle(x, y, w, h)
+		dc.EndDrawing()
+
+class TextShape(wx.lib.ogl.RectangleShape):
+
+	def __init__(self, text, x, y, w, h):
+		wx.lib.ogl.RectangleShape.__init__(self, w, h)
+		self._text_color = wx.Color(0, 0, 0x88)
+		self._text_pen = wx.Pen(self._text_color, 1)
+		self.SetX(x + w // 2)
+		self.SetY(y + h // 2)
+		# XXX self.AddText(text)
+		self.SetPen(self._text_pen)
+		self.SetBrush(wx.TRANSPARENT_BRUSH)
+
 class PageWidget(wx.lib.ogl.ShapeCanvas):
 
 	def __init__(self, parent):
 		wx.lib.ogl.ShapeCanvas.__init__(self, parent)
+		self._initial_size = self.GetSize()
+		self.SetBackgroundColour(wx.WHITE)
 		self._diagram = wx.lib.ogl.Diagram()
 		self.SetDiagram(self._diagram)
-		self._initial_size = self.GetSize()
+		self._diagram.SetCanvas(self)
+		self._image = None
+		self._text_shapes = []
 		dc = wx.ClientDC(self)
+		self.PrepareDC(dc)
 		self._render_mode = decode.RENDER_COLOR
 		self._render_text = False
 		self._zoom = PercentZoom()
-		self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
-		self.Bind(wx.EVT_ERASE_BACKGROUND, self.on_erase_background)
-		self.Bind(wx.EVT_PAINT, self.on_paint)
 		self.page = None
-		self._checkboard_brush = wx.Brush((0x88,) * 3, wx.SOLID)
-		self._text_color = wx.Color(0, 0, 0x88)
-		self._text_pen = wx.Pen(self._text_color, 1)
-
+	
 	def on_parent_resize(self, event):
 		if self._zoom.rezoom_on_resize():
 			self.zoom = self._zoom
@@ -109,7 +173,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			return self._render_mode
 		def set(self, value):
 			self._render_mode = value
-			self.Refresh()
+			self.page = True
 		return property(get, set)
 
 	@apply
@@ -118,7 +182,8 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			return self._render_text
 		def set(self, value):
 			self._render_text = value
-			self.Refresh()
+			self.setup_text_shapes()
+			self.recreate_shapes()
 		return property(get, set)
 	
 	def refresh_text(self):
@@ -133,11 +198,6 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			self._zoom = value
 			self.page = True
 		return property(get, set)
-
-	def on_paint(self, event):
-		dc = wx.PaintDC(self)
-		self.PrepareDC(dc)
-		self.draw(dc, self.GetUpdateRegion())
 
 	@apply
 	def page():
@@ -163,14 +223,48 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 				xform_screen_to_real = decode.AffineTransform((0, 0, 1, 1), (0, 0, 1, 1))
 				page_job = None
 				page_text = None
+				need_recreate_text = True
 			self._screen_page_size = screen_page_size
 			self._xform_screen_to_real = xform_screen_to_real
 			self._page_job = page_job
 			self._page_text = page_text
 			if page is None:
 				self.set_size(self._initial_size)
-			self.Refresh()
+			if self._image is not None:
+				self._image.Delete()
+				self._image = None
+			if page_job is not None:
+				image = PageImage(self,
+					page_job = page_job,
+					real_page_size = real_page_size,
+					viewport_size = viewport_size,
+					screen_page_size = screen_page_size,
+					xform_screen_to_real = xform_screen_to_real,
+					render_mode = self.render_mode,
+					zoom = self.zoom)
+				image.SetDraggable(False, False)
+				self._image = image
+			self.setup_text_shapes()
+			self.recreate_shapes()
 		return property(fset = set)
+
+	def recreate_shapes(self):
+		self.remove_all_shapes()
+		image = self._image
+		if image is not None:
+			self.add_shape(image)
+		if self.render_text:
+			for shape in self._text_shapes:
+				self.add_shape(shape)
+		self.Refresh()
+
+	def add_shape(self, shape):
+		shape.SetCanvas(self)
+		shape.Show(True)
+		self._diagram.AddShape(shape)
+	
+	def remove_all_shapes(self):
+		self._diagram.RemoveAllShapes()
 
 	def set_size(self, size):
 		self.SetSize(size)
@@ -178,102 +272,29 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self.GetParent().Layout()
 		self.GetParent().SetupScrolling()
 
-	def on_erase_background(self, event):
-		dc = event.GetDC()
-		rect = self.GetUpdateRegion().GetBox()
-		if not dc:
-			dc = wx.ClientDC(self)
-			dc.SetClippingRect(rect)
-		self._clear_dc(dc, rect)
-
-	def _clear_dc(self, dc, rect):
-		N = 16
-		dc.Clear()
-		dc.SetBrush(self._checkboard_brush)
-		dc.SetPen(wx.TRANSPARENT_PEN)
-		x0, y0, w, h = rect
-		x1 = (x0 + w + N - 1) // N * N
-		y1 = (y0 + h + N - 1) // N * N
-		x0 = x0 // N * N
-		y0 = y0 // N * N
-		o = oo = (x0//N ^ y0//N) & 1
-		y = y0
-		while y < y1:
-			o = not oo
-			x = x0
-			while x < x1:
-				if o:
-					dc.DrawRectangle(x, y, N, N)
-				x += N
-				o = not o
-			y += N
-			oo = not oo
-		
-	def draw(self, dc, region):
-		dc.BeginDrawing()
-		x, y, w, h = region.GetBox()
-		page_job = self._page_job
-		page_text = self._page_text
+	def setup_text_shapes(self):
+		self._text_shapes = []
+		if not self.render_text or self._page_text is None:
+			return
 		xform_screen_to_real = self._xform_screen_to_real
 		try:
-			if page_job is None:
-				raise decode.NotAvailable
-			page_width, page_height = self._screen_page_size
-			if x >= page_width:
-				raise decode.NotAvailable
-			if x + w > page_width:
-				w = page_width - x
-			if y >= page_height:
-				raise decode.NotAvailable
-			if y + h > page_height:
-				h = page_height - y
-			render_mode = self.render_mode
-			if self.render_mode is None:
-				dc.SetBrush(wx.WHITE_BRUSH)
-				dc.SetPen(wx.TRANSPARENT_PEN)
-				dc.DrawRectangle(x, y, w, h)
-			else:
-				data = page_job.render(
-					self.render_mode,
-					(0, 0, page_width, page_height),
-					(x, y, w, h),
-					PIXEL_FORMAT,
-					1
-				)
-				image = wx.EmptyImage(w, h)
-				image.SetData(data)
-				dc.DrawBitmap(image.ConvertToBitmap(), x, y)
+			sexpr = self._page_text.sexpr
+			for (x, y, xp, yp), text in extract_text(sexpr):
+				rect = (x, y, xp - x, yp - y)
+				x, y, w, h = xform_screen_to_real(rect)
+				self._text_shapes += TextShape(text, x, y, w, h),
+				# font = dc.GetFont()
+				# font_size = h
+				# font.SetPixelSize((font_size, font_size))
+				# dc.SetFont(font)
+				# w1, h1 = dc.GetTextExtent(text)
+				# if w1 > w:
+				# 	font_size = floor(font_size * 1.0 * w / w1)
+				# 	font.SetPixelSize((font_size, font_size))
+				# 	dc.SetFont(font)
+				# 	w1, h1 = dc.GetTextExtent(text)
 		except decode.NotAvailable, ex:
-			pass
-		if self.render_text and self._page_text is not None:
-			try:
-				dc.SetBrush(wx.TRANSPARENT_BRUSH)
-				dc.SetPen(self._text_pen)
-				dc.SetTextForeground(self._text_color)
-				sexpr = self._page_text.sexpr
-				rx, ry, rxp, ryp = x, y, x + w, y + h
-				for (x, y, xp, yp), text in extract_text(sexpr):
-					rect = (x, y, xp - x, yp - y)
-					x, y, w, h = xform_screen_to_real(rect)
-					if x > rxp or x + w < rx:
-						continue
-					if y > ryp or y + h < ry:
-						continue
-					dc.DrawRectangle(x, y, w, h)
-					font = dc.GetFont()
-					font_size = h
-					font.SetPixelSize((font_size, font_size))
-					dc.SetFont(font)
-					w1, h1 = dc.GetTextExtent(text)
-					if w1 > w:
-						font_size = floor(font_size * 1.0 * w / w1)
-						font.SetPixelSize((font_size, font_size))
-						dc.SetFont(font)
-						w1, h1 = dc.GetTextExtent(text)
-					dc.DrawText(text, x, y)
-			except decode.NotAvailable, ex:
-				pass
-		dc.EndDrawing()
+			self._text_shapes = []
 
 __all__ = (
 	'Zoom', 'PercentZoom', 'OneToOneZoom', 'StretchZoom', 'FitWidthZoom', 'FitPageZoom',

@@ -12,6 +12,7 @@ import threading
 from Queue import Queue, Empty as QueueEmpty
 
 import wx
+import wx.lib.ogl
 import wx.lib.scrolledpanel
 import tempfile
 
@@ -529,6 +530,7 @@ class SmoothApp(wx.App):
 		wx.App.__init__(self)
 
 	def OnInit(self):
+		wx.lib.ogl.OGLInitialize()
 		window = MainWindow()
 		window.Show(True)
 		if self._argv:
