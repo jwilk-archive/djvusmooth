@@ -207,15 +207,15 @@ class MainWindow(wx.Frame):
 		submenu = wx.Menu()
 		for caption, help, method in \
 		[
-			('&Color', 'Display everything', self.on_display_everything),
+			('&Color\tC', 'Display everything', self.on_display_everything),
 			('&Stencil', 'Display only the document bitonal stencil', self.on_display_stencil),
 			('&Foreground', 'Display only the foreground layer', self.on_display_foreground),
 			('&Background', 'Display only the foreground layer', self.on_display_background),
-			('&None', 'Neither display the foreground layer nor the background layer', self.on_display_none)
+			('&None\tN', 'Neither display the foreground layer nor the background layer', self.on_display_none)
 		]:
 			submenu.AppendItem(self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO))
 		submenu.AppendSeparator()
-		submenu.AppendItem(self.new_menu_item(submenu, '&Text', u'Display the „hidden” text', self.on_display_text, style=wx.ITEM_CHECK))
+		submenu.AppendItem(self.new_menu_item(submenu, '&Text\tT', u'Display the „hidden” text', self.on_display_text, style=wx.ITEM_CHECK))
 		menu.AppendMenu(-1, '&Display', submenu)
 		menu.AppendItem(self.new_menu_item(menu, '&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh))
 		menu_bar.Append(menu, '&View')
