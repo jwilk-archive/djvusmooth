@@ -50,7 +50,7 @@ class TextBrowser(wx.TreeCtrl):
 	def do_end_edit(self, item, text):
 		node = self.GetPyData(item)
 		if text is None:
-			text = old_text
+			text = node.text
 		node.text = text
 		wx.CallAfter(lambda: self.SetItemText(item, '%s: %s' % (node.type, text)))
 		return True
