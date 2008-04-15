@@ -210,9 +210,30 @@ class PageText(object):
 		for callback in self._callbacks:
 			callback.notify_tree_change(self._root)
 	
+	def get_preorder_nodes(self):
+		return _get_preorder_nodes(self.root)
+
+	def get_postorder_nodes(self):
+		return _get_postorder_nodes(self.root)
+
 	def get_leafs(self):
 		return _get_leafs(self.root)
 	
+def _get_preorder_nodes(node):
+	yield node
+	if isinstance(node, LeafNode):
+		return
+	for child in node:
+		for item in _get_preorder_nodes(child):
+			yield item
+
+def _get_postorder_nodes(node):
+	if isinstance(node, InnerNode):
+		for child in node:
+			for item in _get_postorder_nodes(child):
+				yield item
+	yield node
+
 def _get_leafs(node):
 	if isinstance(node, LeafNode):
 		yield node
