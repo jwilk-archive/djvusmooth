@@ -134,15 +134,22 @@ class PageImage(wx.lib.ogl.RectangleShape):
 
 class TextShape(wx.lib.ogl.RectangleShape):
 
-	def __init__(self, text, x, y, w, h):
-		wx.lib.ogl.RectangleShape.__init__(self, w, h)
+	def __init__(self, node, xform_screen_to_real):
+		wx.lib.ogl.RectangleShape.__init__(self, 100, 100)
+		self._xform_screen_to_real = xform_screen_to_real
+		self._node = node
+		self._update_size()
 		self._text_color = wx.Color(0, 0, 0x88)
 		self._text_pen = wx.Pen(self._text_color, 1)
-		self.SetX(x + w // 2)
-		self.SetY(y + h // 2)
 		# XXX self.AddText(text)
 		self.SetPen(self._text_pen)
 		self.SetBrush(wx.TRANSPARENT_BRUSH)
+	
+	def _update_size(self):
+		x, y, w, h = self._xform_screen_to_real(self._node.rect)
+		self.SetSize(w, h)
+		self.SetX(x + w // 2)
+		self.SetY(y + h // 2)
 
 class PageTextCallback(models.text.PageTextCallback):
 
@@ -293,9 +300,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			return
 		xform_screen_to_real = self._xform_screen_to_real
 		try:
-			for node in self._page_text.get_leafs():
-				x, y, w, h = xform_screen_to_real(node.rect)
-				self._text_shapes += TextShape(node.text, x, y, w, h),
+			self._text_shapes = [TextShape(node, xform_screen_to_real) for node in self._page_text.get_leafs()]
 				# font = dc.GetFont()
 				# font_size = h
 				# font.SetPixelSize((font_size, font_size))
