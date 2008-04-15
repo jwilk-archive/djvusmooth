@@ -55,30 +55,10 @@ class TextModel(models.text.Text):
 		text.wait()
 		return text.sexpr
 
-class PageTextProxy(object):
-	def __init__(self, djvu_text, text_model):
-		self._djvu_text = djvu_text
-		self._text_model = text_model
-
-	@property
-	def sexpr(self):
-		self._djvu_text.sexpr
-		return self._text_model.raw_value
-
-	@property
-	def root(self):
-		return self._text_model.root
-
-	def get_leafs(self):
-		return self._text_model.get_leafs()
-
-	def register_callback(self, callback):
-		self._text_model.register_callback(callback)
-
 class PageProxy(object):
 	def __init__(self, page, text_model):
 		self._page = page
-		self._text = PageTextProxy(page.text, text_model)
+		self._text = text_model
 	
 	@property
 	def page_job(self):
