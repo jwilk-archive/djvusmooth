@@ -34,7 +34,7 @@ class TextBrowser(wx.TreeCtrl):
 			return
 		try:
 			text = node.text
-		except AttribueError:
+		except AttributeError:
 			return	
 		self.SetItemText(item, '%s: %s' % (node.type, text))
 
