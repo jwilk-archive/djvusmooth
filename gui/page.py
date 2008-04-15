@@ -81,11 +81,11 @@ class FitPageZoom(Zoom):
 
 class PageImage(wx.lib.ogl.RectangleShape):
 
-	def __init__(self, parent, page_job, real_page_size, viewport_size, screen_page_size, xform_screen_to_real, render_mode, zoom):
+	def __init__(self, parent, page_job, real_page_size, viewport_size, screen_page_size, xform_real_to_screen, render_mode, zoom):
 		self._render_mode = render_mode
 		self._zoom = zoom
 		self._screen_page_size = screen_page_size
-		self._xform_screen_to_real = xform_screen_to_real
+		self._xform_real_to_screen = xform_real_to_screen
 		self._page_job = page_job
 		wx.lib.ogl.RectangleShape.__init__(self, *screen_page_size)
 		self.SetX(self._width // 2)
@@ -99,7 +99,7 @@ class PageImage(wx.lib.ogl.RectangleShape):
 			x, y, w, h = dc.GetBoundingBox()
 		dc.BeginDrawing()
 		page_job = self._page_job
-		xform_screen_to_real = self._xform_screen_to_real
+		xform_real_to_screen = self._xform_real_to_screen
 		try:
 			if page_job is None:
 				raise decode.NotAvailable
@@ -134,9 +134,9 @@ class PageImage(wx.lib.ogl.RectangleShape):
 
 class TextShape(wx.lib.ogl.RectangleShape):
 
-	def __init__(self, node, xform_screen_to_real):
+	def __init__(self, node, xform_real_to_screen):
 		wx.lib.ogl.RectangleShape.__init__(self, 100, 100)
-		self._xform_screen_to_real = xform_screen_to_real
+		self._xform_real_to_screen = xform_real_to_screen
 		self._node = node
 		self._update_size()
 		self._text_color = wx.Color(0, 0, 0x88)
@@ -147,7 +147,7 @@ class TextShape(wx.lib.ogl.RectangleShape):
 		self.SetCentreResize(False)
 	
 	def _update_size(self, dc = None):
-		x, y, w, h = self._xform_screen_to_real(self._node.rect)
+		x, y, w, h = self._xform_real_to_screen(self._node.rect)
 		self.SetSize(w, h)
 		x, y = x + w // 2, y + h // 2
 		self.SetX(x)
@@ -284,18 +284,18 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 				real_page_size = (page_job.width, page_job.height)
 				viewport_size = tuple(self.GetParent().GetSize())
 				screen_page_size = self._zoom.get_page_screen_size(page_job, viewport_size)
-				xform_screen_to_real = decode.AffineTransform((0, 0) + real_page_size, (0, 0) + screen_page_size)
-				xform_screen_to_real.mirror_y()
+				xform_real_to_screen = decode.AffineTransform((0, 0) + real_page_size, (0, 0) + screen_page_size)
+				xform_real_to_screen.mirror_y()
 				self.set_size(screen_page_size)
 			except decode.NotAvailable:
 				screen_page_size = -1, -1
-				xform_screen_to_real = decode.AffineTransform((0, 0, 1, 1), (0, 0, 1, 1))
+				xform_real_to_screen = decode.AffineTransform((0, 0, 1, 1), (0, 0, 1, 1))
 				page_job = None
 				page_text = None
 				need_recreate_text = True
 				callback = None
 			self._screen_page_size = screen_page_size
-			self._xform_screen_to_real = xform_screen_to_real
+			self._xform_real_to_screen = xform_real_to_screen
 			self._page_job = page_job
 			self._page_text = page_text
 			self._callback = callback
@@ -310,7 +310,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 					real_page_size = real_page_size,
 					viewport_size = viewport_size,
 					screen_page_size = screen_page_size,
-					xform_screen_to_real = xform_screen_to_real,
+					xform_real_to_screen = xform_real_to_screen,
 					render_mode = self.render_mode,
 					zoom = self.zoom)
 				image.SetDraggable(False, False)
@@ -351,10 +351,10 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self._text_shapes = {}
 		if not self.render_text or self._page_text is None:
 			return
-		xform_screen_to_real = self._xform_screen_to_real
+		xform_real_to_screen = self._xform_real_to_screen
 		try:
 			self._text_shapes = dict(
-				(node, TextShape(node, xform_screen_to_real))
+				(node, TextShape(node, xform_real_to_screen))
 				for node in self._page_text.get_leafs()
 			)
 				# font = dc.GetFont()
