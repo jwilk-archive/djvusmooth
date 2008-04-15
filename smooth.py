@@ -414,17 +414,11 @@ class MainWindow(wx.Frame):
 			finally:
 				tmp_file.close()
 			wx.CallAfter(lambda: self.after_external_edit_text(new_sexpr, dialog))
-		dialog = gui.dialogs.ProgressDialog(
-			title = 'Editing in external editor',
-			message = u'Please edit the „hidden” text in the external editor.',
-			parent = self,
-			style = wx.PD_APP_MODAL
-		)
-		thread = threading.Thread(target = job, args = (sexpr, dialog))
+		disabler = wx.WindowDisabler()
+		thread = threading.Thread(target = job, args = (sexpr, disabler))
 		thread.start()
 	
-	def after_external_edit_text(self, sexpr, dialog):
-		dialog.Destroy()
+	def after_external_edit_text(self, sexpr, disabler):
 		if sexpr is None:
 			# nothing changed
 			return
