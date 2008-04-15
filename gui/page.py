@@ -7,7 +7,7 @@ import wx.lib.ogl
 
 from math import floor
 
-from djvu import decode
+from djvu import decode, sexpr
 import models.text
 
 PIXEL_FORMAT = decode.PixelFormatRgb()
@@ -143,6 +143,13 @@ class PageImage(wx.lib.ogl.RectangleShape):
 			dc.DrawRectangle(x, y, w, h)
 		dc.EndDrawing()
 
+TEXT_COLORS = {
+	sexpr.Symbol('region'): (0x80, 0x80, 0x80),
+	sexpr.Symbol('para'):   (0x80, 0x00, 0x00),
+	sexpr.Symbol('line'):   (0x80, 0x00, 0x80),
+	sexpr.Symbol('word'):   (0x00, 0x00, 0x80),
+}
+
 class TextShape(wx.lib.ogl.RectangleShape):
 
 	def __init__(self, node, xform_real_to_screen):
@@ -150,7 +157,7 @@ class TextShape(wx.lib.ogl.RectangleShape):
 		self._xform_real_to_screen = xform_real_to_screen
 		self._node = node
 		self._update_size()
-		self._text_color = wx.Color(0, 0, 0x88)
+		self._text_color = wx.Color(*TEXT_COLORS[node.type])
 		self._text_pen = wx.Pen(self._text_color, 1)
 		# XXX self.AddText(text)
 		self.SetPen(self._text_pen)
@@ -356,9 +363,11 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			return
 		xform_real_to_screen = self._xform_real_to_screen
 		try:
+			page_symbol = sexpr.Symbol('page')
 			self._text_shapes = dict(
 				(node, TextShape(node, xform_real_to_screen))
-				for node in self._page_text.get_leafs()
+				for node in self._page_text.get_preorder_nodes()
+				if node.type != page_symbol
 			)
 				# font = dc.GetFont()
 				# font_size = h
