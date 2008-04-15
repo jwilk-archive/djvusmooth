@@ -51,7 +51,6 @@ class TextBrowser(wx.TreeCtrl):
 		node = self.GetPyData(item)
 		if text is None:
 			text = old_text
-		print type(node)
 		node.text = text
 		wx.CallAfter(lambda: self.SetItemText(item, '%s: %s' % (node.type, text)))
 		return True
