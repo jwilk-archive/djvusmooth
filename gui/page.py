@@ -8,7 +8,7 @@ import wx.lib.ogl
 from math import floor
 
 from djvu import decode
-from models.text import extract_text
+import models.text
 
 PIXEL_FORMAT = decode.PixelFormatRgb()
 PIXEL_FORMAT.rows_top_to_bottom = 1
@@ -144,6 +144,17 @@ class TextShape(wx.lib.ogl.RectangleShape):
 		self.SetPen(self._text_pen)
 		self.SetBrush(wx.TRANSPARENT_BRUSH)
 
+class PageTextCallback(models.text.PageTextCallback):
+
+	def __init__(self, widget):
+		self._widget = widget
+	
+	def notify_node_change(self, node):
+		self._widget.page = True # FIXME: something lighter here
+		
+	def notify_tree_change(self, node):
+		self._widget.page = True
+
 class PageWidget(wx.lib.ogl.ShapeCanvas):
 
 	def __init__(self, parent):
@@ -208,10 +219,12 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 				elif page is True:
 					page_job = self._page_job
 					page_text = self._page_text
+					callback = self._callback
 				else:
 					page_job = page.page_job
+					callback = PageTextCallback(self)
 					page_text = page.text
-					page_text.set_callback(self.refresh_text)
+					page_text.register_callback(callback)
 				real_page_size = (page_job.width, page_job.height)
 				viewport_size = tuple(self.GetParent().GetSize())
 				screen_page_size = self._zoom.get_page_screen_size(page_job, viewport_size)
@@ -224,10 +237,12 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 				page_job = None
 				page_text = None
 				need_recreate_text = True
+				callback = None
 			self._screen_page_size = screen_page_size
 			self._xform_screen_to_real = xform_screen_to_real
 			self._page_job = page_job
 			self._page_text = page_text
+			self._callback = callback
 			if page is None:
 				self.set_size(self._initial_size)
 			if self._image is not None:
@@ -278,11 +293,9 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			return
 		xform_screen_to_real = self._xform_screen_to_real
 		try:
-			sexpr = self._page_text.sexpr
-			for (x, y, xp, yp), text in extract_text(sexpr):
-				rect = (x, y, xp - x, yp - y)
-				x, y, w, h = xform_screen_to_real(rect)
-				self._text_shapes += TextShape(text, x, y, w, h),
+			for node in self._page_text.get_leafs():
+				x, y, w, h = xform_screen_to_real(node.rect)
+				self._text_shapes += TextShape(node.text, x, y, w, h),
 				# font = dc.GetFont()
 				# font_size = h
 				# font.SetPixelSize((font_size, font_size))

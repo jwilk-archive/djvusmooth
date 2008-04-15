@@ -56,26 +56,29 @@ class TextModel(models.text.Text):
 		return text.sexpr
 
 class PageTextProxy(object):
-	def __init__(self, djvu_text, text_model, text_callback = None):
+	def __init__(self, djvu_text, text_model):
 		self._djvu_text = djvu_text
 		self._text_model = text_model
-		if text_callback is not None:
-			self._major_callback = lambda: text_callback()
-			self._text_model.register_callback(self._major_callback)
 
 	@property
 	def sexpr(self):
 		self._djvu_text.sexpr
-		return self._text_model.value
+		return self._text_model.raw_value
 
-	def set_callback(self, callback):
-		self._minor_callback = lambda: callback()
-		self._text_model.register_callback(self._minor_callback)
+	@property
+	def root(self):
+		return self._text_model.root
+
+	def get_leafs(self):
+		return self._text_model.get_leafs()
+
+	def register_callback(self, callback):
+		self._text_model.register_callback(callback)
 
 class PageProxy(object):
-	def __init__(self, page, text_model, text_callback):
+	def __init__(self, page, text_model):
 		self._page = page
-		self._text = PageTextProxy(page.text, text_model, text_callback)
+		self._text = PageTextProxy(page.text, text_model)
 	
 	@property
 	def page_job(self):
@@ -84,6 +87,9 @@ class PageProxy(object):
 	@property
 	def text(self):
 		return self._text
+
+	def register_text_callback(self, callback):
+		self._text.register_callback(callback)
 
 class MetadataModel(models.metadata.Metadata):
 	def __init__(self, document):
@@ -111,6 +117,17 @@ class MetadataModel(models.metadata.Metadata):
 				result[k] = v
 		return result
 
+class PageTextCallback(models.text.PageTextCallback):
+
+	def __init__(self, owner):
+		self._owner = owner
+
+	def notify_node_change(self, node):
+		self._owner.dirty = True
+		
+	def notify_tree_change(self, node):
+		self._owner.dirty = True
+
 class MainWindow(wx.Frame):
 	
 	def new_menu_item(self, menu, caption, help, method, style = wx.ITEM_NORMAL, icon = None, id = wx.ID_ANY):
@@ -125,6 +142,7 @@ class MainWindow(wx.Frame):
 		wx.Frame.__init__(self, None, size=wx.Size(640, 480))
 		self.Connect(-1, -1, wx.EVT_DJVU_MESSAGE, self.handle_message)
 		self.context = Context(self)
+		self._page_text_callback = PageTextCallback(self)
 		self.status_bar = self.CreateStatusBar(1, style = wx.ST_SIZEGRIP)
 		self.splitter = wx.SplitterWindow(self, -1, style = wx.SP_LIVE_UPDATE)
 		self.sidebar = wx.Panel(self.splitter, -1, size = (5, 5))
@@ -240,9 +258,6 @@ class MainWindow(wx.Frame):
 			self._dirty = value
 			self.enable_save(value)
 		return property(get, set)
-
-	def set_dirty(self):
-		self.dirty = True
 
 	def error_box(self, message, caption = 'Error'):
 		wx.MessageBox(message = message, caption = caption, style = wx.OK | wx.ICON_ERROR, parent = self)
@@ -433,9 +448,7 @@ class MainWindow(wx.Frame):
 		if sexpr is None:
 			# nothing changed
 			return
-		self.text_model[self.page_no].value = sexpr
-		self.page_widget.refresh_text()
-		self.dirty = True
+		self.text_model[self.page_no].raw_value = sexpr
 	
 	def on_zoom(self, zoom):
 		def event_handler(event):
@@ -482,8 +495,8 @@ class MainWindow(wx.Frame):
 			self.page_job = self.page.decode(wait = False)
 			self.page_proxy = PageProxy(
 				page = self.page,
-				text_model = self.text_model[self.page_no],
-				text_callback = self.set_dirty)
+				text_model = self.text_model[self.page_no])
+			self.page_proxy.register_text_callback(self._page_text_callback)
 		self.page_widget.page = self.page_proxy
 		self.text_browser.page = self.page_proxy
 

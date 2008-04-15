@@ -29,7 +29,11 @@ class TextBrowser(wx.TreeCtrl):
 			event.Veto()
 	
 	def do_begin_edit(self, item):
-		category, text, sexpr = self.GetPyData(item)
+		node = self.GetPyData(item)
+		try:
+			text = node.text
+		except AttributeError:
+			text = None
 		if text is not None:
 			self.SetItemText(item, text)
 			return True
@@ -44,26 +48,27 @@ class TextBrowser(wx.TreeCtrl):
 			event.Veto()
 	
 	def do_end_edit(self, item, text):
-		category, old_text, sexpr = self.GetPyData(item)
+		node = self.GetPyData(item)
 		if text is None:
 			text = old_text
-		else:
-			self.SetPyData(item, (category, text, sexpr))
-		sexpr[5] = text
-		wx.CallAfter(lambda: self.SetItemText(item, '%s: %s' % (category, text)))
+		print type(node)
+		node.text = text
+		wx.CallAfter(lambda: self.SetItemText(item, '%s: %s' % (node.type, text)))
 		return True
 
-	def _add_children(self, item, sexprs):
-		for sexpr in sexprs:
-			symbol = str(sexpr[0])
-			if len(sexpr) == 6 and isinstance(sexpr[5], djvu.sexpr.StringExpression):
-				text = sexpr[5].value.decode('UTF-8')
-				child_item = self.AppendItem(item, '%s: %s' % (symbol, text))
-			else:
+	def _add_children(self, item, nodes):
+		for node in nodes:
+			symbol = node.type
+			try:
+				text = node.text
+			except AttributeError:
 				text = None
-				child_item = self.AppendItem(item, str(sexpr[0]))
-				self._add_children(child_item, sexpr[5:])
-			self.SetPyData(child_item, (symbol, text, sexpr))
+			if text is None:
+				child_item = self.AppendItem(item, str(symbol))
+				self._add_children(child_item, node)
+			else:
+				child_item = self.AppendItem(item, '%s: %s' % (symbol, text))
+			self.SetPyData(child_item, node)
 
 	def _recreate_children(self):
 		root = self.GetRootItem()
@@ -71,11 +76,11 @@ class TextBrowser(wx.TreeCtrl):
 			self.Delete(root)
 		if self.page is None:
 			return
-		sexpr = self.page.text.sexpr
-		if len(sexpr):
-			root = self.AddRoot(str(sexpr[0].value))
+		node = self.page.text.root
+		if len(node):
+			root = self.AddRoot(str(node.type))
 			self._have_root= True
-			self._add_children(root, sexpr[5:])
+			self._add_children(root, node)
 
 __all__ = 'TextBrowser',
 
