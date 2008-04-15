@@ -144,12 +144,19 @@ class TextShape(wx.lib.ogl.RectangleShape):
 		# XXX self.AddText(text)
 		self.SetPen(self._text_pen)
 		self.SetBrush(wx.TRANSPARENT_BRUSH)
+		self.SetCentreResize(False)
 	
-	def _update_size(self):
+	def _update_size(self, dc = None):
 		x, y, w, h = self._xform_screen_to_real(self._node.rect)
 		self.SetSize(w, h)
-		self.SetX(x + w // 2)
-		self.SetY(y + h // 2)
+		x, y = x + w // 2, y + h // 2
+		self.SetX(x)
+		self.SetY(y)
+	
+	def update(self):
+		self._update_size()
+		canvas = self.GetCanvas()
+		canvas.Refresh()
 
 class PageTextCallback(models.text.PageTextCallback):
 
@@ -157,10 +164,52 @@ class PageTextCallback(models.text.PageTextCallback):
 		self._widget = widget
 	
 	def notify_node_change(self, node):
-		self._widget.page = True # FIXME: something lighter here
+		shape = self._widget._text_shapes.get(node, None)
+		if shape is not None:
+			shape.update()
+		# self._widget.page = True # FIXME: something lighter here
 		
 	def notify_tree_change(self, node):
 		self._widget.page = True
+
+class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
+
+	def __init__(self):
+		wx.lib.ogl.ShapeEvtHandler.__init__(self)
+
+	def OnLeftClick(self, x, y, keys=0, attachment=0):
+		shape = self.GetShape()
+		canvas = shape.GetCanvas()
+		dc = wx.ClientDC(canvas)
+		canvas.PrepareDC(dc)
+
+		if shape.Selected():
+			shape.Select(False, dc)
+			canvas.Redraw(dc)
+		else:
+			redraw = False
+			shapes = canvas.GetDiagram().GetShapeList()
+			to_unselect = list(shape for shape in shapes if shape.Selected())
+			shape.Select(True, dc)
+			for shape in to_unselect:
+				shape.Select(False, dc)
+			if to_unselect:
+				canvas.Redraw(dc)
+
+	def OnEndDragLeft(self, x, y, keys=0, attachment=0):
+		wx.lib.ogl.ShapeEvtHandler.OnEndDragLeft(self, x, y, keys, attachment)
+		shape = self.GetShape()
+		pass # XXX
+
+	def OnSizingEndDragLeft(self, pt, x, y, keys, attch):
+		wx.lib.ogl.ShapeEvtHandler.OnSizingEndDragLeft(self, pt, x, y, keys, attch)
+		shape = self.GetShape()
+		pass # XXX
+
+	def OnMovePost(self, dc, x, y, oldX, oldY, display):
+		wx.lib.ogl.ShapeEvtHandler.OnMovePost(self, dc, x, y, oldX, oldY, display)
+		shape = self.GetShape()
+		pass # XXX
 
 class PageWidget(wx.lib.ogl.ShapeCanvas):
 
@@ -172,7 +221,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self.SetDiagram(self._diagram)
 		self._diagram.SetCanvas(self)
 		self._image = None
-		self._text_shapes = []
+		self._text_shapes = {}
 		dc = wx.ClientDC(self)
 		self.PrepareDC(dc)
 		self._render_mode = decode.RENDER_COLOR
@@ -276,8 +325,12 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		if image is not None:
 			self.add_shape(image)
 		if self.render_text:
-			for shape in self._text_shapes:
+			for shape in self._text_shapes.itervalues():
 				self.add_shape(shape)
+				event_handler = ShapeEventHandler()
+				event_handler.SetShape(shape)
+				event_handler.SetPreviousHandler(shape.GetEventHandler())
+				shape.SetEventHandler(event_handler)
 		self.Refresh()
 
 	def add_shape(self, shape):
@@ -295,12 +348,15 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self.GetParent().SetupScrolling()
 
 	def setup_text_shapes(self):
-		self._text_shapes = []
+		self._text_shapes = {}
 		if not self.render_text or self._page_text is None:
 			return
 		xform_screen_to_real = self._xform_screen_to_real
 		try:
-			self._text_shapes = [TextShape(node, xform_screen_to_real) for node in self._page_text.get_leafs()]
+			self._text_shapes = dict(
+				(node, TextShape(node, xform_screen_to_real))
+				for node in self._page_text.get_leafs()
+			)
 				# font = dc.GetFont()
 				# font_size = h
 				# font.SetPixelSize((font_size, font_size))
@@ -312,7 +368,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 				# 	dc.SetFont(font)
 				# 	w1, h1 = dc.GetTextExtent(text)
 		except decode.NotAvailable, ex:
-			self._text_shapes = []
+			self._text_shapes = {}
 
 __all__ = (
 	'Zoom', 'PercentZoom', 'OneToOneZoom', 'StretchZoom', 'FitWidthZoom', 'FitPageZoom',
