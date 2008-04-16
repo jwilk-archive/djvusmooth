@@ -413,7 +413,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			items = \
 			[
 				(node, TextShape(node, have_text, xform_real_to_screen))
-				for node in self._page_text.get_postorder_nodes()
+				for node in self._page_text.get_preorder_nodes()
 				if node.type != page_symbol
 			]
 			self._text_shapes = tuple(shape for node, shape in items)
