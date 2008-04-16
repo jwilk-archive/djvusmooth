@@ -5,6 +5,7 @@ import os.path
 import subprocess
 
 def edit(file_name):
+	# FIXME: use something less Debian-specific
 	file_name = os.path.abspath(file_name)
 	edit = subprocess.Popen(
 		['edit', 'text/plain:%s' % file_name],
