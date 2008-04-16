@@ -14,7 +14,7 @@ class PageTextCallback(models.text.PageTextCallback):
 	
 	def notify_node_change(self, node):
 		wx.CallAfter(lambda: self._browser.notify_node_change(node))
-		
+
 	def notify_tree_change(self, node):
 		wx.CallAfter(lambda: self._browser.notify_tree_change(node))
 
