@@ -158,7 +158,9 @@ class MainWindow(wx.Frame):
 		menu_bar.Append(menu, '&File');
 		menu = wx.Menu()
 		menu.AppendItem(self.new_menu_item(menu, '&Metadata\tCtrl+M', 'Edit the document or page metadata', self.on_edit_metadata))
-		menu.AppendItem(self.new_menu_item(menu, '&Text\tCtrl+T', 'Edit page text in an external editor', self.on_external_edit_text))
+		submenu = wx.Menu()
+		submenu.AppendItem(self.new_menu_item(menu, '&External editor\tCtrl+T', 'Edit page text in an external editor', self.on_external_edit_text))
+		menu.AppendMenu(wx.ID_ANY, '&Text', submenu)
 		menu_bar.Append(menu, '&Edit');
 		menu = wx.Menu()
 		submenu = wx.Menu()
