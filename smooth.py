@@ -184,7 +184,7 @@ class MainWindow(wx.Frame):
 			submenu.AppendItem(item)
 			if percent == 100:
 				item.Check()
-		menu.AppendMenu(-1, '&Zoom', submenu)
+		menu.AppendMenu(wx.ID_ANY, '&Zoom', submenu)
 
 		submenu = wx.Menu()
 		for caption, help, method in \
@@ -198,7 +198,7 @@ class MainWindow(wx.Frame):
 			submenu.AppendItem(self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO))
 		submenu.AppendSeparator()
 		submenu.AppendItem(self.new_menu_item(submenu, '&Text\tT', u'Display the text layer', self.on_display_text, style=wx.ITEM_CHECK))
-		menu.AppendMenu(-1, '&Display', submenu)
+		menu.AppendMenu(wx.ID_ANY, '&Display', submenu)
 		menu.AppendItem(self.new_menu_item(menu, '&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh))
 		menu_bar.Append(menu, '&View')
 		menu = wx.Menu()
