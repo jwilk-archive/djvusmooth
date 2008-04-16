@@ -152,16 +152,31 @@ TEXT_COLORS = {
 
 class TextShape(wx.lib.ogl.RectangleShape):
 
-	def __init__(self, node, xform_real_to_screen):
+	def __init__(self, node, has_text, xform_real_to_screen):
 		wx.lib.ogl.RectangleShape.__init__(self, 100, 100)
 		self._xform_real_to_screen = xform_real_to_screen
 		self._node = node
 		self._update_size()
 		self._text_color = wx.Color(*TEXT_COLORS[node.type])
 		self._text_pen = wx.Pen(self._text_color, 1)
-		# XXX self.AddText(text)
-		self.SetPen(self._text_pen)
 		self.SetBrush(wx.TRANSPARENT_BRUSH)
+		if has_text:
+			try:
+				self.AddText(node.text)
+				# font = dc.GetFont()
+				# font_size = h
+				# font.SetPixelSize((font_size, font_size))
+				# dc.SetFont(font)
+				# w1, h1 = dc.GetTextExtent(text)
+				# if w1 > w:
+				# 	font_size = floor(font_size * 1.0 * w / w1)
+				# 	font.SetPixelSize((font_size, font_size))
+				# 	dc.SetFont(font)
+				# 	w1, h1 = dc.GetTextExtent(text)
+				self.SetBrush(wx.WHITE_BRUSH)
+			except AttributeError:
+				pass
+		self.SetPen(self._text_pen)
 		self.SetCentreResize(False)
 	
 	def _update_size(self, dc = None):
@@ -192,7 +207,7 @@ class PageTextCallback(models.text.PageTextCallback):
 		self._widget = widget
 	
 	def notify_node_change(self, node):
-		shape = self._widget._text_shapes.get(node, None)
+		shape = self._widget._text_shapes_map.get(node)
 		if shape is not None:
 			shape.update()
 		
@@ -231,11 +246,11 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self.SetDiagram(self._diagram)
 		self._diagram.SetCanvas(self)
 		self._image = None
-		self._text_shapes = {}
 		dc = wx.ClientDC(self)
 		self.PrepareDC(dc)
 		self._render_mode = decode.RENDER_COLOR
 		self._render_text = False
+		self.setup_text_shapes()
 		self._zoom = PercentZoom()
 		self.page = None
 	
@@ -335,7 +350,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		if image is not None:
 			self.add_shape(image)
 		if self.render_text:
-			for shape in self._text_shapes.itervalues():
+			for shape in self._text_shapes:
 				self.add_shape(shape)
 				event_handler = ShapeEventHandler()
 				event_handler.SetShape(shape)
@@ -358,29 +373,24 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self.GetParent().SetupScrolling()
 
 	def setup_text_shapes(self):
-		self._text_shapes = {}
+		self._text_shapes = ()
+		self._text_shapes_map = {}
 		if not self.render_text or self._page_text is None:
 			return
 		xform_real_to_screen = self._xform_real_to_screen
+		have_text = self.render_mode is None
 		try:
 			page_symbol = sexpr.Symbol('page')
-			self._text_shapes = dict(
-				(node, TextShape(node, xform_real_to_screen))
-				for node in self._page_text.get_preorder_nodes()
+			items = \
+			[
+				(node, TextShape(node, have_text, xform_real_to_screen))
+				for node in self._page_text.get_postorder_nodes()
 				if node.type != page_symbol
-			)
-				# font = dc.GetFont()
-				# font_size = h
-				# font.SetPixelSize((font_size, font_size))
-				# dc.SetFont(font)
-				# w1, h1 = dc.GetTextExtent(text)
-				# if w1 > w:
-				# 	font_size = floor(font_size * 1.0 * w / w1)
-				# 	font.SetPixelSize((font_size, font_size))
-				# 	dc.SetFont(font)
-				# 	w1, h1 = dc.GetTextExtent(text)
+			]
+			self._text_shapes = tuple(shape for node, shape in items)
+			self._text_shapes_map = dict(items)
 		except decode.NotAvailable, ex:
-			self._text_shapes = {}
+			pass
 
 __all__ = (
 	'Zoom', 'PercentZoom', 'OneToOneZoom', 'StretchZoom', 'FitWidthZoom', 'FitPageZoom',
