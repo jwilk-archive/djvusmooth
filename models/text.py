@@ -6,6 +6,7 @@ import copy
 import weakref
 import itertools
 
+import djvu.decode
 import djvu.sexpr
 
 from models import MultiPageModel
@@ -89,6 +90,9 @@ class Node(object):
 			return self._type
 		return property(get)
 	
+	def strip(self, zone):
+		raise NotImplementedError
+
 	def _notify_change(self):
 		return self._owner.notify_node_change(self)
 	
@@ -111,6 +115,11 @@ class LeafNode(Node):
 			self._notify_change()
 		return property(get, set)
 
+	def strip(self, zone):
+		if djvu.decode.cmp_text_zone(self.type, zone) <= 0:
+			return self.text
+		return self
+	
 	def __getitem__(self, n):
 		raise TypeError
 	
@@ -138,6 +147,27 @@ class InnerNode(Node):
 	@apply
 	def text():
 		return property()
+
+	def strip(self, zone):
+		stripped_children = [child.strip(zone) for child in self._children]
+		if djvu.decode.cmp_text_zone(self.type, zone) <= 0:
+			return ' '.join(stripped_children)
+		else:
+			node_children = [child for child in stripped_children if isinstance(child, Node)]
+			if node_children:
+				self._children = node_children
+				return self
+			else:
+				text = ' '.join(stripped_children)
+				return LeafNode(
+					djvu.sexpr.Expression((
+						self.type,
+						self.x, self.y,
+						self.x + self.w, self.y + self.h,
+						text
+					)), self._owner
+				)
+		return self
 	
 	def __getitem__(self, n):
 		return self._children[n]
@@ -154,7 +184,12 @@ class Text(MultiPageModel):
 		return PageText
 
 class PageTextCallback(object):
-	pass
+
+	def notify_node_change(self, node):
+		raise NotImplementedError(self)
+
+	def notify_tree_change(self, node):
+		raise NotImplementedError(self)
 
 class PageText(object):
 
@@ -184,7 +219,11 @@ class PageText(object):
 			self._root = Node(self._sexpr, self)
 			self.notify_tree_change()
 		return property(get, set)
-	
+
+	def strip(self, zone):
+		self._root.strip(zone)
+		self.notify_tree_change()
+
 	def clone(self):
 		from copy import copy
 		return copy(self)

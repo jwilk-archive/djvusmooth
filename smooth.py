@@ -22,6 +22,7 @@ import djvu.const
 from djvused import StreamEditor
 from gui.page import PageWidget, PercentZoom, OneToOneZoom, StretchZoom, FitWidthZoom, FitPageZoom
 from gui.metadata import MetadataDialog
+from gui.flatten_text import FlattenTextDialog
 from gui.text_browser import TextBrowser
 import text.mangle as text_mangle
 import gui.dialogs
@@ -399,7 +400,22 @@ class MainWindow(wx.Frame):
 			dialog.Destroy()
 
 	def on_flatten_text(self, event):
-		raise NotImplementedError
+		dialog = FlattenTextDialog(self)
+		zone = None
+		try:
+			if dialog.ShowModal() == wx.ID_OK:
+				scope_all = dialog.get_scope()
+				zone = dialog.get_zone()
+		finally:
+			dialog.Destroy()
+		if zone is None:
+			return
+		if scope_all:
+			page_nos = xrange(len(self.document.pages))
+		else:
+			page_nos = (self.page_no,)
+		for page_no in page_nos:
+			self.text_model[page_no].strip(zone)
 
 	def on_external_edit_text(self, event):
 		sexpr = self.text_model[self.page_no].raw_value
