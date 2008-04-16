@@ -401,24 +401,32 @@ class MainWindow(wx.Frame):
 			self.error_box('No “hidden” text to edit')
 			return
 		def job(sexpr, dialog):
-			tmp_file = tempfile.NamedTemporaryFile()
+			new_sexpr = None
 			try:
-				text_mangle.export(sexpr, tmp_file)
-				tmp_file.flush()
-				external_edit(tmp_file.name)
-				tmp_file.seek(0)
+				tmp_file = tempfile.NamedTemporaryFile()
 				try:
-					new_sexpr = text_mangle.import_(sexpr, tmp_file)
-				except text_mangle.NothingChanged:
-					new_sexpr = None
-			finally:
-				tmp_file.close()
-			wx.CallAfter(lambda: self.after_external_edit_text(new_sexpr, dialog))
+					text_mangle.export(sexpr, tmp_file)
+					tmp_file.flush()
+					external_edit(tmp_file.name)
+					tmp_file.seek(0)
+					try:
+						new_sexpr = text_mangle.import_(sexpr, tmp_file)
+					except text_mangle.NothingChanged:
+						pass
+				finally:
+					tmp_file.close()
+			except Exception, exception:
+				pass
+			else:
+				exception = None
+			wx.CallAfter(lambda: self.after_external_edit_text(new_sexpr, dialog, exception))
 		disabler = wx.WindowDisabler()
 		thread = threading.Thread(target = job, args = (sexpr, disabler))
 		thread.start()
 	
-	def after_external_edit_text(self, sexpr, disabler):
+	def after_external_edit_text(self, sexpr, disabler, exception):
+		if exception is not None:
+			raise exception
 		if sexpr is None:
 			# nothing changed
 			return
