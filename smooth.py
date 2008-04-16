@@ -195,7 +195,7 @@ class MainWindow(wx.Frame):
 		]:
 			submenu.AppendItem(self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO))
 		submenu.AppendSeparator()
-		submenu.AppendItem(self.new_menu_item(submenu, '&Text\tT', u'Display the „hidden” text', self.on_display_text, style=wx.ITEM_CHECK))
+		submenu.AppendItem(self.new_menu_item(submenu, '&Text\tT', u'Display the text layer', self.on_display_text, style=wx.ITEM_CHECK))
 		menu.AppendMenu(-1, '&Display', submenu)
 		menu.AppendItem(self.new_menu_item(menu, '&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh))
 		menu_bar.Append(menu, '&View')
@@ -398,7 +398,7 @@ class MainWindow(wx.Frame):
 	def on_external_edit_text(self, event):
 		sexpr = self.text_model[self.page_no].raw_value
 		if not len(sexpr):
-			self.error_box('No “hidden” text to edit')
+			self.error_box('No text layer to edit')
 			return
 		def job(sexpr, dialog):
 			new_sexpr = None
