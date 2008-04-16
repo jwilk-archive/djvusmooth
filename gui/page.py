@@ -81,7 +81,8 @@ class FitPageZoom(Zoom):
 
 class PageImage(wx.lib.ogl.RectangleShape):
 
-	def __init__(self, parent, page_job, real_page_size, viewport_size, screen_page_size, xform_real_to_screen, render_mode, zoom):
+	def __init__(self, widget, page_job, real_page_size, viewport_size, screen_page_size, xform_real_to_screen, render_mode, zoom):
+		self._widget = widget
 		self._render_mode = render_mode
 		self._zoom = zoom
 		self._screen_page_size = screen_page_size
@@ -101,6 +102,7 @@ class PageImage(wx.lib.ogl.RectangleShape):
 			shape.Select(False, dc)
 		if to_unselect:
 			canvas.Redraw(dc)
+		self._widget.on_shape_deselected(None)
 
 	def OnDraw(self, dc):
 		x, y, w, h = self.GetCanvas().GetUpdateRegion().GetBox()
@@ -173,7 +175,11 @@ class TextShape(wx.lib.ogl.RectangleShape):
 				self.SetBrush(wx.WHITE_BRUSH)
 		self.SetPen(self._text_pen)
 		self.SetCentreResize(False)
-	
+
+	@property
+	def node(self):
+		return self._node
+
 	def _update_size(self, dc = None):
 		x, y, w, h = self._xform_real_to_screen(self._node.rect)
 		font = self.GetFont()
@@ -220,7 +226,8 @@ class PageTextCallback(models.text.PageTextCallback):
 
 class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 
-	def __init__(self):
+	def __init__(self, widget):
+		self._widget = widget
 		wx.lib.ogl.ShapeEvtHandler.__init__(self)
 
 	def OnLeftClick(self, x, y, keys=0, attachment=0):
@@ -231,6 +238,7 @@ class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 		if shape.Selected():
 			shape.Select(False, dc)
 			canvas.Redraw(dc)
+			self._widget.on_shape_deselected(shape)
 		else:
 			redraw = False
 			to_unselect = list(shape for shape in canvas.GetDiagram().GetShapeList() if shape.Selected())
@@ -239,6 +247,7 @@ class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 				shape.Select(False, dc)
 			if to_unselect:
 				canvas.Redraw(dc)
+			self._widget.on_shape_selected(shape)
 
 class PageWidget(wx.lib.ogl.ShapeCanvas):
 
@@ -257,7 +266,23 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self.setup_text_shapes()
 		self._zoom = PercentZoom()
 		self.page = None
+
+	def SetStatusText(self, text):
+		parent = wx.GetTopLevelParent(self)
+		parent.SetStatusText(text)
+
+	def on_shape_selected(self, shape):
+		node = shape.node
+		text = '[Text layer] %s' % node.type
+		try:
+			text += ': %s' % node.text
+		except AttributeError:
+			pass
+		self.SetStatusText(text)
 	
+	def on_shape_deselected(self, shape):
+		self.SetStatusText('')
+
 	def on_parent_resize(self, event):
 		if self._zoom.rezoom_on_resize():
 			self.zoom = self._zoom
@@ -356,7 +381,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		if self.render_text:
 			for shape in self._text_shapes:
 				self.add_shape(shape)
-				event_handler = ShapeEventHandler()
+				event_handler = ShapeEventHandler(self)
 				event_handler.SetShape(shape)
 				event_handler.SetPreviousHandler(shape.GetEventHandler())
 				shape.SetEventHandler(event_handler)
