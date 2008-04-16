@@ -160,6 +160,7 @@ class MainWindow(wx.Frame):
 		menu.AppendItem(self.new_menu_item(menu, '&Metadata\tCtrl+M', 'Edit the document or page metadata', self.on_edit_metadata))
 		submenu = wx.Menu()
 		submenu.AppendItem(self.new_menu_item(menu, '&External editor\tCtrl+T', 'Edit page text in an external editor', self.on_external_edit_text))
+		submenu.AppendItem(self.new_menu_item(menu, '&Flatten', 'Remove details from page text', self.on_flatten_text))
 		menu.AppendMenu(wx.ID_ANY, '&Text', submenu)
 		menu_bar.Append(menu, '&Edit');
 		menu = wx.Menu()
@@ -396,6 +397,9 @@ class MainWindow(wx.Frame):
 				self.dirty = True
 		finally:
 			dialog.Destroy()
+
+	def on_flatten_text(self, event):
+		raise NotImplementedError
 
 	def on_external_edit_text(self, event):
 		sexpr = self.text_model[self.page_no].raw_value
