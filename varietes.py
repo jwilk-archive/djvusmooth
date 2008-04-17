@@ -4,6 +4,7 @@
 
 import exceptions
 import warnings
+import weakref
 
 class NotOverriddenWarning(exceptions.UserWarning):
 	pass
@@ -18,5 +19,14 @@ def not_overridden(f):
 		)
 		return f(self, *args, **kwargs)
 	return new_f
+
+
+def wref(obj):
+	if obj is None:
+		ref = weakref.ref(set())
+		assert ref() is None
+	else:
+		ref = weakref.ref(object)
+	return ref
 
 # vim:ts=4 sw=4
