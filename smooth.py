@@ -106,8 +106,14 @@ class PageTextCallback(models.text.PageTextCallback):
 	def notify_node_change(self, node):
 		self._owner.dirty = True
 	
-	def notify_node_select(self, node): pass
-	def notify_node_deselect(self, node): pass
+	def notify_node_select(self, node):
+		text = '[Text layer] %s' % node.type
+		if node.is_leaf():
+			text += ': %s' % node.text
+		self._owner.SetStatusText(text)
+
+	def notify_node_deselect(self, node):
+		self._owner.SetStatusText('')
 		
 	def notify_tree_change(self, node):
 		self._owner.dirty = True

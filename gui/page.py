@@ -306,10 +306,6 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self._zoom = PercentZoom()
 		self.page = None
 
-	def SetStatusText(self, text):
-		parent = wx.GetTopLevelParent(self)
-		parent.SetStatusText(text)
-
 	def on_node_selected(self, node):
 		try:
 			shape = self._text_shapes_map[node]
@@ -326,15 +322,9 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 
 	def _on_shape_selected(self, shape):
 		shape.select(notify = False) # in case it was selected otherwhere
-		node = shape.node
-		text = '[Text layer] %s' % node.type
-		if node.is_leaf():
-			text += ': %s' % node.text
-		self.SetStatusText(text)
 	
 	def _on_shape_deselected(self, shape):
 		shape.deselect(notify = False) # in case it was selected otherwhere
-		self.SetStatusText('')
 
 	def on_parent_resize(self, event):
 		if self._zoom.rezoom_on_resize():
