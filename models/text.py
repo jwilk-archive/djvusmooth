@@ -98,11 +98,20 @@ class Node(object):
 	
 	def strip(self, zone_type):
 		raise NotImplementedError
+	
+	def is_leaf(self):
+		return False
+	
+	def is_inner(self):
+		return False
 
 	def _notify_change(self):
 		return self._owner.notify_node_change(self)
 	
 class LeafNode(Node):
+
+	def is_leaf(self):
+		return True
 
 	def __init__(self, sexpr, owner):
 		Node.__init__(self, sexpr, owner)
@@ -136,6 +145,9 @@ class LeafNode(Node):
 		raise TypeError
 
 class InnerNode(Node):
+
+	def is_inner(self):
+		return True
 
 	def __init__(self, sexpr, owner):
 		Node.__init__(self, sexpr, owner)
