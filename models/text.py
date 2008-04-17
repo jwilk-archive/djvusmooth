@@ -105,7 +105,7 @@ class Node(object):
 		return property(get)
 
 	@apply
-	def left_sibling():
+	def right_sibling():
 		def get(self):
 			link = self._link_right()
 			if link is None:
@@ -126,7 +126,7 @@ class Node(object):
 	def left_child():
 		def get(self):
 			raise StopIteration
-		return property()
+		return property(get)
 	
 	def strip(self, zone_type):
 		raise NotImplementedError
