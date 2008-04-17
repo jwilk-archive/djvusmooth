@@ -9,7 +9,7 @@ import itertools
 import djvu.decode
 import djvu.sexpr
 
-from varietes import not_overridden
+from varietes import not_overridden, wref
 from models import MultiPageModel
 
 class Node(object):
@@ -29,6 +29,7 @@ class Node(object):
 		self._y = y0
 		self._w = x1 - x0
 		self._h = y1 - y0
+		self._link_left = self._link_right = self._link_parent = wref(None)
 	
 	@property
 	def sexpr(self):
@@ -94,6 +95,39 @@ class Node(object):
 			return self._type
 		return property(get)
 	
+	@apply
+	def left_sibling():
+		def get(self):
+			link = self._link_left()
+			if link is None:
+				raise StopIteration
+			return link
+		return property(get)
+
+	@apply
+	def left_sibling():
+		def get(self):
+			link = self._link_right()
+			if link is None:
+				raise StopIteration
+			return link
+		return property(get)
+
+	@apply
+	def parent():
+		def get(self):
+			link = self._link_parent()
+			if link is None:
+				raise StopIteration
+			return link
+		return property(get)
+	
+	@apply
+	def left_child():
+		def get(self):
+			raise StopIteration
+		return property()
+	
 	def strip(self, zone_type):
 		raise NotImplementedError
 	
@@ -155,7 +189,19 @@ class InnerNode(Node):
 
 	def __init__(self, sexpr, owner):
 		Node.__init__(self, sexpr, owner)
-		self._children = [Node(child, self._owner) for child in sexpr[5:]]
+		self._set_children(Node(child, self._owner) for child in sexpr[5:])
+	
+	def _set_children(self, children):
+		self._children = tuple(children)
+		prev = None
+		for child in self._children:
+			child._link_left = wref(prev)
+			prev = child
+		prev = None
+		for child in reversed(self._children):
+			child._link_right = wref(prev)
+			prev = child
+		child._link_parent = wref(self)
 
 	def _construct_sexpr(self):
 		x, y, w, h = self.x, self.y, self.w, self.h
@@ -170,6 +216,12 @@ class InnerNode(Node):
 	def text():
 		return property()
 
+	@apply
+	def left_child():
+		def get(self):
+			return iter(self._children).next()
+		return property(get)
+
 	def strip(self, zone_type):
 		stripped_children = [child.strip(zone_type) for child in self._children]
 		if self.type <= zone_type:
@@ -178,7 +230,7 @@ class InnerNode(Node):
 		else:
 			node_children = [child for child in stripped_children if isinstance(child, Node)]
 			if node_children:
-				self._children = node_children
+				self._set_children(node_children)
 				return self
 			else:
 				texts = [text for text, child_separator in stripped_children]
