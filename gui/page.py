@@ -261,6 +261,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self._initial_size = self.GetSize()
 		self.SetBackgroundColour(wx.WHITE)
 		self._diagram = wx.lib.ogl.Diagram()
+		self._diagram.SetSnapToGrid(False)
 		self.SetDiagram(self._diagram)
 		self._diagram.SetCanvas(self)
 		self._image = None
