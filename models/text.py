@@ -40,6 +40,12 @@ class Node(object):
 		raise NotImplementedError
 
 	@apply
+	def separator():
+		def get(self):
+			return djvu.const.TEXT_ZONE_SEPARATORS[self._type]
+		return property(get)
+
+	@apply
 	def x():
 		def get(self):
 			return self._x
@@ -117,7 +123,7 @@ class LeafNode(Node):
 
 	def strip(self, zone_type):
 		if self.type <= zone_type:
-			return self.text
+			return self.text, self.separator
 		return self
 	
 	def __getitem__(self, n):
@@ -151,15 +157,17 @@ class InnerNode(Node):
 	def strip(self, zone_type):
 		stripped_children = [child.strip(zone_type) for child in self._children]
 		if self.type <= zone_type:
-			return ' '.join(stripped_children)
+			texts = [text for text, child_separator in stripped_children]
+			return child_separator.join(texts), self.separator
 		else:
 			node_children = [child for child in stripped_children if isinstance(child, Node)]
 			if node_children:
 				self._children = node_children
 				return self
 			else:
-				text = ' '.join(stripped_children)
-				return LeafNode(
+				texts = [text for text, child_separator in stripped_children]
+				text = child_separator.join(texts)
+				return Node(
 					djvu.sexpr.Expression((
 						self.type,
 						self.x, self.y,
@@ -222,7 +230,7 @@ class PageText(object):
 
 	def strip(self, zone_type):
 		zone_type = djvu.const.get_text_zone_type(zone_type) # ensure it's not a plain Symbol
-		self._root.strip(zone_type)
+		self._root = self._root.strip(zone_type)
 		self.notify_tree_change()
 
 	def clone(self):
