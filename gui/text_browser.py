@@ -24,15 +24,15 @@ class PageTextCallback(models.text.PageTextCallback):
 		self._browser = browser
 	
 	def notify_node_change(self, node):
-		wx.CallAfter(lambda: self._browser.notify_node_change(node))
+		wx.CallAfter(lambda: self._browser.on_node_change(node))
 
 	def notify_tree_change(self, node):
-		wx.CallAfter(lambda: self._browser.notify_tree_change(node))
+		wx.CallAfter(lambda: self._browser.on_tree_change(node))
 	
 	def notify_node_deselect(self, node): pass
 	
 	def notify_node_select(self, node):
-		wx.CallAfter(lambda: self._browser.notify_node_select(node))
+		wx.CallAfter(lambda: self._browser.on_node_select(node))
 
 class TextBrowser(wx.TreeCtrl):
 
@@ -44,7 +44,7 @@ class TextBrowser(wx.TreeCtrl):
 		self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.on_end_edit, self)
 		self.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_selection_changed, self)
 	
-	def notify_node_change(self, node):
+	def on_node_change(self, node):
 		try:
 			item = self._items[node]
 		except KeyError:
@@ -53,7 +53,7 @@ class TextBrowser(wx.TreeCtrl):
 			return
 		self.SetItemText(item, get_label_for_node(node))
 
-	def notify_node_select(self, node):
+	def on_node_select(self, node):
 		try:
 			item = self._items[node]
 		except KeyError:
@@ -61,7 +61,7 @@ class TextBrowser(wx.TreeCtrl):
 		if self.GetSelection() != item:
 			self.SelectItem(item)
 
-	def notify_tree_change(self, model_node):
+	def on_tree_change(self, model_node):
 		self.page = True
 
 	@apply
