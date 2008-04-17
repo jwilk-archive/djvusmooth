@@ -8,6 +8,8 @@ import wx.lib.ogl
 from math import floor
 
 from djvu import decode, sexpr
+import djvu.const
+
 import models.text
 
 PIXEL_FORMAT = decode.PixelFormatRgb()
@@ -146,10 +148,12 @@ class PageImage(wx.lib.ogl.RectangleShape):
 		dc.EndDrawing()
 
 TEXT_COLORS = {
-	sexpr.Symbol('region'): (0x80, 0x80, 0x80),
-	sexpr.Symbol('para'):   (0x80, 0x00, 0x00),
-	sexpr.Symbol('line'):   (0x80, 0x00, 0x80),
-	sexpr.Symbol('word'):   (0x00, 0x00, 0x80),
+	djvu.const.TEXT_ZONE_COLUMN:    (0x80, 0x80, 0x00),
+	djvu.const.TEXT_ZONE_REGION:    (0x80, 0x80, 0x80),
+	djvu.const.TEXT_ZONE_PARAGRAPH: (0x80, 0x00, 0x00),
+	djvu.const.TEXT_ZONE_LINE:      (0x80, 0x00, 0x80),
+	djvu.const.TEXT_ZONE_WORD:      (0x00, 0x00, 0x80),
+	djvu.const.TEXT_ZONE_CHARACTER: (0x00, 0x80, 0x00),
 }
 
 class TextShape(wx.lib.ogl.RectangleShape):
@@ -410,12 +414,12 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		xform_real_to_screen = self._xform_real_to_screen
 		have_text = self.render_mode is None
 		try:
-			page_symbol = sexpr.Symbol('page')
+			page_type = sexpr.Symbol('page')
 			items = \
 			[
 				(node, TextShape(node, have_text, xform_real_to_screen))
 				for node in self._page_text.get_preorder_nodes()
-				if node.type != page_symbol
+				if node.type < djvu.const.TEXT_ZONE_PAGE
 			]
 			self._text_shapes = tuple(shape for node, shape in items)
 			self._text_shapes_map = dict(items)

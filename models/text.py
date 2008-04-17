@@ -25,7 +25,7 @@ class Node(object):
 
 	def __init__(self, sexpr, owner):
 		self._owner = owner
-		self._type = sexpr[0].value
+		self._type = djvu.const.get_text_zone_type(sexpr[0].value)
 		x0, y0, x1, y1 = (sexpr[i].value for i in xrange(1, 5))
 		self._x = x0
 		self._y = y0
@@ -90,7 +90,7 @@ class Node(object):
 			return self._type
 		return property(get)
 	
-	def strip(self, zone):
+	def strip(self, zone_type):
 		raise NotImplementedError
 
 	def _notify_change(self):
@@ -115,8 +115,8 @@ class LeafNode(Node):
 			self._notify_change()
 		return property(get, set)
 
-	def strip(self, zone):
-		if djvu.decode.cmp_text_zone(self.type, zone) <= 0:
+	def strip(self, zone_type):
+		if self.type <= zone_type:
 			return self.text
 		return self
 	
@@ -148,9 +148,9 @@ class InnerNode(Node):
 	def text():
 		return property()
 
-	def strip(self, zone):
-		stripped_children = [child.strip(zone) for child in self._children]
-		if djvu.decode.cmp_text_zone(self.type, zone) <= 0:
+	def strip(self, zone_type):
+		stripped_children = [child.strip(zone_type) for child in self._children]
+		if self.type <= zone_type:
 			return ' '.join(stripped_children)
 		else:
 			node_children = [child for child in stripped_children if isinstance(child, Node)]
@@ -220,8 +220,9 @@ class PageText(object):
 			self.notify_tree_change()
 		return property(get, set)
 
-	def strip(self, zone):
-		self._root.strip(zone)
+	def strip(self, zone_type):
+		zone_type = djvu.const.get_text_zone_type(zone_type) # ensure it's not a plain Symbol
+		self._root.strip(zone_type)
 		self.notify_tree_change()
 
 	def clone(self):
