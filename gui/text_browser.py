@@ -1,19 +1,21 @@
 # encoding=UTF-8
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
+import re
 import wx
 
 import djvu.sexpr
 
 import models.text
 
+replace_control_characters = re.compile('[\0-\x1f]+').sub
+
 def get_label_for_node(node):
 	zone_type = node.type
 	if node.is_inner():
 		return str(zone_type)
 	else:
-		text = node.text
-		# TODO: replace control codes with spaces or sth
+		text = replace_control_characters(' ', node.text)
 		return '%s: %s' % (zone_type, text)
 
 class PageTextCallback(models.text.PageTextCallback):
