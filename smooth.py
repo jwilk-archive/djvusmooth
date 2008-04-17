@@ -121,17 +121,17 @@ class MainWindow(wx.Frame):
 
 	def __init__(self):
 		wx.Frame.__init__(self, None, size=wx.Size(640, 480))
-		self.Connect(-1, -1, wx.EVT_DJVU_MESSAGE, self.handle_message)
+		self.Connect(wx.ID_ANY, wx.ID_ANY, wx.EVT_DJVU_MESSAGE, self.handle_message)
 		self.context = Context(self)
 		self._page_text_callback = PageTextCallback(self)
 		self.status_bar = self.CreateStatusBar(2, style = wx.ST_SIZEGRIP)
-		self.splitter = wx.SplitterWindow(self, -1, style = wx.SP_LIVE_UPDATE)
-		self.sidebar = wx.Panel(self.splitter, -1, size = (5, 5))
+		self.splitter = wx.SplitterWindow(self, style = wx.SP_LIVE_UPDATE)
+		self.sidebar = wx.Panel(self.splitter, size = (5, 5))
 		self.text_browser = TextBrowser(self.sidebar)
 		sidebar_sizer = wx.BoxSizer(wx.VERTICAL)
 		self.sidebar.SetSizer(sidebar_sizer)
 		sidebar_sizer.Add(self.text_browser, 1, wx.ALL | wx.EXPAND)
-		self.scrolled_panel = wx.lib.scrolledpanel.ScrolledPanel(self.splitter, -1)
+		self.scrolled_panel = wx.lib.scrolledpanel.ScrolledPanel(self.splitter)
 		self.splitter._default_position = 160
 		self.splitter.SetSashGravity(0.1)
 		self.do_show_sidebar()
