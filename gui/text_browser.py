@@ -7,6 +7,15 @@ import djvu.sexpr
 
 import models.text
 
+def get_label_for_node(node):
+	zone_type = node.type
+	if node.is_inner():
+		return str(zone_type)
+	else:
+		text = node.text
+		# TODO: replace control codes with spaces or sth
+		return '%s: %s' % (zone_type, text)
+
 class PageTextCallback(models.text.PageTextCallback):
 
 	def __init__(self, browser):
@@ -32,11 +41,9 @@ class TextBrowser(wx.TreeCtrl):
 			item = self._items[node]
 		except KeyError:
 			return
-		try:
-			text = node.text
-		except AttributeError:
-			return	
-		self.SetItemText(item, '%s: %s' % (node.type, text))
+		if node.is_inner():
+			return
+		self.SetItemText(item, get_label_for_node(node))
 
 	def notify_tree_change(self, model_node):
 		self.page = True
@@ -61,12 +68,8 @@ class TextBrowser(wx.TreeCtrl):
 	
 	def do_begin_edit(self, item):
 		node = self.GetPyData(item)
-		try:
-			text = node.text
-		except AttributeError:
-			text = None
-		if text is not None:
-			self.SetItemText(item, text)
+		if node.is_leaf():
+			self.SetItemText(item, node.text)
 			return True
 	
 	def on_end_edit(self, event):
@@ -88,15 +91,12 @@ class TextBrowser(wx.TreeCtrl):
 	def _add_children(self, item, nodes):
 		for node in nodes:
 			symbol = node.type
-			try:
-				text = node.text
-			except AttributeError:
-				text = None
-			if text is None:
-				child_item = self.AppendItem(item, str(symbol))
+			label = get_label_for_node(node)
+			if node.is_inner():
+				child_item = self.AppendItem(item, label)
 				self._add_children(child_item, node)
 			else:
-				child_item = self.AppendItem(item, '%s: %s' % (symbol, text))
+				child_item = self.AppendItem(item, label)
 			self._items[node] = child_item
 			self.SetPyData(child_item, node)
 
