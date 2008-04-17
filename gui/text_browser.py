@@ -42,7 +42,8 @@ class TextBrowser(wx.TreeCtrl):
 		self.page = None
 		self.Bind(wx.EVT_TREE_BEGIN_LABEL_EDIT, self.on_begin_edit, self)
 		self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.on_end_edit, self)
-
+		self.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_selection_changed, self)
+	
 	def notify_node_change(self, node):
 		try:
 			item = self._items[node]
@@ -75,6 +76,13 @@ class TextBrowser(wx.TreeCtrl):
 				self._page.text.register_callback(self._callback)
 			self._recreate_children()
 		return property(get, set)
+
+	def on_selection_changed(self, event):
+		item = event.GetItem()
+		if item:
+			node = self.GetPyData(item)
+			node.notify_select()
+		event.Skip()
 
 	def on_begin_edit(self, event):
 		item = event.GetItem()

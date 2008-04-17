@@ -217,6 +217,40 @@ class TextShape(wx.lib.ogl.RectangleShape):
 		wx.lib.ogl.RectangleShape.OnMovePost(self, dc, x, y, old_x, old_y, display)
 		self._update_node_size()
 
+	def get_cdc(self):
+		canvas = self.GetCanvas()
+		dc = wx.ClientDC(canvas)
+		canvas.PrepareDC(dc)
+		return canvas, dc
+
+	def deselect(self, notify = True, cdc = None):
+		if not self.Selected():
+			return
+		try:
+			canvas, dc = cdc
+		except TypeError:
+			canvas, dc = self.get_cdc()
+		self.Select(False, dc)
+		canvas.Redraw(dc)
+		if notify:
+			self.node.notify_deselect()
+	
+	def select(self, notify = True, cdc = None):
+		if self.Selected():
+			return
+		try:
+			canvas, dc = cdc
+		except TypeError:
+			canvas, dc = self.get_cdc()
+		to_deselect = list(shape for shape in canvas.GetDiagram().GetShapeList() if shape.Selected())
+		self.Select(True, dc)
+		for shape in to_deselect:
+			shape.Select(False, dc)
+		if to_deselect:
+			canvas.Redraw(dc)
+		if notify:
+			self.node.notify_select()
+
 class PageTextCallback(models.text.PageTextCallback):
 
 	def __init__(self, widget):
@@ -231,7 +265,7 @@ class PageTextCallback(models.text.PageTextCallback):
 		self._widget.on_node_selected(node)
 	
 	def notify_node_deselect(self, node):
-		self._widget.on_node_selected(node)
+		self._widget.on_node_deselected(node)
 		
 	def notify_tree_change(self, node):
 		self._widget.page = True
@@ -248,18 +282,10 @@ class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 		dc = wx.ClientDC(canvas)
 		canvas.PrepareDC(dc)
 		if shape.Selected():
-			shape.Select(False, dc)
-			canvas.Redraw(dc)
-			shape.node.notify_deselect()
+			print 'Q1'
+			shape.deselect(notify = True)
 		else:
-			redraw = False
-			to_deselect = list(shape for shape in canvas.GetDiagram().GetShapeList() if shape.Selected())
-			shape.Select(True, dc)
-			for unshape in to_deselect:
-				unshape.Select(False, dc)
-			if to_deselect:
-				canvas.Redraw(dc)
-			shape.node.notify_select()
+			shape.select(notify = True)
 	
 class PageWidget(wx.lib.ogl.ShapeCanvas):
 
@@ -299,6 +325,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		return self._on_shape_deselected(shape)
 
 	def _on_shape_selected(self, shape):
+		shape.select(notify = False) # in case it was selected otherwhere
 		node = shape.node
 		text = '[Text layer] %s' % node.type
 		if node.is_leaf():
@@ -306,6 +333,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self.SetStatusText(text)
 	
 	def _on_shape_deselected(self, shape):
+		shape.deselect(notify = False) # in case it was selected otherwhere
 		self.SetStatusText('')
 
 	def on_parent_resize(self, event):
