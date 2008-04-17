@@ -248,8 +248,8 @@ class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 			redraw = False
 			to_unselect = list(shape for shape in canvas.GetDiagram().GetShapeList() if shape.Selected())
 			shape.Select(True, dc)
-			for shape in to_unselect:
-				shape.Select(False, dc)
+			for unshape in to_unselect:
+				unshape.Select(False, dc)
 			if to_unselect:
 				canvas.Redraw(dc)
 			self._widget.on_shape_selected(shape)
@@ -280,10 +280,8 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 	def on_shape_selected(self, shape):
 		node = shape.node
 		text = '[Text layer] %s' % node.type
-		try:
+		if node.is_leaf():
 			text += ': %s' % node.text
-		except AttributeError:
-			pass
 		self.SetStatusText(text)
 	
 	def on_shape_deselected(self, shape):
