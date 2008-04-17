@@ -28,10 +28,15 @@ class PageTextCallback(models.text.PageTextCallback):
 
 	def notify_tree_change(self, node):
 		wx.CallAfter(lambda: self._browser.notify_tree_change(node))
+	
+	def notify_node_deselect(self, node): pass
+	
+	def notify_node_select(self, node):
+		wx.CallAfter(lambda: self._browser.notify_node_select(node))
 
 class TextBrowser(wx.TreeCtrl):
 
-	def __init__(self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.DefaultSize, style = wx.TR_HAS_BUTTONS | wx.TR_EDIT_LABELS | wx.TR_MULTIPLE | wx.TR_HIDE_ROOT):
+	def __init__(self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.DefaultSize, style = wx.TR_HAS_BUTTONS | wx.TR_EDIT_LABELS | wx.TR_HIDE_ROOT):
 		wx.TreeCtrl.__init__(self, parent, id, pos, size, style)
 		self._have_root = False
 		self.page = None
@@ -46,6 +51,14 @@ class TextBrowser(wx.TreeCtrl):
 		if node.is_inner():
 			return
 		self.SetItemText(item, get_label_for_node(node))
+
+	def notify_node_select(self, node):
+		try:
+			item = self._items[node]
+		except KeyError:
+			return
+		if self.GetSelection() != item:
+			self.SelectItem(item)
 
 	def notify_tree_change(self, model_node):
 		self.page = True
