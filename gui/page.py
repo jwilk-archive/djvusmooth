@@ -166,17 +166,12 @@ class TextShape(wx.lib.ogl.RectangleShape):
 		self._text_color = wx.Color(*TEXT_COLORS[node.type])
 		self._text_pen = wx.Pen(self._text_color, 1)
 		self.SetBrush(wx.TRANSPARENT_BRUSH)
+		self._shows_text = has_text
 		self._text = None
-		if has_text:
-			try:
-				self.AddText(node.text)
-			except AttributeError:
-				pass
-			else:
-				self._text = node.text
-				self._textMarginX = 1
-				self._textMarginY = 1
-				self.SetBrush(wx.WHITE_BRUSH)
+		if self._update_text() is not None:
+			self._textMarginX = 1
+			self._textMarginY = 1
+			self.SetBrush(wx.WHITE_BRUSH)
 		self.SetPen(self._text_pen)
 		self.SetCentreResize(False)
 
@@ -184,7 +179,7 @@ class TextShape(wx.lib.ogl.RectangleShape):
 	def node(self):
 		return self._node
 
-	def _update_size(self, dc = None):
+	def _update_size(self):
 		x, y, w, h = self._xform_real_to_screen(self._node.rect)
 		font = self.GetFont()
 		if h <= 13:
@@ -198,11 +193,18 @@ class TextShape(wx.lib.ogl.RectangleShape):
 		x, y = x + w // 2, y + h // 2
 		self.SetX(x)
 		self.SetY(y)
-		if self._text is None:
-			return
+	
+	def _update_text(self):
+		self.ClearText()
+		node = self._node
+		if self._shows_text and node.is_leaf():
+			text = self._text = node.text
+			self.AddText(text)
+			return text
 	
 	def update(self):
 		self._update_size()
+		self._update_text()
 		canvas = self.GetCanvas()
 		canvas.Refresh() # FIXME: something lighter here?
 
