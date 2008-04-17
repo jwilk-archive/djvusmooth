@@ -26,7 +26,7 @@ def wref(obj):
 		ref = weakref.ref(set())
 		assert ref() is None
 	else:
-		ref = weakref.ref(object)
+		ref = weakref.ref(obj)
 	return ref
 
 # vim:ts=4 sw=4
