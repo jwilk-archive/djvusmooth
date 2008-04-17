@@ -193,7 +193,7 @@ class TextShape(wx.lib.ogl.RectangleShape):
 		x, y = x + w // 2, y + h // 2
 		self.SetX(x)
 		self.SetY(y)
-	
+
 	def _update_text(self):
 		self.ClearText()
 		node = self._node
@@ -201,7 +201,7 @@ class TextShape(wx.lib.ogl.RectangleShape):
 			text = self._text = node.text
 			self.AddText(text)
 			return text
-	
+
 	def update(self):
 		self._update_size()
 		self._update_text()
@@ -234,7 +234,7 @@ class TextShape(wx.lib.ogl.RectangleShape):
 		canvas.Redraw(dc)
 		if notify:
 			self.node.notify_deselect()
-	
+
 	def select(self, notify = True, cdc = None):
 		if self.Selected():
 			return
@@ -255,18 +255,18 @@ class PageTextCallback(models.text.PageTextCallback):
 
 	def __init__(self, widget):
 		self._widget = widget
-	
+
 	def notify_node_change(self, node):
 		shape = self._widget._text_shapes_map.get(node)
 		if shape is not None:
 			shape.update()
-	
+
 	def notify_node_select(self, node):
 		self._widget.on_node_selected(node)
-	
+
 	def notify_node_deselect(self, node):
 		self._widget.on_node_deselected(node)
-		
+
 	def notify_tree_change(self, node):
 		self._widget.page = True
 
@@ -286,7 +286,7 @@ class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 			shape.deselect(notify = True)
 		else:
 			shape.select(notify = True)
-	
+
 class PageWidget(wx.lib.ogl.ShapeCanvas):
 
 	_WXK_TO_LINK_GETTER = \
@@ -354,7 +354,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 	def _on_shape_selected(self, shape):
 		shape.select(notify = False) # in case it was selected otherwhere
 		self._current_shape = shape
-	
+
 	def _on_shape_deselected(self, shape):
 		shape.deselect(notify = False) # in case it was selected otherwhere
 		self._current_shape = None
@@ -382,11 +382,11 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			self.setup_text_shapes()
 			self.recreate_shapes()
 		return property(get, set)
-	
+
 	def refresh_text(self):
 		if self.render_text:
 			self.Refresh()
-	
+
 	@apply
 	def zoom():
 		def get(self):
@@ -467,7 +467,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		shape.SetCanvas(self)
 		shape.Show(True)
 		self._diagram.AddShape(shape)
-	
+
 	def remove_all_shapes(self):
 		self._diagram.RemoveAllShapes()
 
