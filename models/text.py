@@ -9,10 +9,8 @@ import itertools
 import djvu.decode
 import djvu.sexpr
 
+from varietes import not_overridden
 from models import MultiPageModel
-
-class Listener(object):
-	pass
 
 class Node(object):
 
@@ -205,11 +203,21 @@ class Text(MultiPageModel):
 
 class PageTextCallback(object):
 
+	@not_overridden
 	def notify_node_change(self, node):
-		raise NotImplementedError(self)
+		pass
+	
+	@not_overridden
+	def notify_node_select(self, node):
+		pass
 
+	@not_overridden
+	def notify_node_deselect(self, node):
+		pass
+
+	@not_overridden
 	def notify_tree_change(self, node):
-		raise NotImplementedError(self)
+		pass
 
 class PageText(object):
 
