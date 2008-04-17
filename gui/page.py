@@ -99,12 +99,12 @@ class PageImage(wx.lib.ogl.RectangleShape):
 		canvas = shape.GetCanvas()
 		dc = wx.ClientDC(canvas)
 		canvas.PrepareDC(dc)
-		to_unselect = list(shape for shape in canvas.GetDiagram().GetShapeList() if shape.Selected())
-		for shape in to_unselect:
+		to_deselect = list(shape for shape in canvas.GetDiagram().GetShapeList() if shape.Selected())
+		for shape in to_deselect:
 			shape.Select(False, dc)
-		if to_unselect:
+		if to_deselect:
 			canvas.Redraw(dc)
-		self._widget.on_shape_deselected(None)
+			shape.node.notify_deselect()
 
 	def OnDraw(self, dc):
 		x, y, w, h = self.GetCanvas().GetUpdateRegion().GetBox()
@@ -226,6 +226,12 @@ class PageTextCallback(models.text.PageTextCallback):
 		shape = self._widget._text_shapes_map.get(node)
 		if shape is not None:
 			shape.update()
+	
+	def notify_node_select(self, node):
+		self._widget.on_node_selected(node)
+	
+	def notify_node_deselect(self, node):
+		self._widget.on_node_selected(node)
 		
 	def notify_tree_change(self, node):
 		self._widget.page = True
@@ -244,17 +250,17 @@ class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 		if shape.Selected():
 			shape.Select(False, dc)
 			canvas.Redraw(dc)
-			self._widget.on_shape_deselected(shape)
+			shape.node.notify_deselect()
 		else:
 			redraw = False
-			to_unselect = list(shape for shape in canvas.GetDiagram().GetShapeList() if shape.Selected())
+			to_deselect = list(shape for shape in canvas.GetDiagram().GetShapeList() if shape.Selected())
 			shape.Select(True, dc)
-			for unshape in to_unselect:
+			for unshape in to_deselect:
 				unshape.Select(False, dc)
-			if to_unselect:
+			if to_deselect:
 				canvas.Redraw(dc)
-			self._widget.on_shape_selected(shape)
-
+			shape.node.notify_select()
+	
 class PageWidget(wx.lib.ogl.ShapeCanvas):
 
 	def __init__(self, parent):
@@ -278,14 +284,28 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		parent = wx.GetTopLevelParent(self)
 		parent.SetStatusText(text)
 
-	def on_shape_selected(self, shape):
+	def on_node_selected(self, node):
+		try:
+			shape = self._text_shapes_map[node]
+		except KeyError:
+			return
+		return self._on_shape_selected(shape)
+
+	def on_node_deselected(self, node):
+		try:
+			shape = self._text_shapes_map[node]
+		except KeyError:
+			return
+		return self._on_shape_deselected(shape)
+
+	def _on_shape_selected(self, shape):
 		node = shape.node
 		text = '[Text layer] %s' % node.type
 		if node.is_leaf():
 			text += ': %s' % node.text
 		self.SetStatusText(text)
 	
-	def on_shape_deselected(self, shape):
+	def _on_shape_deselected(self, shape):
 		self.SetStatusText('')
 
 	def on_parent_resize(self, event):
