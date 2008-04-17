@@ -253,7 +253,7 @@ class MainWindow(wx.Frame):
 	def on_open(self, event):
 		dialog = OpenDialog(self)
 		try:
-			if dialog.ShowModal():
+			if dialog.ShowModal() == wx.ID_OK:
 				self.do_open(dialog.GetPath())
 		finally:
 			dialog.Destroy()
