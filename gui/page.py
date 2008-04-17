@@ -289,6 +289,14 @@ class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 	
 class PageWidget(wx.lib.ogl.ShapeCanvas):
 
+	_WXK_TO_LINK_GETTER = \
+	{
+		wx.WXK_LEFT:  lambda node: node.left_sibling,
+		wx.WXK_RIGHT: lambda node: node.right_sibling,
+		wx.WXK_UP:    lambda node: node.parent,
+		wx.WXK_DOWN:  lambda node: node.left_child
+	}
+
 	def __init__(self, parent):
 		wx.lib.ogl.ShapeCanvas.__init__(self, parent)
 		self._initial_size = self.GetSize()
@@ -305,6 +313,29 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self.setup_text_shapes()
 		self._zoom = PercentZoom()
 		self.page = None
+		self._current_shape = None
+		self.Bind(wx.EVT_CHAR, self.on_char)
+
+	def on_char(self, event):
+		skip = True
+		try:
+			shape = self._current_shape
+			if shape is None:
+				return
+			try:
+				link_getter = self._WXK_TO_LINK_GETTER[event.GetKeyCode()]
+				next_node = link_getter(shape.node)
+				next_shape = self._text_shapes_map[next_node]
+			except (KeyError, StopIteration):
+				return
+			skip = False
+		finally:
+			if skip:
+				event.Skip()
+		def reselect():
+			shape.deselect()
+			next_shape.select()
+		wx.CallAfter(reselect)
 
 	def on_node_selected(self, node):
 		try:
@@ -322,9 +353,11 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 
 	def _on_shape_selected(self, shape):
 		shape.select(notify = False) # in case it was selected otherwhere
+		self._current_shape = shape
 	
 	def _on_shape_deselected(self, shape):
 		shape.deselect(notify = False) # in case it was selected otherwhere
+		self._current_shape = None
 
 	def on_parent_resize(self, event):
 		if self._zoom.rezoom_on_resize():
