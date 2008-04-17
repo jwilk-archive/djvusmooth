@@ -229,7 +229,6 @@ class PageTextCallback(models.text.PageTextCallback):
 		
 	def notify_tree_change(self, node):
 		self._widget.page = True
-	
 
 class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 
