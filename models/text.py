@@ -103,6 +103,12 @@ class Node(object):
 	def is_inner(self):
 		return False
 
+	def notify_select(self):
+		self._owner.notify_node_select(self)
+	
+	def notify_deselect(self):
+		self._owner.notify_node_deselect(self)
+	
 	def _notify_change(self):
 		return self._owner.notify_node_change(self)
 	
@@ -272,6 +278,12 @@ class PageText(object):
 		self._dirty = True
 		for callback in self._callbacks:
 			callback.notify_node_change(node)
+	
+	def notify_node_select(self, node):
+		for callback in self._callbacks: callback.notify_node_select(node)
+
+	def notify_node_deselect(self, node):
+		for callback in self._callbacks: callback.notify_node_deselect(node)
 	
 	def notify_tree_change(self):
 		self._dirty = True
