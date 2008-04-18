@@ -170,8 +170,8 @@ class MainWindow(wx.Frame):
 		menu = wx.Menu()
 		self.new_menu_item(menu, '&Metadata\tCtrl+M', 'Edit the document or page metadata', self.on_edit_metadata)
 		submenu = wx.Menu()
-		self.new_menu_item(menu, '&External editor\tCtrl+T', 'Edit page text in an external editor', self.on_external_edit_text)
-		self.new_menu_item(menu, '&Flatten', 'Remove details from page text', self.on_flatten_text)
+		self.new_menu_item(submenu, '&External editor\tCtrl+T', 'Edit page text in an external editor', self.on_external_edit_text)
+		self.new_menu_item(submenu, '&Flatten', 'Remove details from page text', self.on_flatten_text)
 		menu.AppendMenu(wx.ID_ANY, '&Text', submenu)
 		menu_bar.Append(menu, '&Edit');
 		menu = wx.Menu()
