@@ -289,7 +289,6 @@ class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 		dc = wx.ClientDC(canvas)
 		canvas.PrepareDC(dc)
 		if shape.Selected():
-			print 'Q1'
 			shape.deselect(notify = True)
 		else:
 			shape.select(notify = True)
