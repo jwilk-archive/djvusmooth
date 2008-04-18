@@ -551,7 +551,7 @@ class Context(decode.Context):
 	def handle_message(self, message):
 		wx.PostEvent(self.window, WxDjVuMessage(message))
 
-class SmoothApp(wx.App):
+class Application(wx.App):
 
 	def __init__(self, argv):
 		self._argv = argv
@@ -565,8 +565,7 @@ class SmoothApp(wx.App):
 			window.do_open(self._argv.pop(0))
 		return True
 
-def main(argv):
-	app = SmoothApp(argv)
-	app.MainLoop()
+	def start(self):
+		return self.MainLoop()
 
 # vim:ts=4 sw=4

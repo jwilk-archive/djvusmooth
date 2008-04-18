@@ -4,8 +4,9 @@
 
 if __name__ == '__main__':
 	import sys
-	import smooth
-	smooth.main(sys.argv[1:])
+	from gui.main import Application
+	application = Application(sys.argv[1:])
+	application.start()
 else:
 	raise ImportError('This module is not intended for import')
 
