@@ -334,15 +334,22 @@ class PageText(object):
 	@apply
 	def raw_value():
 		def get(self):
+			if self._root is None:
+				return None
 			return self._root.sexpr
 		def set(self, sexpr):
 			self._sexpr = sexpr
-			self._root = Node(self._sexpr, self)
+			if sexpr:
+				self._root = Node(self._sexpr, self)
+			else:
+				self._root = None
 			self.notify_tree_change()
 		return property(get, set)
 
 	def strip(self, zone_type):
 		zone_type = djvu.const.get_text_zone_type(zone_type) # ensure it's not a plain Symbol
+		if self._root is None:
+			return
 		self._root = self._root.strip(zone_type)
 		self.notify_tree_change()
 
@@ -383,12 +390,18 @@ class PageText(object):
 			callback.notify_tree_change(self._root)
 	
 	def get_preorder_nodes(self):
+		if self.root is None:
+			return ()
 		return _get_preorder_nodes(self.root)
 
 	def get_postorder_nodes(self):
+		if self.root is None:
+			return ()
 		return _get_postorder_nodes(self.root)
 
 	def get_leafs(self):
+		if self.root is None:
+			return ()
 		return _get_leafs(self.root)
 	
 def _get_preorder_nodes(node):

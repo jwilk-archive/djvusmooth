@@ -135,7 +135,7 @@ class TextBrowser(wx.TreeCtrl):
 		if self.page is None:
 			return
 		node = self.page.text.root
-		if len(node):
+		if node:
 			root = self.AddRoot(str(node.type))
 			self._have_root= True
 			self._add_children(root, node)
