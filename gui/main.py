@@ -128,6 +128,7 @@ class MainWindow(wx.Frame):
 			bitmap = wx.ArtProvider_GetBitmap(icon, wx.ART_MENU, MENU_ICON_SIZE)
 			item.SetBitmap(bitmap)
 		self.Bind(wx.EVT_MENU, method, item)
+		menu.AppendItem(item)
 		return item
 
 	def __init__(self):
@@ -158,21 +159,19 @@ class MainWindow(wx.Frame):
 		self.saveable_menu_items = []
 		menu_bar = wx.MenuBar()
 		menu = wx.Menu()
-		menu.AppendItem(self.new_menu_item(menu, '&Open\tCtrl+O', 'Open a DjVu document', self.on_open, icon=wx.ART_FILE_OPEN))
+		self.new_menu_item(menu, '&Open\tCtrl+O', 'Open a DjVu document', self.on_open, icon=wx.ART_FILE_OPEN)
 		save_menu_item = self.new_menu_item(menu, '&Save\tCtrl+S', 'Save the document', self.on_save, icon=wx.ART_FILE_SAVE)
 		close_menu_item = self.new_menu_item(menu, '&Close\tCtrl+W', 'Close the document', self.on_close, id=wx.ID_CLOSE)
-		menu.AppendItem(save_menu_item)
-		menu.AppendItem(close_menu_item)
 		self.editable_menu_items += close_menu_item,
 		self.saveable_menu_items += save_menu_item,
 		menu.AppendSeparator()
-		menu.AppendItem(self.new_menu_item(menu, '&Quit\tCtrl+Q', 'Quit the application', self.on_exit, icon=wx.ART_QUIT))
+		self.new_menu_item(menu, '&Quit\tCtrl+Q', 'Quit the application', self.on_exit, icon=wx.ART_QUIT)
 		menu_bar.Append(menu, '&File');
 		menu = wx.Menu()
-		menu.AppendItem(self.new_menu_item(menu, '&Metadata\tCtrl+M', 'Edit the document or page metadata', self.on_edit_metadata))
+		self.new_menu_item(menu, '&Metadata\tCtrl+M', 'Edit the document or page metadata', self.on_edit_metadata)
 		submenu = wx.Menu()
-		submenu.AppendItem(self.new_menu_item(menu, '&External editor\tCtrl+T', 'Edit page text in an external editor', self.on_external_edit_text))
-		submenu.AppendItem(self.new_menu_item(menu, '&Flatten', 'Remove details from page text', self.on_flatten_text))
+		self.new_menu_item(menu, '&External editor\tCtrl+T', 'Edit page text in an external editor', self.on_external_edit_text)
+		self.new_menu_item(menu, '&Flatten', 'Remove details from page text', self.on_flatten_text)
 		menu.AppendMenu(wx.ID_ANY, '&Text', submenu)
 		menu_bar.Append(menu, '&Edit');
 		menu = wx.Menu()
@@ -184,7 +183,7 @@ class MainWindow(wx.Frame):
 			('&Stretch', 'Stretch the image to the window size', StretchZoom(), None),
 			('One to &one', 'Set full resolution magnification.', OneToOneZoom(), wx.ID_ZOOM_100),
 		]:
-			submenu.AppendItem(self.new_menu_item(submenu, caption, help, self.on_zoom(zoom), style=wx.ITEM_RADIO, id = id or wx.ID_ANY))
+			self.new_menu_item(submenu, caption, help, self.on_zoom(zoom), style=wx.ITEM_RADIO, id = id or wx.ID_ANY)
 		submenu.AppendSeparator()
 		for percent in 300, 200, 150, 100, 75, 50:
 			item = self.new_menu_item(
@@ -194,7 +193,6 @@ class MainWindow(wx.Frame):
 				self.on_zoom(PercentZoom(percent)),
 				style=wx.ITEM_RADIO
 			)
-			submenu.AppendItem(item)
 			if percent == 100:
 				item.Check()
 		menu.AppendMenu(wx.ID_ANY, '&Zoom', submenu)
@@ -208,11 +206,11 @@ class MainWindow(wx.Frame):
 			('&Background', 'Display only the foreground layer', self.on_display_background),
 			('&None\tAlt+N', 'Neither display the foreground layer nor the background layer', self.on_display_none)
 		]:
-			submenu.AppendItem(self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO))
+			self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO)
 		submenu.AppendSeparator()
-		submenu.AppendItem(self.new_menu_item(submenu, '&Text\tAlt+T', u'Display the text layer', self.on_display_text, style=wx.ITEM_CHECK))
+		self.new_menu_item(submenu, '&Text\tAlt+T', u'Display the text layer', self.on_display_text, style=wx.ITEM_CHECK)
 		menu.AppendMenu(wx.ID_ANY, '&Display', submenu)
-		menu.AppendItem(self.new_menu_item(menu, '&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh))
+		self.new_menu_item(menu, '&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh)
 		menu_bar.Append(menu, '&View')
 		menu = wx.Menu()
 		for caption, help, method, icon in \
@@ -223,13 +221,13 @@ class MainWindow(wx.Frame):
 			('&Last page\tCtrl-End', 'Jump to last document page', self.on_last_page, None),
 			(u'&Go to page…', u'Jump to page…', self.on_goto_page, None)
 		]:
-			menu.AppendItem(self.new_menu_item(menu, caption, help, method, icon = icon))
+			self.new_menu_item(menu, caption, help, method, icon = icon)
 		menu_bar.Append(menu, '&Go');
 		menu = wx.Menu()
-		menu.AppendItem(self.new_menu_item(menu, 'Show &sidebar\tF9', 'Show/side the sidebar', self.on_show_sidebar, style=wx.ITEM_CHECK))
+		self.new_menu_item(menu, 'Show &sidebar\tF9', 'Show/side the sidebar', self.on_show_sidebar, style=wx.ITEM_CHECK)
 		menu_bar.Append(menu, '&Settings');
 		menu = wx.Menu()
-		menu.AppendItem(self.new_menu_item(menu, '&About\tF1', 'More information about this program', self.on_about, id=wx.ID_ABOUT))
+		self.new_menu_item(menu, '&About\tF1', 'More information about this program', self.on_about, id=wx.ID_ABOUT)
 		menu_bar.Append(menu, '&Help');
 		self.SetMenuBar(menu_bar)
 		self.dirty = False
