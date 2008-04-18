@@ -132,7 +132,6 @@ class Node(object):
 		try:
 			parent = self.parent
 		except StopIteration:
-			print 'no parent for', self
 			return
 		parent.remove_child(self)
 
@@ -149,13 +148,6 @@ class Node(object):
 		return False
 
 	def notify_select(self):
-		# XXX
-		try:
-			parent = self.parent
-		except StopIteration:
-			parent = None
-		print 'parent(%r) = %r' % (self, parent)
-		# /XXX
 		self._owner.notify_node_select(self)
 	
 	def notify_deselect(self):
