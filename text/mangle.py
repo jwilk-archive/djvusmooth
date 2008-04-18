@@ -4,6 +4,7 @@
 import itertools
 
 import djvu.sexpr
+import djvu.const
 
 from text.levenshtein import distance
 
@@ -61,10 +62,10 @@ def mangle(s, t, input):
 		j += 1
 	yield input_head[:5] + [current_word]
 
-def linearlize_for_export(expr, line_symbol = djvu.sexpr.Symbol('line')):
+def linearlize_for_export(expr):
 	if len(expr) == 6 and isinstance(expr[5], djvu.sexpr.StringExpression):
 		yield expr[5].value
-	elif expr[0].value == line_symbol:
+	elif expr[0].value == djvu.const.TEXT_ZONE_LINE:
 		yield ' '.join(linearlize_for_export(expr[5:]))
 	else:
 		for subexpr in expr:
@@ -73,8 +74,8 @@ def linearlize_for_export(expr, line_symbol = djvu.sexpr.Symbol('line')):
 			for item in linearlize_for_export(subexpr):
 				yield item
 
-def linearlize_for_import(expr, line_symbol = djvu.sexpr.Symbol('line')):
-	if expr[0].value == line_symbol:
+def linearlize_for_import(expr):
+	if expr[0].value == djvu.const.TEXT_ZONE_LINE:
 		yield expr
 	else:
 		for subexpr in expr:
