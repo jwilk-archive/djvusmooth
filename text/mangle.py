@@ -9,9 +9,12 @@ import djvu.const
 from text.levenshtein import distance
 
 def mangle(s, t, input):
-	input = tuple(map(lambda o: o.value, item) for item in input)
 	s = s.decode('UTF-8')
 	t = t.decode('UTF-8')
+	if len(input) == 1 and isinstance(input[0], djvu.sexpr.StringExpression):
+		yield t
+		return
+	input = tuple(map(lambda o: o.value, item) for item in input)
 	j = 0
 	current_word = ''
 	for item in input:
@@ -63,6 +66,8 @@ def mangle(s, t, input):
 	yield input_head[:5] + [current_word]
 
 def linearlize_for_export(expr):
+	if expr[0].value == djvu.const.TEXT_ZONE_CHARACTER:
+		raise CharacterZoneFound
 	if len(expr) == 6 and isinstance(expr[5], djvu.sexpr.StringExpression):
 		yield expr[5].value
 	elif expr[0].value == djvu.const.TEXT_ZONE_LINE:
@@ -75,6 +80,8 @@ def linearlize_for_export(expr):
 				yield item
 
 def linearlize_for_import(expr):
+	if expr[0].value == djvu.const.TEXT_ZONE_CHARACTER:
+		raise CharacterZoneFound
 	if expr[0].value == djvu.const.TEXT_ZONE_LINE:
 		yield expr
 	else:
@@ -89,8 +96,11 @@ def export(sexpr, stream):
 		print >>stream, line
 
 def import_(sexpr, stdin):
-	exported = linearlize_for_export(sexpr)
-	inputs = linearlize_for_import(sexpr)
+	exported = tuple(linearlize_for_export(sexpr))
+	inputs = tuple(linearlize_for_import(sexpr))
+	stdin = tuple(line for line in stdin)
+	if len(exported) != len(stdin):
+		raise LengthChanged
 	dirty = False
 	for n, line, xline, input in itertools.izip(itertools.count(1), stdin, exported, inputs):
 		line = line.rstrip('\n')
@@ -104,6 +114,16 @@ def import_(sexpr, stdin):
 class NothingChanged(Exception):
 	pass
 
-__all__ = 'import_', 'export', 'NothingChanged'
+class LengthChanged(Exception):
+	pass
+
+class CharacterZoneFound(Exception):
+	pass
+
+__all__ = \
+(
+	'import_', 'export',
+	'NothingChanged', 'CharacterZoneFound', 'LengthChanged'
+)
 
 # vim:ts=4 sw=4 noet
