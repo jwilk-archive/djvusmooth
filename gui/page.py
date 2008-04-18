@@ -267,6 +267,13 @@ class PageTextCallback(models.text.PageTextCallback):
 	def notify_node_deselect(self, node):
 		self._widget.on_node_deselected(node)
 
+	def notify_node_children_change(self, node):
+		shape = self._widget._text_shapes_map.get(node)
+		if shape is not None:
+			shape.deselect()
+		self._widget.page = True
+		# FIXME: consider something lighter here
+
 	def notify_tree_change(self, node):
 		self._widget.page = True
 
@@ -322,12 +329,17 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			shape = self._current_shape
 			if shape is None:
 				return
+			key_code = event.GetKeyCode()
 			try:
-				link_getter = self._WXK_TO_LINK_GETTER[event.GetKeyCode()]
+				link_getter = self._WXK_TO_LINK_GETTER[key_code]
 				next_node = link_getter(shape.node)
 				next_shape = self._text_shapes_map[next_node]
-			except (KeyError, StopIteration):
+			except StopIteration:
 				return
+			except KeyError:
+				if key_code == wx.WXK_DELETE:
+					wx.CallAfter(shape.node.delete)
+					return
 			skip = False
 		finally:
 			if skip:

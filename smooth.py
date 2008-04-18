@@ -106,6 +106,9 @@ class PageTextCallback(models.text.PageTextCallback):
 	def notify_node_change(self, node):
 		self._owner.dirty = True
 	
+	def notify_node_children_change(self, node):
+		self._owner.dirty = True
+	
 	def notify_node_select(self, node):
 		text = '[Text layer] %s' % node.type
 		if node.is_leaf():
