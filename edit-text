@@ -32,6 +32,8 @@ def main():
 	options, [djvu_file_name] = oparser.parse_args()
 	if options.action is None:
 		oparser.error('No action specified')
+	if options.page_no is None:
+		oparser.error('No page specified')
 	options.action(djvu_file_name, options.page_no - 1)
 
 if __name__ == '__main__':
