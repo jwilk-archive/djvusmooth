@@ -457,7 +457,14 @@ class MainWindow(wx.Frame):
 	
 	def after_external_edit_text(self, sexpr, disabler, exception):
 		if exception is not None:
-			raise exception
+			try:
+				raise exception
+			except text_mangle.CharacterZoneFound:
+				self.error_box('Cannot edit text with character zones.')
+				return
+			except text_mangle.LengthChanged:
+				self.error_box('Number of lines changed.')
+				return
 		if sexpr is None:
 			# nothing changed
 			return
