@@ -6,7 +6,6 @@ LICENSE = 'GPL-2'
 __version__ = '0.1'
 __author__ = 'Jakub Wilk <ubanus@users.sf.net>'
 
-import sys
 import os.path
 import threading
 from Queue import Queue, Empty as QueueEmpty
