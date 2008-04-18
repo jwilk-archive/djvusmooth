@@ -429,7 +429,7 @@ class MainWindow(wx.Frame):
 	def on_external_edit_text(self, event):
 		sexpr = self.text_model[self.page_no].raw_value
 		if not len(sexpr):
-			self.error_box('No text layer to edit')
+			self.error_box('No text layer to edit.')
 			return
 		def job(sexpr, dialog):
 			new_sexpr = None
