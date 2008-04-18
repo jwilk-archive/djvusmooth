@@ -221,10 +221,15 @@ class InnerNode(Node):
 
 	def _construct_sexpr(self):
 		x, y, w, h = self.x, self.y, self.w, self.h
+		if self._children:
+			child_sexprs = (child.sexpr for child in self)
+		else:
+			# FIXME: this needs a better solution
+			child_sexprs = (djvu.sexpr.Expression(''),)
 		return djvu.sexpr.Expression(
 			itertools.chain(
 				(self.type, x, y, x + w, y + h),
-				(child.sexpr for child in self)
+				child_sexprs
 			)
 		)
 
