@@ -127,7 +127,18 @@ class Node(object):
 		def get(self):
 			raise StopIteration
 		return property(get)
-	
+
+	def delete(self):
+		try:
+			parent = self.parent
+		except StopIteration:
+			print 'no parent for', self
+			return
+		parent.remove_child(self)
+
+	def remove_child(self, child):
+		raise NotImplementedError
+
 	def strip(self, zone_type):
 		raise NotImplementedError
 	
@@ -138,6 +149,13 @@ class Node(object):
 		return False
 
 	def notify_select(self):
+		# XXX
+		try:
+			parent = self.parent
+		except StopIteration:
+			parent = None
+		print 'parent(%r) = %r' % (self, parent)
+		# /XXX
 		self._owner.notify_node_select(self)
 	
 	def notify_deselect(self):
@@ -145,6 +163,9 @@ class Node(object):
 	
 	def _notify_change(self):
 		return self._owner.notify_node_change(self)
+	
+	def _notify_children_change(self):
+		return self._owner.notify_node_children_change(self)
 	
 class LeafNode(Node):
 
@@ -167,6 +188,9 @@ class LeafNode(Node):
 			self._text = value
 			self._notify_change()
 		return property(get, set)
+
+	def remove_child(self, child):
+		raise TypeError('%r is not having children' % (self,))
 
 	def strip(self, zone_type):
 		if self.type <= zone_type:
@@ -192,16 +216,16 @@ class InnerNode(Node):
 		self._set_children(Node(child, self._owner) for child in sexpr[5:])
 	
 	def _set_children(self, children):
-		self._children = tuple(children)
+		self._children = list(children)
 		prev = None
 		for child in self._children:
 			child._link_left = wref(prev)
+			child._link_parent = wref(self)
 			prev = child
 		prev = None
 		for child in reversed(self._children):
 			child._link_right = wref(prev)
 			prev = child
-		child._link_parent = wref(self)
 
 	def _construct_sexpr(self):
 		x, y, w, h = self.x, self.y, self.w, self.h
@@ -221,6 +245,16 @@ class InnerNode(Node):
 		def get(self):
 			return iter(self._children).next()
 		return property(get)
+
+	def remove_child(self, child):
+		child_idx = self._children.index(child)
+		if child_idx - 1 >= 0:
+			self._children[child_idx - 1]._link_right = child._link_right
+		if child_idx + 1 < len(self._children):
+			self._children[child_idx + 1]._link_left = child._link_left
+		child._link_left = child._link_right = child._link_parent = wref(None)
+		del self._children[child_idx]
+		self._notify_children_change()
 
 	def strip(self, zone_type):
 		stripped_children = [child.strip(zone_type) for child in self._children]
@@ -263,6 +297,10 @@ class PageTextCallback(object):
 
 	@not_overridden
 	def notify_node_change(self, node):
+		pass
+
+	@not_overridden
+	def notify_node_children_change(self, node):
 		pass
 	
 	@not_overridden
@@ -330,7 +368,12 @@ class PageText(object):
 		self._dirty = True
 		for callback in self._callbacks:
 			callback.notify_node_change(node)
-	
+
+	def notify_node_children_change(self, node):
+		self._dirty = True
+		for callback in self._callbacks:
+			callback.notify_node_children_change(node)
+
 	def notify_node_select(self, node):
 		for callback in self._callbacks: callback.notify_node_select(node)
 
