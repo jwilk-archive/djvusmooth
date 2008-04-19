@@ -475,7 +475,7 @@ class MainWindow(wx.Frame):
 				pass
 			else:
 				exception = None
-			wx.CallAfter(lambda: self.after_external_edit_text(new_sexpr, dialog, exception))
+			wx.CallAfter(lambda: self.after_external_edit_text(new_sexpr, disabler, exception))
 		disabler = wx.WindowDisabler()
 		thread = threading.Thread(target = job, args = (sexpr, disabler))
 		thread.start()
