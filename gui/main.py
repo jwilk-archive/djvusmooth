@@ -456,7 +456,7 @@ class MainWindow(wx.Frame):
 		if not sexpr:
 			self.error_box('No text layer to edit.')
 			return
-		def job(sexpr, dialog):
+		def job():
 			new_sexpr = None
 			try:
 				tmp_file = tempfile.NamedTemporaryFile()
@@ -477,7 +477,7 @@ class MainWindow(wx.Frame):
 				exception = None
 			wx.CallAfter(lambda: self.after_external_edit_text(new_sexpr, disabler, exception))
 		disabler = wx.WindowDisabler()
-		thread = threading.Thread(target = job, args = (sexpr, disabler))
+		thread = threading.Thread(target = job)
 		thread.start()
 	
 	def after_external_edit_text(self, sexpr, disabler, exception):
