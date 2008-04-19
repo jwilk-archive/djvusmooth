@@ -338,9 +338,8 @@ class PageText(object):
 				return None
 			return self._root.sexpr
 		def set(self, sexpr):
-			self._sexpr = sexpr
 			if sexpr:
-				self._root = Node(self._sexpr, self)
+				self._root = Node(sexpr, self)
 			else:
 				self._root = None
 			self.notify_tree_change()
@@ -354,15 +353,14 @@ class PageText(object):
 		self.notify_tree_change()
 
 	def clone(self):
-		from copy import copy
-		return copy(self)
+		return copy.copy(self)
 	
 	def export(self, djvused):
 		djvused.select(self._n + 1)
 		djvused.set_text(self.raw_value)
 	
 	def revert(self):
-		self.raw_value = copy.deepcopy(self._original_sexpr)
+		self.raw_value = self._original_sexpr
 		self._dirty = False
 	
 	def is_dirty(self):
