@@ -46,9 +46,9 @@ class RootNode(Node):
 		self._type = sexpr.next().value
 		self._set_children(InnerNode(subexpr, owner) for subexpr in sexpr)
 	
-	def export(self, stream):
+	def export_as_plaintext(self, stream):
 		for child in self:
-			child.export(stream, indent=0)
+			child.export_as_plaintext(stream, indent=0)
 
 class InnerNode(Node):
 
@@ -80,14 +80,14 @@ class InnerNode(Node):
 	def _notify_change(self):
 		self._owner.notify_node_change(self)
 	
-	def export(self, stream, indent):
+	def export_as_plaintext(self, stream, indent):
 		stream.write('    ' * indent)
 		stream.write(self.uri)
 		stream.write(' ')
 		stream.write(self.text) # TODO: what about control characters etc.?
 		stream.write('\n')
 		for child in self:
-			child.export(stream, indent = indent + 1)
+			child.export_as_plaintext(stream, indent = indent + 1)
 
 class OutlineCallback(object):
 
@@ -145,5 +145,11 @@ class Outline(object):
 		self._dirty = True
 		for callback in self._callbacks:
 			callback.notify_node_change(node)
+	
+	def export_as_plaintext(self, stream):
+		return self.root.export_as_plaintext(stream)
+	
+	def import_plaintext(self, lines):
+		raise NotImplementedError
 
 # vim:ts=4 sw=4
