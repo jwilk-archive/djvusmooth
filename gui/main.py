@@ -50,7 +50,7 @@ class TextModel(models.text.Text):
 		models.text.Text.__init__(self)
 		self._document = document
 	
-	def acquire_metadata(self, n):
+	def acquire_data(self, n):
 		text = self._document.pages[n].text
 		text.wait()
 		return text.sexpr
@@ -76,7 +76,7 @@ class MetadataModel(models.metadata.Metadata):
 		models.metadata.Metadata.__init__(self)
 		self._document = document
 
-	def acquire_metadata(self, n):
+	def acquire_data(self, n):
 		document_annotations = self._document.annotations
 		document_annotations.wait()
 		document_metadata = document_annotations.metadata

@@ -12,13 +12,13 @@ class MultiPageModel(object):
 	def __getitem__(self, n):
 		if n not in self._pages:
 			cls = self.get_page_model_class(n)
-			self._pages[n] = cls(n, self.acquire_metadata(n))
+			self._pages[n] = cls(n, self.acquire_data(n))
 		return self._pages[n]
 	
 	def __setitem__(self, n, model):
 		self._pages[n] = model
 
-	def acquire_metadata(self, n):
+	def acquire_data(self, n):
 		return {}
 
 	def export(self, djvused):
