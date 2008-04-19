@@ -5,6 +5,7 @@
 import exceptions
 import warnings
 import weakref
+from cStringIO import StringIO
 
 class NotOverriddenWarning(exceptions.UserWarning):
 	pass
@@ -27,5 +28,44 @@ def wref(obj):
 	else:
 		ref = weakref.ref(obj)
 	return ref
+
+def untab(s, tab_stop = 8):
+	r'''
+	>>> untab('eggs')
+	'eggs'
+	>>> untab('e\tggs')
+	'e       ggs'
+	>>> untab('eg\tgs')
+	'eg      gs'
+	>>> untab('egg\ts')
+	'egg     s'
+	>>> untab('eggs\tham')
+	'eggs    ham'
+	>>> untab('eggs\t\tham')
+	'eggs            ham'
+	>>> untab('eggs\tham\teggs')
+	'eggs    ham     eggs'
+	'''
+	tab_stop = int(tab_stop)
+	if tab_stop < 1:
+		raise ValueError('`tab_stop` must be >= 1')
+	io = StringIO()
+	try:
+		cpos = -1
+		start = 0
+		while True:
+			stop = s.find('\t', start)
+			if stop < 0:
+				break
+			cpos -= stop - start
+			io.write(buffer(s, start, stop - start))
+			nspaces = cpos % tab_stop + 1
+			cpos -= nspaces
+			io.write(' ' * nspaces)
+			start = stop + 1
+		io.write(buffer(s, start, len(s) - start))
+		return io.getvalue()
+	finally:
+		io.close()
 
 # vim:ts=4 sw=4
