@@ -11,6 +11,20 @@ class NotOverriddenWarning(exceptions.UserWarning):
 	pass
 
 def not_overridden(f):
+	r'''
+	>>> warnings.filterwarnings('error', category=NotOverriddenWarning)
+	>>> class B(object):
+	...   @not_overridden
+	...   def f(self, x, y): pass
+	>>> class C(B):
+	...   def f(self, x, y): return x * y
+	>>> B().f(6, 7)
+	Traceback (most recent call last):
+	...
+	NotOverriddenWarning: `varietes.B.f()` is not overriden
+	>>> C().f(6, 7)
+	42
+	'''
 	def new_f(self, *args, **kwargs):
 		cls = type(self)
 		warnings.warn(
@@ -18,10 +32,26 @@ def not_overridden(f):
 			category = NotOverriddenWarning,
 			stacklevel = 2
 		)
+
 		return f(self, *args, **kwargs)
 	return new_f
 
 def wref(obj):
+	r'''
+	>>> class O(object):
+	...   pass
+	>>> x = O()
+	>>> xref = wref(x)
+	>>> xref() is x
+	True
+	>>> del x
+	>>> xref() is None
+	True
+
+	>>> xref = wref(None)
+	>>> xref() is None
+	True
+	'''
 	if obj is None:
 		ref = weakref.ref(set())
 		assert ref() is None
