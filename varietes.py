@@ -20,7 +20,6 @@ def not_overridden(f):
 		return f(self, *args, **kwargs)
 	return new_f
 
-
 def wref(obj):
 	if obj is None:
 		ref = weakref.ref(set())
