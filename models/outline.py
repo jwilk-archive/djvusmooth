@@ -12,13 +12,18 @@ from varietes import not_overridden, wref
 class Node(object):
 
 	def __init__(self, sexpr, owner):
-		self._onwer = owner
+		self._owner = owner
+		self._type = None
 
 	def _set_children(self, children):
 		self._children = list(children)
 	
 	uri = property()
-	title = property()
+	text = property()
+
+	@property
+	def type(self):
+		return self._type
 
 	def __getitem__(self, item):
 		return self._children[item]
@@ -28,11 +33,17 @@ class Node(object):
 
 	def __iter__(self):
 		return iter(self._children)
+	
+	def notify_select(self):
+		# FIXME
+		pass
 
 class RootNode(Node):
 
 	def __init__(self, sexpr, owner):
 		Node.__init__(self, sexpr, owner)
+		sexpr = iter(sexpr)
+		self._type = sexpr.next().value
 		self._set_children(InnerNode(subexpr, owner) for subexpr in sexpr)
 
 class InnerNode(Node):
@@ -40,8 +51,8 @@ class InnerNode(Node):
 	def __init__(self, sexpr, owner):
 		Node.__init__(self, sexpr, owner)
 		sexpr = iter(sexpr)
+		self._text = sexpr.next().value
 		self._uri = sexpr.next().value
-		self._title = sexpr.next().value
 		self._set_children(InnerNode(subexpr, owner) for subexpr in sexpr)
 	
 	@apply
@@ -54,11 +65,11 @@ class InnerNode(Node):
 		return property(get, set)
 		
 	@apply
-	def title():
+	def text():
 		def get(self):
-			return self._title
+			return self._text
 		def set(self, value):
-			self._title = value
+			self._text = value
 			self._notify_change(self)
 		return property(get, set)
 	
