@@ -23,6 +23,7 @@ from gui.page import PageWidget, PercentZoom, OneToOneZoom, StretchZoom, FitWidt
 from gui.metadata import MetadataDialog
 from gui.flatten_text import FlattenTextDialog
 from gui.text_browser import TextBrowser
+from gui.outline_browser import OutlineBrowser
 import text.mangle as text_mangle
 import gui.dialogs
 import models.metadata
@@ -55,6 +56,17 @@ class TextModel(models.text.Text):
 		text.wait()
 		return text.sexpr
 
+class OutlineModel(models.outline.Outline):
+
+	def __init__(self, document):
+		self._document = document
+		models.outline.Outline.__init__(self)
+	
+	def acquire_data(self):
+		outline = self._document.outline
+		outline.wait()
+		return outline.sexpr
+
 class PageProxy(object):
 	def __init__(self, page, text_model):
 		self._page = page
@@ -70,6 +82,16 @@ class PageProxy(object):
 
 	def register_text_callback(self, callback):
 		self._text.register_callback(callback)
+
+class DocumentProxy(object):
+
+	def __init__(self, document, outline):
+		self._document = document
+		self._outline = outline
+	
+	@property
+	def outline(self):
+		return self._outline
 
 class MetadataModel(models.metadata.Metadata):
 	def __init__(self, document):
@@ -140,7 +162,9 @@ class MainWindow(wx.Frame):
 		self.splitter = wx.SplitterWindow(self, style = wx.SP_LIVE_UPDATE)
 		self.sidebar = wx.Choicebook(self.splitter, wx.ID_ANY)
 		self.text_browser = TextBrowser(self.sidebar)
+		self.outline_browser = OutlineBrowser(self.sidebar)
 		self.sidebar.AddPage(self.text_browser, 'Text')
+		self.sidebar.AddPage(self.outline_browser, 'Outline')
 		sidebar_sizer = wx.BoxSizer(wx.VERTICAL)
 		self.sidebar.SetSizer(sidebar_sizer)
 		sidebar_sizer.Add(self.text_browser, 1, wx.ALL | wx.EXPAND)
@@ -493,14 +517,15 @@ class MainWindow(wx.Frame):
 		self.document = None
 		self.page_no = 0
 		if path is None:
-			self.metadata_model = self.text_model = None
+			self.metadata_model = self.text_model = self.outline_model = None
 			self.models = ()
 			self.enable_edit(False)
 		else:
 			self.document = self.context.new_document(decode.FileURI(path))
 			self.metadata_model = MetadataModel(self.document)
 			self.text_model = TextModel(self.document)
-			self.models = self.metadata_model, self.text_model
+			self.outline_model = OutlineModel(self.document)
+			self.models = self.metadata_model, self.text_model, self.outline_model
 			self.enable_edit(True)
 		self.page_no = 0 # again, to set status bar text
 		self.update_title()
@@ -510,7 +535,7 @@ class MainWindow(wx.Frame):
 	
 	def update_page_widget(self, new_page = False):
 		if self.document is None:
-			self.page = self.page_job = self.page_proxy = None
+			self.page = self.page_job = self.page_proxy = self.document_proxy = None
 		elif self.page_job is None or new_page:
 			self.page = self.document.pages[self.page_no]
 			self.page_job = self.page.decode(wait = False)
@@ -518,8 +543,11 @@ class MainWindow(wx.Frame):
 				page = self.page,
 				text_model = self.text_model[self.page_no])
 			self.page_proxy.register_text_callback(self._page_text_callback)
+			# FIXME: some it elsewhere
+			self.document_proxy = DocumentProxy(document = self.document, outline = self.outline_model)
 		self.page_widget.page = self.page_proxy
 		self.text_browser.page = self.page_proxy
+		self.outline_browser.document = self.document_proxy
 
 	def update_title(self):
 		if self.path is None:
