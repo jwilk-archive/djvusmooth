@@ -98,4 +98,27 @@ def untab(s, tab_stop = 8):
 	finally:
 		io.close()
 
+URI_SPECIAL_CHARACTERS = \
+(
+	':/?#[]@' +    # RFC 3986, `gen-delims`
+	"!$&()*+,;=" + # RFC 3986, `sub-delims`
+	'%'            # RFC 3986, `pct-encoded`
+)
+
+def fix_uri(s):
+	r'''
+	>>> uri = 'http://eggs.spam/'
+	>>> fix_uri(uri) == uri
+	True
+	>>> uri = fix_uri('http://eggs.spam/eggs and spam/')
+	>>> uri
+	'http://eggs.spam/eggs%20and%20spam/'
+	>>> fix_uri(uri) == uri
+	True
+	'''
+	from urllib import quote
+	if isinstance(s, unicode):
+		s = s.encode('UTF-8')
+	return quote(s, safe=URI_SPECIAL_CHARACTERS)
+
 # vim:ts=4 sw=4
