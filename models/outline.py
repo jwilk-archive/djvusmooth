@@ -7,7 +7,7 @@ import weakref
 import djvu.sexpr
 import djvu.const
 
-from varietes import not_overridden, wref
+from varietes import not_overridden, wref, fix_uri
 
 class Node(object):
 
@@ -45,6 +45,10 @@ class RootNode(Node):
 		sexpr = iter(sexpr)
 		self._type = sexpr.next().value
 		self._set_children(InnerNode(subexpr, owner) for subexpr in sexpr)
+	
+	def export(self, stream):
+		for child in self:
+			child.export(stream, indent=0)
 
 class InnerNode(Node):
 
@@ -52,7 +56,7 @@ class InnerNode(Node):
 		Node.__init__(self, sexpr, owner)
 		sexpr = iter(sexpr)
 		self._text = sexpr.next().value
-		self._uri = sexpr.next().value
+		self._uri = fix_uri(sexpr.next().value)
 		self._set_children(InnerNode(subexpr, owner) for subexpr in sexpr)
 	
 	@apply
@@ -75,6 +79,15 @@ class InnerNode(Node):
 	
 	def _notify_change(self):
 		self._owner.notify_node_change(self)
+	
+	def export(self, stream, indent):
+		stream.write('    ' * indent)
+		stream.write(self.uri)
+		stream.write(' ')
+		stream.write(self.text) # TODO: what about control characters etc.?
+		stream.write('\n')
+		for child in self:
+			child.export(stream, indent = indent + 1)
 
 class OutlineCallback(object):
 
@@ -112,13 +125,16 @@ class Outline(object):
 			self._root = RootNode(sexpr, self)
 			self.notify_tree_change()
 		return property(get, set)
+	
+	def remove(self):
+		self.raw_value = djvu.const.EMPTY_OUTLINE
 
 	def revert(self):
 		self.raw_value = self._original_sexpr
 		self._dirty = False
 
 	def acquire_data(self):
-		return djvu.const.EMPTY_LIST
+		return djvu.const.EMPTY_OUTLINE
 
 	def notify_tree_change(self):
 		self._dirty = True
