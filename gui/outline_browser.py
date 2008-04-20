@@ -36,7 +36,24 @@ class OutlineBrowser(wx.TreeCtrl):
 		self.Bind(wx.EVT_TREE_BEGIN_LABEL_EDIT, self.on_begin_edit, self)
 		self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.on_end_edit, self)
 		self.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_selection_changed, self)
-	
+		self.Bind(wx.EVT_CHAR, self.on_char)
+
+	def on_char(self, event):
+		key_code = event.GetKeyCode()
+		if key_code == wx.WXK_RETURN:
+			item = self.GetSelection()
+			node = self.GetPyData(item)
+			uri = node.uri
+			if uri.startswith('#'):
+				try:
+					n = int(buffer(uri, 1))
+				except ValueError:
+					pass # TODO: try to handle non-local URIs
+				parent = wx.GetTopLevelParent(self)
+				parent.page_no = n - 1
+			else:
+				pass # TODO: try to handle non-local URIs
+
 	def on_node_change(self, node):
 		try:
 			item = self._items[node]
