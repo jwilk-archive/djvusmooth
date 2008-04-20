@@ -157,6 +157,9 @@ class OutlineCallback(models.outline.OutlineCallback):
 	def notify_node_change(self, node):
 		self._owner.dirty = True
 
+	def notify_node_select(self, node):
+		self._owner.SetStatusText('→ %s' % node.uri)
+
 class MainWindow(wx.Frame):
 	
 	def new_menu_item(self, menu, caption, help, method, style = wx.ITEM_NORMAL, icon = None, id = wx.ID_ANY):
