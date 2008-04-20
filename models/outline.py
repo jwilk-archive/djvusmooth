@@ -42,10 +42,6 @@ class Node(object):
 	def __iter__(self):
 		return iter(self._children)
 	
-	def notify_select(self):
-		# FIXME
-		pass
-
 class RootNode(Node):
 
 	def __init__(self, sexpr, owner):
@@ -99,6 +95,9 @@ class InnerNode(Node):
 	
 	def _notify_change(self):
 		self._owner.notify_node_change(self)
+
+	def notify_select(self):
+		self._owner.notify_node_select(self)
 	
 	def export_as_plaintext(self, stream, indent):
 		stream.write('    ' * indent)
@@ -117,6 +116,10 @@ class OutlineCallback(object):
 
 	@not_overridden
 	def notify_node_change(self, node):
+		pass
+	
+	@not_overridden
+	def notify_node_select(self, node):
 		pass
 
 class Outline(object):
@@ -165,6 +168,10 @@ class Outline(object):
 		self._dirty = True
 		for callback in self._callbacks:
 			callback.notify_node_change(node)
+
+	def notify_node_select(self, node):
+		for callback in self._callbacks:
+			callback.notify_node_select(node)
 	
 	def export(self, djvused):
 		djvused.set_outline(self.raw_value)
