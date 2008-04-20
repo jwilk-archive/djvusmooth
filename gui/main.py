@@ -410,7 +410,7 @@ class MainWindow(wx.Frame):
 				return
 			self._page_no = n
 			self.status_bar.SetStatusText('Page %d of %d' % ((n + 1), len(self.document.pages)), 1)
-			self.update_page_widget(True)
+			self.update_page_widget(new_page = True)
 		return property(get, set)
 
 	def on_first_page(self, event):
@@ -584,11 +584,11 @@ class MainWindow(wx.Frame):
 			self.enable_edit(True)
 		self.page_no = 0 # again, to set status bar text
 		self.update_title()
-		self.update_page_widget(new_page = True)
+		self.update_page_widget(new_document = True, new_page = True)
 		self.dirty = False
 		return True
 	
-	def update_page_widget(self, new_page = False):
+	def update_page_widget(self, new_document = False, new_page = False):
 		if self.document is None:
 			self.page = self.page_job = self.page_proxy = self.document_proxy = None
 		elif self.page_job is None or new_page:
@@ -598,12 +598,13 @@ class MainWindow(wx.Frame):
 				page = self.page,
 				text_model = self.text_model[self.page_no])
 			self.page_proxy.register_text_callback(self._page_text_callback)
-			# FIXME: some it elsewhere
-			self.document_proxy = DocumentProxy(document = self.document, outline = self.outline_model)
-			self.document_proxy.register_outline_callback(self._outline_callback)
+			if new_document:
+				self.document_proxy = DocumentProxy(document = self.document, outline = self.outline_model)
+				self.document_proxy.register_outline_callback(self._outline_callback)
 		self.page_widget.page = self.page_proxy
 		self.text_browser.page = self.page_proxy
-		self.outline_browser.document = self.document_proxy
+		if new_document:
+			self.outline_browser.document = self.document_proxy
 
 	def update_title(self):
 		if self.path is None:
