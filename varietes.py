@@ -98,6 +98,35 @@ def untab(s, tab_stop = 8):
 	finally:
 		io.close()
 
+def indents_to_tree(lines):
+	r'''
+	>>> lines = [
+	... 'bacon',
+	... '	egg',
+	... '		eggs',
+	... 'ham',
+	... '	sausage',
+	... '	spam',
+	... '		bacon',
+	... '	egg'
+	... ]
+	>>> indents_to_tree(lines)
+	[None, ['bacon', ['egg', ['eggs']]], ['ham', ['sausage'], ['spam', ['bacon']], ['egg']]]
+
+	'''
+	root = [None]
+	memo = [(-1, root)]
+	for line in lines:
+		old_len = len(line)
+		line = line.lstrip()
+		current = [line]
+		indent = old_len - len(line)
+		while memo[-1][0] >= indent:
+			memo.pop()
+		memo[-1][1].append(current)
+		memo += (indent, current),
+	return root
+
 URI_SPECIAL_CHARACTERS = \
 (
 	':/?#[]@' +    # RFC 3986, `gen-delims`
