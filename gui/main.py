@@ -94,6 +94,9 @@ class DocumentProxy(object):
 	def outline(self):
 		return self._outline
 
+	def register_outline_callback(self, callback):
+		self._outline.register_callback(callback)
+
 class MetadataModel(models.metadata.Metadata):
 	def __init__(self, document):
 		models.metadata.Metadata.__init__(self)
@@ -143,6 +146,17 @@ class PageTextCallback(models.text.PageTextCallback):
 	def notify_tree_change(self, node):
 		self._owner.dirty = True
 
+class OutlineCallback(models.outline.OutlineCallback):
+
+	def __init__(self, owner):
+		self._owner = owner
+
+	def notify_tree_change(self, node):
+		self._owner.dirty = True
+
+	def notify_node_change(self, node):
+		self._owner.dirty = True
+
 class MainWindow(wx.Frame):
 	
 	def new_menu_item(self, menu, caption, help, method, style = wx.ITEM_NORMAL, icon = None, id = wx.ID_ANY):
@@ -159,6 +173,7 @@ class MainWindow(wx.Frame):
 		self.Connect(wx.ID_ANY, wx.ID_ANY, wx.EVT_DJVU_MESSAGE, self.handle_message)
 		self.context = Context(self)
 		self._page_text_callback = PageTextCallback(self)
+		self._outline_callback = OutlineCallback(self)
 		self.status_bar = self.CreateStatusBar(2, style = wx.ST_SIZEGRIP)
 		self.splitter = wx.SplitterWindow(self, style = wx.SP_LIVE_UPDATE)
 		self.sidebar = wx.Choicebook(self.splitter, wx.ID_ANY)
@@ -582,6 +597,7 @@ class MainWindow(wx.Frame):
 			self.page_proxy.register_text_callback(self._page_text_callback)
 			# FIXME: some it elsewhere
 			self.document_proxy = DocumentProxy(document = self.document, outline = self.outline_model)
+			self.document_proxy.register_outline_callback(self._outline_callback)
 		self.page_widget.page = self.page_proxy
 		self.text_browser.page = self.page_proxy
 		self.outline_browser.document = self.document_proxy
