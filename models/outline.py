@@ -65,7 +65,7 @@ class InnerNode(Node):
 			return self._uri
 		def set(self, value):
 			self._uri = value
-			self._notify_change(self)
+			self._notify_change()
 		return property(get, set)
 		
 	@apply
@@ -74,7 +74,7 @@ class InnerNode(Node):
 			return self._text
 		def set(self, value):
 			self._text = value
-			self._notify_change(self)
+			self._notify_change()
 		return property(get, set)
 	
 	def _notify_change(self):
