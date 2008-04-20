@@ -7,7 +7,7 @@ import weakref
 import djvu.sexpr
 import djvu.const
 
-from varietes import not_overridden, wref, fix_uri
+from varietes import not_overridden, wref, fix_uri, indents_to_tree
 
 class Node(object):
 
@@ -150,6 +150,17 @@ class Outline(object):
 		return self.root.export_as_plaintext(stream)
 	
 	def import_plaintext(self, lines):
-		raise NotImplementedError
+		def fix_node(node):
+			it = iter(node)
+			it.next()
+			for subnode in it:
+				fix_node(subnode)
+			text = node[0]
+			if text is not None:
+				node[0:1] = (text.split(None, 1) + ['', ''])[1::-1]
+		tree = indents_to_tree(lines)
+		fix_node(tree)
+		tree[0:1] = djvu.const.EMPTY_OUTLINE
+		self.raw_value = djvu.sexpr.Expression(tree)
 
 # vim:ts=4 sw=4

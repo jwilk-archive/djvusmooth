@@ -6,6 +6,7 @@ LICENSE = 'GPL-2'
 __version__ = '0.1'
 __author__ = 'Jakub Wilk <ubanus@users.sf.net>'
 
+import itertools
 import os.path
 import threading
 from Queue import Queue, Empty as QueueEmpty
@@ -198,6 +199,10 @@ class MainWindow(wx.Frame):
 		self.new_menu_item(submenu, '&External editor\tCtrl+T', 'Edit page text in an external editor', self.on_external_edit_text)
 		self.new_menu_item(submenu, '&Flatten', 'Remove details from page text', self.on_flatten_text)
 		menu.AppendMenu(wx.ID_ANY, '&Text', submenu)
+		submenu = wx.Menu()
+		self.new_menu_item(submenu, '&External editor', 'Edit document outline in an external editor', self.on_external_edit_outline)
+		self.new_menu_item(submenu, '&Remove', 'Remove document outline', self.on_remove_outline)
+		menu.AppendMenu(wx.ID_ANY, '&Outline', submenu)
 		menu_bar.Append(menu, '&Edit');
 		menu = wx.Menu()
 		submenu = wx.Menu()
@@ -450,6 +455,38 @@ class MainWindow(wx.Frame):
 			page_nos = (self.page_no,)
 		for page_no in page_nos:
 			self.text_model[page_no].strip(zone)
+
+	def on_remove_outline(self, event):
+		self.outline_model.remove()
+
+	def on_external_edit_outline(self, event):
+		model = self.outline_model
+		def job():
+			new_repr = None
+			try:
+				tmp_file = tempfile.NamedTemporaryFile()
+				try:
+					model.export_as_plaintext(tmp_file)
+					tmp_file.flush()
+					external_edit(tmp_file.name)
+					tmp_file.seek(0)
+					new_repr = map(str.expandtabs, itertools.imap(str.rstrip, tmp_file))
+				finally:
+					tmp_file.close()
+			except Exception, exception:
+				pass
+			else:
+				exception = None
+			wx.CallAfter(lambda: self.after_external_edit_outline(new_repr, disabler, exception))
+		disabler = wx.WindowDisabler()
+		thread = threading.Thread(target = job)
+		thread.start()
+	
+	def after_external_edit_outline(self, new_repr, disabler, exception):
+		if exception is not None:
+			raise exception
+		# TODO: how to check is actually something changed?
+		self.outline_model.import_plaintext(new_repr)
 
 	def on_external_edit_text(self, event):
 		sexpr = self.text_model[self.page_no].raw_value
