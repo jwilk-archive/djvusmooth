@@ -21,6 +21,9 @@ class OutlineCallback(models.outline.OutlineCallback):
 	def notify_node_change(self, node):
 		wx.CallAfter(lambda: self._browser.on_node_change(node))
 	
+	def notify_node_select(self, node):
+		pass
+
 	def notify_tree_change(self, node):
 		wx.CallAfter(lambda: self._browser.on_tree_change(node))
 	
