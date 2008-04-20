@@ -3,6 +3,7 @@
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
 import weakref
+import itertools
 
 import djvu.sexpr
 import djvu.const
@@ -20,6 +21,13 @@ class Node(object):
 	
 	uri = property()
 	text = property()
+
+	@property
+	def sexpr(self):
+		return self._construct_sexpr()
+
+	def _construct_sexpr(self):
+		raise NotImplementedError
 
 	@property
 	def type(self):
@@ -46,6 +54,12 @@ class RootNode(Node):
 		self._type = sexpr.next().value
 		self._set_children(InnerNode(subexpr, owner) for subexpr in sexpr)
 	
+	def _construct_sexpr(self):
+		return djvu.sexpr.Expression(itertools.chain(
+			(self.type,),
+			(child._construct_sexpr() for child in self._children)
+		))
+
 	def export_as_plaintext(self, stream):
 		for child in self:
 			child.export_as_plaintext(stream, indent=0)
@@ -58,7 +72,13 @@ class InnerNode(Node):
 		self._text = sexpr.next().value
 		self._uri = fix_uri(sexpr.next().value)
 		self._set_children(InnerNode(subexpr, owner) for subexpr in sexpr)
-	
+
+	def _construct_sexpr(self):
+		return djvu.sexpr.Expression(itertools.chain(
+			(self.text, self.uri),
+			(child._construct_sexpr() for child in self._children)
+		))
+
 	@apply
 	def uri():
 		def get(self):
@@ -145,6 +165,9 @@ class Outline(object):
 		self._dirty = True
 		for callback in self._callbacks:
 			callback.notify_node_change(node)
+	
+	def export(self, djvused):
+		djvused.set_outline(self.raw_value)
 	
 	def export_as_plaintext(self, stream):
 		return self.root.export_as_plaintext(stream)
