@@ -18,6 +18,34 @@ class Node(object):
 
 	def _set_children(self, children):
 		self._children = list(children)
+		prev = None
+		for child in self._children:
+			child._link_left = wref(prev)
+			child._link_parent = wref(self)
+			prev = child
+		prev = None
+		for child in reversed(self._children):
+			child._link_right = wref(prev)
+			prev = child
+
+	def add_child(self, node):
+		self._children
+		if self._children:
+			self._children[-1]._link_ref = wref(node)
+		node._link_right = wref(self._children[-1])
+		node._link_parent = wref(self)
+		self._children += node,
+		self._notify_children_change()
+
+	def remove_child(self, child):
+		child_idx = self._children.index(child)
+		if child_idx - 1 >= 0:
+			self._children[child_idx - 1]._link_right = child._link_right
+		if child_idx + 1 < len(self._children):
+			self._children[child_idx + 1]._link_left = child._link_left
+		child._link_left = child._link_right = child._link_parent = wref(None)
+		del self._children[child_idx]
+		self._notify_children_change()
 	
 	uri = property()
 	text = property()
@@ -41,6 +69,22 @@ class Node(object):
 
 	def __iter__(self):
 		return iter(self._children)
+
+	left_sibling = property()
+	right_sibling = property()
+	parent = property()
+
+	@apply
+	def left_child():
+		def get(self):
+			return iter(self).next()
+		return property(get)
+	
+	def delete(self):
+		raise NotImplementedError
+
+	def _notify_children_change(self):
+		return self._owner.notify_node_children_change(self)
 	
 class RootNode(Node):
 
@@ -108,6 +152,40 @@ class InnerNode(Node):
 		for child in self:
 			child.export_as_plaintext(stream, indent = indent + 1)
 
+	@apply
+	def left_sibling():
+		def get(self):
+			link = self._link_left()
+			if link is None:
+				raise StopIteration
+			return link
+		return property(get)
+
+	@apply
+	def right_sibling():
+		def get(self):
+			link = self._link_right()
+			if link is None:
+				raise StopIteration
+			return link
+		return property(get)
+
+	@apply
+	def parent():
+		def get(self):
+			link = self._link_parent()
+			if link is None:
+				raise StopIteration
+			return link
+		return property(get)
+
+	def delete(self):
+		try:
+			parent = self.parent
+		except StopIteration:
+			return
+		parent.remove_child(self)
+
 class OutlineCallback(object):
 
 	@not_overridden
@@ -116,6 +194,10 @@ class OutlineCallback(object):
 
 	@not_overridden
 	def notify_node_change(self, node):
+		pass
+
+	@not_overridden
+	def notify_node_children_change(self, node):
 		pass
 	
 	@not_overridden
@@ -168,6 +250,11 @@ class Outline(object):
 		self._dirty = True
 		for callback in self._callbacks:
 			callback.notify_node_change(node)
+
+	def notify_node_children_change(self, node):
+		self._dirty = True
+		for callback in self._callbacks:
+			callback.notify_node_children_change(node)
 
 	def notify_node_select(self, node):
 		for callback in self._callbacks:
