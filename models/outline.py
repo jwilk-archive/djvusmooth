@@ -112,6 +112,7 @@ class InnerNode(Node):
 		self._text = sexpr.next().value
 		self._uri = fix_uri(sexpr.next().value)
 		self._set_children(InnerNode(subexpr, owner) for subexpr in sexpr)
+		self._link_left = self._link_right = self._link_parent = wref(None)
 
 	def _construct_sexpr(self):
 		return djvu.sexpr.Expression(itertools.chain(
