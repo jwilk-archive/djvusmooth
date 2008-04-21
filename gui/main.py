@@ -161,7 +161,10 @@ class OutlineCallback(models.outline.OutlineCallback):
 		self._owner.dirty = True
 
 	def notify_node_select(self, node):
-		self._owner.SetStatusText('→ %s' % node.uri)
+		try:
+			self._owner.SetStatusText('→ %s' % node.uri)
+		except AttributeError:
+			pass
 
 class MainWindow(wx.Frame):
 	
