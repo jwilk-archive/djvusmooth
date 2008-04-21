@@ -2,6 +2,7 @@
 # encoding=UTF-8
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
+import re
 import exceptions
 import warnings
 import weakref
@@ -110,5 +111,7 @@ def fix_uri(s):
 	if isinstance(s, unicode):
 		s = s.encode('UTF-8')
 	return quote(s, safe=URI_SPECIAL_CHARACTERS)
+
+replace_control_characters = re.compile('[\0-\x1f]+').sub
 
 # vim:ts=4 sw=4

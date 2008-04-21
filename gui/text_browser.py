@@ -1,14 +1,12 @@
 # encoding=UTF-8
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
-import re
 import wx
 
 import djvu.sexpr
 
 import models.text
-
-replace_control_characters = re.compile('[\0-\x1f]+').sub
+from varietes import replace_control_characters
 
 def get_label_for_node(node):
 	zone_type = node.type
