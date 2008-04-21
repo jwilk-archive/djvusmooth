@@ -32,7 +32,7 @@ class Node(object):
 		self._children
 		if self._children:
 			self._children[-1]._link_ref = wref(node)
-		node._link_right = wref(self._children[-1])
+			node._link_right = wref(self._children[-1])
 		node._link_parent = wref(self)
 		self._children += node,
 		self._notify_children_change()
@@ -227,6 +227,8 @@ class Outline(object):
 		def get(self):
 			return self._root.sexpr
 		def set(self, sexpr):
+			if not sexpr:
+				sexpr = djvu.const.EMPTY_OUTLINE
 			self._root = RootNode(sexpr, self)
 			self.notify_tree_change()
 		return property(get, set)
@@ -261,7 +263,11 @@ class Outline(object):
 			callback.notify_node_select(node)
 	
 	def export(self, djvused):
-		djvused.set_outline(self.raw_value)
+		if self.root:
+			value = self.raw_value
+		else:
+			value = None
+		djvused.set_outline(value)
 	
 	def export_as_plaintext(self, stream):
 		return self.root.export_as_plaintext(stream)
