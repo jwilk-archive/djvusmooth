@@ -48,11 +48,11 @@ class OutlineBrowser(wx.TreeCtrl):
 				try:
 					n = int(buffer(uri, 1))
 				except ValueError:
-					pass # TODO: try to handle non-local URIs
+					return # TODO: try to handle non-local URIs
 				parent = wx.GetTopLevelParent(self)
 				parent.page_no = n - 1
 			else:
-				pass # TODO: try to handle non-local URIs
+				return # TODO: try to handle non-local URIs
 
 	def on_node_change(self, node):
 		try:
