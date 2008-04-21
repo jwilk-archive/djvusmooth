@@ -22,7 +22,7 @@ class OutlineCallback(models.outline.OutlineCallback):
 		wx.CallAfter(lambda: self._browser.on_node_change(node))
 	
 	def notify_node_select(self, node):
-		pass
+		wx.CallAfter(lambda: self._browser.on_node_select(node))
 
 	def notify_node_children_change(self, node):
 		# FIXME: consider something lighter here
@@ -41,6 +41,40 @@ class OutlineBrowser(wx.TreeCtrl):
 		self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.on_end_edit, self)
 		self.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_selection_changed, self)
 		self.Bind(wx.EVT_CHAR, self.on_char)
+		self.Bind(wx.EVT_TREE_BEGIN_DRAG, self.on_begin_drag)
+		self.Bind(wx.EVT_TREE_END_DRAG, self.on_end_drag)
+	
+	def on_begin_drag(self, event):
+		self._drag_item = event.GetItem()
+		event.Allow()
+	
+	def on_end_drag(self, event):
+		source = self._drag_item
+		del self._drag_item
+		target = event.GetItem()
+		if not target.IsOk():
+			return
+		if source == target:
+			return
+		source_node = self.GetPyData(source)
+		if source_node is None:
+			return
+		target_node = self.GetPyData(target)
+		if target_node is None:
+			return
+
+		target_ancestor = target_node
+		while True:
+			if target_ancestor is source_node:
+				# Cannot move a node to its child
+				return 
+			try:
+				target_ancestor = target_ancestor.parent
+			except StopIteration:
+				break
+		source_node.delete()
+		target_node.add_child(source_node)
+		source_node.notify_select()
 
 	def do_goto_node(self, node):
 		uri = node.uri
@@ -73,6 +107,14 @@ class OutlineBrowser(wx.TreeCtrl):
 		if node is None:
 			return
 		method(self, node)
+
+	def on_node_select(self, node):
+		try:
+			item = self._items[node]
+		except KeyError:
+			return
+		if self.GetSelection() != item:
+			self.SelectItem(item)
 
 	def on_node_change(self, node):
 		try:
