@@ -24,6 +24,10 @@ class OutlineCallback(models.outline.OutlineCallback):
 	def notify_node_select(self, node):
 		pass
 
+	def notify_node_children_change(self, node):
+		# FIXME: consider something lighter here
+		wx.CallAfter(lambda: self._browser.on_tree_change(node))
+
 	def notify_tree_change(self, node):
 		wx.CallAfter(lambda: self._browser.on_tree_change(node))
 	
@@ -38,23 +42,37 @@ class OutlineBrowser(wx.TreeCtrl):
 		self.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_selection_changed, self)
 		self.Bind(wx.EVT_CHAR, self.on_char)
 
+	def do_goto_node(self, node):
+		uri = node.uri
+		if uri.startswith('#'):
+			try:
+				n = int(buffer(uri, 1))
+			except ValueError:
+				return # TODO: try to handle non-local URIs
+			parent = wx.GetTopLevelParent(self)
+			parent.page_no = n - 1
+		else:
+			return # TODO: try to handle non-local URIs
+	
+	def do_delete_node(self, node):
+		node.delete()
+
+	_WXK_TO_METHOD = {
+		wx.WXK_RETURN: do_goto_node,
+		wx.WXK_DELETE: do_delete_node
+	}
+
 	def on_char(self, event):
 		key_code = event.GetKeyCode()
-		if key_code == wx.WXK_RETURN:
-			item = self.GetSelection()
-			node = self.GetPyData(item)
-			if node is None:
-				return
-			uri = node.uri
-			if uri.startswith('#'):
-				try:
-					n = int(buffer(uri, 1))
-				except ValueError:
-					return # TODO: try to handle non-local URIs
-				parent = wx.GetTopLevelParent(self)
-				parent.page_no = n - 1
-			else:
-				return # TODO: try to handle non-local URIs
+		try:
+			method = self._WXK_TO_METHOD[key_code]
+		except KeyError:
+			return
+		item = self.GetSelection()
+		node = self.GetPyData(item)
+		if node is None:
+			return
+		method(self, node)
 
 	def on_node_change(self, node):
 		try:
