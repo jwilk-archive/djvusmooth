@@ -61,11 +61,10 @@ class StreamEditor(object):
 		self._add('remove-txt')
 	
 	def set_outline(self, outline):
+		if outline is None:
+			outline = ''
 		self._add('set-outline', str(outline), '.')
 
-	def remove_outline(self):
-		self._add('remove-outline')
-	
 	def set_thumbnails(self, size):
 		self._add('set-thumbnails %d' % size)
 
