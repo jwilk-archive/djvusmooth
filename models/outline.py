@@ -15,6 +15,7 @@ class Node(object):
 	def __init__(self, sexpr, owner):
 		self._owner = owner
 		self._type = None
+		self._link_left = self._link_right = self._link_parent = wref(None)
 
 	def _set_children(self, children):
 		self._children = list(children)
@@ -70,9 +71,32 @@ class Node(object):
 	def __iter__(self):
 		return iter(self._children)
 
-	left_sibling = property()
-	right_sibling = property()
-	parent = property()
+	@apply
+	def left_sibling():
+		def get(self):
+			link = self._link_left()
+			if link is None:
+				raise StopIteration
+			return link
+		return property(get)
+
+	@apply
+	def right_sibling():
+		def get(self):
+			link = self._link_right()
+			if link is None:
+				raise StopIteration
+			return link
+		return property(get)
+
+	@apply
+	def parent():
+		def get(self):
+			link = self._link_parent()
+			if link is None:
+				raise StopIteration
+			return link
+		return property(get)
 
 	@apply
 	def left_child():
@@ -112,7 +136,6 @@ class InnerNode(Node):
 		self._text = sexpr.next().value
 		self._uri = fix_uri(sexpr.next().value)
 		self._set_children(InnerNode(subexpr, owner) for subexpr in sexpr)
-		self._link_left = self._link_right = self._link_parent = wref(None)
 
 	def _construct_sexpr(self):
 		return djvu.sexpr.Expression(itertools.chain(
@@ -152,33 +175,6 @@ class InnerNode(Node):
 		stream.write('\n')
 		for child in self:
 			child.export_as_plaintext(stream, indent = indent + 1)
-
-	@apply
-	def left_sibling():
-		def get(self):
-			link = self._link_left()
-			if link is None:
-				raise StopIteration
-			return link
-		return property(get)
-
-	@apply
-	def right_sibling():
-		def get(self):
-			link = self._link_right()
-			if link is None:
-				raise StopIteration
-			return link
-		return property(get)
-
-	@apply
-	def parent():
-		def get(self):
-			link = self._link_parent()
-			if link is None:
-				raise StopIteration
-			return link
-		return property(get)
 
 	def delete(self):
 		try:
