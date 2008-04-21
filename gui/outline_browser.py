@@ -43,6 +43,8 @@ class OutlineBrowser(wx.TreeCtrl):
 		if key_code == wx.WXK_RETURN:
 			item = self.GetSelection()
 			node = self.GetPyData(item)
+			if node is None:
+				return
 			uri = node.uri
 			if uri.startswith('#'):
 				try:
