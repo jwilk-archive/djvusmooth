@@ -157,6 +157,9 @@ class OutlineCallback(models.outline.OutlineCallback):
 	def notify_node_change(self, node):
 		self._owner.dirty = True
 
+	def notify_node_children_change(self, node):
+		self._owner.dirty = True
+
 	def notify_node_select(self, node):
 		self._owner.SetStatusText('→ %s' % node.uri)
 
@@ -218,6 +221,7 @@ class MainWindow(wx.Frame):
 		self.new_menu_item(submenu, '&Flatten', 'Remove details from page text', self.on_flatten_text)
 		menu.AppendMenu(wx.ID_ANY, '&Text', submenu)
 		submenu = wx.Menu()
+		self.new_menu_item(submenu, '&Bookmark this page\tCtrl+B', 'Add the current to document outline', self.on_bookmark_current_page)
 		self.new_menu_item(submenu, '&External editor', 'Edit document outline in an external editor', self.on_external_edit_outline)
 		self.new_menu_item(submenu, '&Remove', 'Remove document outline', self.on_remove_outline)
 		menu.AppendMenu(wx.ID_ANY, '&Outline', submenu)
@@ -473,6 +477,11 @@ class MainWindow(wx.Frame):
 			page_nos = (self.page_no,)
 		for page_no in page_nos:
 			self.text_model[page_no].strip(zone)
+
+	def on_bookmark_current_page(self, event):
+		uri = '#%d' % (self.page_no + 1)
+		node = models.outline.InnerNode(djvu.sexpr.Expression(('(no title)', uri)), self.outline_model)
+		self.outline_model.root.add_child(node)
 
 	def on_remove_outline(self, event):
 		self.outline_model.remove()
