@@ -82,11 +82,13 @@ class TextBrowser(wx.TreeCtrl):
 		return property(get, set)
 
 	def on_selection_changed(self, event):
-		item = event.GetItem()
-		if item:
-			node = self.GetPyData(item)
-			node.notify_select()
 		event.Skip()
+		item = event.GetItem()
+		if not item:
+			return
+		node = self.GetPyData(item)
+		if node is None:
+			return
 
 	def on_begin_edit(self, event):
 		item = event.GetItem()
@@ -95,6 +97,8 @@ class TextBrowser(wx.TreeCtrl):
 	
 	def do_begin_edit(self, item):
 		node = self.GetPyData(item)
+		if node is None:
+			return
 		if node.is_leaf():
 			self.SetItemText(item, node.text)
 			return True
@@ -110,6 +114,8 @@ class TextBrowser(wx.TreeCtrl):
 	
 	def do_end_edit(self, item, text):
 		node = self.GetPyData(item)
+		if node is None:
+			return
 		if text is None:
 			text = node.text
 		node.text = text
