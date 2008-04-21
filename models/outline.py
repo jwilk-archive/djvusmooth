@@ -107,6 +107,9 @@ class Node(object):
 	def delete(self):
 		raise NotImplementedError
 
+	def notify_select(self):
+		self._owner.notify_node_select(self)
+	
 	def _notify_children_change(self):
 		return self._owner.notify_node_children_change(self)
 	
@@ -164,9 +167,6 @@ class InnerNode(Node):
 	def _notify_change(self):
 		self._owner.notify_node_change(self)
 
-	def notify_select(self):
-		self._owner.notify_node_select(self)
-	
 	def export_as_plaintext(self, stream, indent):
 		stream.write('    ' * indent)
 		stream.write(self.uri)
