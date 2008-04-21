@@ -160,6 +160,8 @@ class OutlineBrowser(wx.TreeCtrl):
 			event.Veto()
 	
 	def do_begin_edit(self, item):
+		if item == self._root_item:
+			return
 		node = self.GetPyData(item)
 		if node is None:
 			return
