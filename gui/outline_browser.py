@@ -33,7 +33,7 @@ class OutlineCallback(models.outline.OutlineCallback):
 	
 class OutlineBrowser(wx.TreeCtrl):
 
-	def __init__(self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.DefaultSize, style = wx.TR_HAS_BUTTONS | wx.TR_EDIT_LABELS | wx.TR_HIDE_ROOT):
+	def __init__(self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.DefaultSize, style = wx.TR_HAS_BUTTONS | wx.TR_EDIT_LABELS):
 		wx.TreeCtrl.__init__(self, parent, id, pos, size, style)
 		self._have_root = False
 		self._document = None
@@ -45,8 +45,14 @@ class OutlineBrowser(wx.TreeCtrl):
 		self.Bind(wx.EVT_TREE_END_DRAG, self.on_end_drag)
 	
 	def on_begin_drag(self, event):
-		self._drag_item = event.GetItem()
-		event.Allow()
+		drag_item = event.GetItem()
+		if drag_item == self._root_item:
+			event.Veto()
+			return
+		self._drag_item = drag_item
+		node = self.GetPyData(drag_item)
+		if node is not None:
+			event.Allow()
 	
 	def on_end_drag(self, event):
 		source = self._drag_item
@@ -140,11 +146,14 @@ class OutlineBrowser(wx.TreeCtrl):
 		return property(get, set)
 
 	def on_selection_changed(self, event):
-		item = event.GetItem()
-		if item:
-			node = self.GetPyData(item)
-			node.notify_select()
 		event.Skip()
+		item = event.GetItem()
+		if not item:
+			return
+		node = self.GetPyData(item)
+		if node is None:
+			return
+		node.notify_select()
 
 	def on_begin_edit(self, event):
 		item = event.GetItem()
@@ -153,6 +162,8 @@ class OutlineBrowser(wx.TreeCtrl):
 	
 	def do_begin_edit(self, item):
 		node = self.GetPyData(item)
+		if node is None:
+			return
 		self.SetItemText(item, node.text)
 		return True
 	
@@ -167,6 +178,8 @@ class OutlineBrowser(wx.TreeCtrl):
 	
 	def do_end_edit(self, item, text):
 		node = self.GetPyData(item)
+		if node is None:
+			return
 		if text is None:
 			text = node.text
 		node.text = text
@@ -190,9 +203,10 @@ class OutlineBrowser(wx.TreeCtrl):
 			return
 		node = self.document.outline.root
 		if node:
-			root = self.AddRoot(str(node.type))
+			self._root_item = self.AddRoot(str(node.type))
+			self.SetPyData(self._root_item, node)
 			self._have_root = True
-			self._add_children(root, node)
+			self._add_children(self._root_item, node)
 
 __all__ = 'OutlineBrowser',
 
