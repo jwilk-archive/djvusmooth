@@ -401,6 +401,11 @@ class MainWindow(wx.Frame):
 	def on_refresh(self, event):
 		self.Refresh()
 
+	def get_page_uri(self, page_no = None):
+		if page_no is None:
+			page_no = self.page_no
+		return '#%d' % (self.page_no + 1)
+
 	@apply
 	def page_no():
 		def get(self):
@@ -479,7 +484,7 @@ class MainWindow(wx.Frame):
 			self.text_model[page_no].strip(zone)
 
 	def on_bookmark_current_page(self, event):
-		uri = '#%d' % (self.page_no + 1)
+		uri = self.get_page_uri()
 		node = models.outline.InnerNode(djvu.sexpr.Expression(('(no title)', uri)), self.outline_model)
 		self.outline_model.root.add_child(node)
 
