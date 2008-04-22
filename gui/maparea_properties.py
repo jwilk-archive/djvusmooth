@@ -2,6 +2,7 @@
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
 import wx
+import wx.lib.colourselect
 
 # See:
 # <http://www.w3.org/TR/html4/present/frames.html#target-info>,
@@ -37,6 +38,23 @@ class MapareaPropertiesDialog(wx.Dialog):
 		sizer.Add(main_properties_box_sizer, 0, wx.EXPAND | wx.ALL, 5)
 		border_box = wx.StaticBox(self, label = 'Border')
 		border_box_sizer = wx.StaticBoxSizer(border_box)
+		border_box_grid_sizer = wx.GridSizer(0, 3)
+		radio_border_none = wx.RadioButton(self, label = 'None')
+		radio_border_xor = wx.RadioButton(self, label = 'XOR')
+		radio_border_solid = wx.RadioButton(self, label = 'Solid color')
+		border_solid_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY)
+		border_solid_sizer = wx.BoxSizer(wx.HORIZONTAL)
+		border_solid_sizer.Add(radio_border_solid, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 5)
+		border_solid_sizer.Add(border_solid_color_selector, 0, wx.ALIGN_CENTER_VERTICAL)
+		for widget in radio_border_none, radio_border_xor, border_solid_sizer:
+			border_box_grid_sizer.Add(widget, 0, wx.ALIGN_CENTER_VERTICAL)
+		for label in 'Shadow in', 'Shadow out', None, 'Etched in', 'Etched out':
+			if label is None:
+				border_box_grid_sizer.Add((0, 0))
+				continue
+			widget = wx.RadioButton(self, label = label)
+			border_box_grid_sizer.Add(widget, 0, wx.ALIGN_CENTER_VERTICAL)
+		border_box_sizer.Add(border_box_grid_sizer, 0, wx.EXPAND | wx.ALL, 5)
 		sizer.Add(border_box_sizer, 0, wx.EXPAND | wx.ALL, 5)
 		line = wx.StaticLine(self, -1, style = wx.LI_HORIZONTAL)
 		sizer.Add(line, 0, wx.EXPAND | wx.BOTTOM | wx.TOP, 5)
