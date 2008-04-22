@@ -32,6 +32,8 @@ class MapareaPropertiesDialog(wx.Dialog):
 		for widget in uri_label, uri_edit, target_label, target_edit, comment_label, comment_edit:
 			gs_sizer.Add(widget, 0)
 		sizer.Add(gs_sizer, 1, wx.EXPAND | wx.ALL, 5)
+		line = wx.StaticLine(self, -1, style = wx.LI_HORIZONTAL)
+		sizer.Add(line, 0, wx.EXPAND | wx.BOTTOM | wx.TOP, 5)
 		button_sizer = wx.StdDialogButtonSizer()
 		button = wx.Button(self, wx.ID_OK)
 		button.SetDefault()
