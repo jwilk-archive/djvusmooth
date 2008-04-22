@@ -69,7 +69,7 @@ class MapareaPropertiesDialog(wx.Dialog):
 			extra_sizer.Add(extra_grid_sizer, 0, wx.EXPAND | wx.ALL, 5)
 		for box_sizer in [border_box_sizer] + extra_sizers:
 			sizer.Add(box_sizer, 0, wx.EXPAND | wx.ALL, 5)
-		highlight_sizer, line_specific_sizer, text_specific_sizer = extra_grid_sizers
+		highlight_specific_sizer, line_specific_sizer, text_specific_sizer = extra_grid_sizers
 		highlight_label = wx.StaticText(self, label = 'Highlight color: ')
 		highlight_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY)
 		opacity_label = wx.StaticText(self, label = 'Opacity: ')
@@ -79,7 +79,16 @@ class MapareaPropertiesDialog(wx.Dialog):
 			style = wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS
 		)
 		for widget in highlight_label, highlight_color_selector, opacity_label, opacity_slider:
-			highlight_sizer.Add(widget, 0, wx.ALIGN_CENTER_VERTICAL)
+			highlight_specific_sizer.Add(widget, 0, wx.ALIGN_CENTER_VERTICAL)
+		line_width_label = wx.StaticText(self, label = 'Line width: ')
+		line_width_edit = wx.SpinCtrl(self)
+		line_width_edit.SetRange(0, 999)
+		line_color_label = wx.StaticText(self, label = 'Line color: ')
+		line_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY)
+		line_arrow_checkbox = wx.CheckBox(self, label = 'Arrow')
+		dummy = (0, 0)
+		for widget in line_arrow_checkbox, dummy, line_width_label, line_width_edit, line_color_label, line_color_selector:
+			line_specific_sizer.Add(widget, 0, wx.ALIGN_CENTER_VERTICAL)
 		line = wx.StaticLine(self, -1, style = wx.LI_HORIZONTAL)
 		sizer.Add(line, 0, wx.EXPAND | wx.BOTTOM | wx.TOP, 5)
 		button_sizer = wx.StdDialogButtonSizer()
