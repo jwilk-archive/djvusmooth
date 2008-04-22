@@ -3,6 +3,14 @@
 
 import wx
 
+# See:
+# <http://www.w3.org/TR/html4/present/frames.html#target-info>,
+# <http://www.w3.org/TR/html4/types.html#type-frame-target>
+# for details.
+
+HTML_TARGETS = '_blank _self _parent _top'.split()
+
+
 class MapareaPropertiesDialog(wx.Dialog):
 
 	DEFAULT_TEXT_WIDTH = 200
@@ -14,7 +22,11 @@ class MapareaPropertiesDialog(wx.Dialog):
 		uri_label = wx.StaticText(self, label = 'URI:')
 		uri_edit = wx.TextCtrl(self, size = (self.DEFAULT_TEXT_WIDTH, -1))
 		target_label = wx.StaticText(self, label = 'Target frame:')
-		target_edit = wx.TextCtrl(self, size = (self.DEFAULT_TEXT_WIDTH, -1))
+		target_edit = wx.ComboBox(self,
+			size = (self.DEFAULT_TEXT_WIDTH, -1),
+			style = wx.CB_DROPDOWN,
+			choices = HTML_TARGETS
+		)
 		comment_label = wx.StaticText(self, label = 'Comment:')
 		comment_edit = wx.TextCtrl(self, size = (self.DEFAULT_TEXT_WIDTH, -1))
 		for widget in uri_label, uri_edit, target_label, target_edit, comment_label, comment_edit:
