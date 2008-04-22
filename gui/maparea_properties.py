@@ -17,23 +17,23 @@ class MapareaPropertiesDialog(wx.Dialog):
 	DEFAULT_TEXT_WIDTH = 200
 
 	def __init__(self, parent):
-		wx.Dialog.__init__(self, parent, title = 'Overprinted annotations properites')
+		wx.Dialog.__init__(self, parent, title = 'Overprinted annotations properties')
 		sizer = wx.BoxSizer(wx.VERTICAL)
 		main_properties_box = wx.StaticBox(self, label = 'Main properties')
 		main_properties_box_sizer = wx.StaticBoxSizer(main_properties_box)
 		main_properties_grid_sizer = wx.FlexGridSizer(0, 2, 5, 5)
-		uri_label = wx.StaticText(self, label = 'URI:')
+		uri_label = wx.StaticText(self, label = 'URI: ')
 		uri_edit = wx.TextCtrl(self, size = (self.DEFAULT_TEXT_WIDTH, -1))
-		target_label = wx.StaticText(self, label = 'Target frame:')
+		target_label = wx.StaticText(self, label = 'Target frame: ')
 		target_edit = wx.ComboBox(self,
 			size = (self.DEFAULT_TEXT_WIDTH, -1),
 			style = wx.CB_DROPDOWN,
 			choices = HTML_TARGETS
 		)
-		comment_label = wx.StaticText(self, label = 'Comment:')
+		comment_label = wx.StaticText(self, label = 'Comment: ')
 		comment_edit = wx.TextCtrl(self, size = (self.DEFAULT_TEXT_WIDTH, -1))
 		for widget in uri_label, uri_edit, target_label, target_edit, comment_label, comment_edit:
-			main_properties_grid_sizer.Add(widget, 0)
+			main_properties_grid_sizer.Add(widget)
 		main_properties_box_sizer.Add(main_properties_grid_sizer, 0, wx.EXPAND | wx.ALL, 5)
 		sizer.Add(main_properties_box_sizer, 0, wx.EXPAND | wx.ALL, 5)
 		border_box = wx.StaticBox(self, label = 'Border')
@@ -58,7 +58,28 @@ class MapareaPropertiesDialog(wx.Dialog):
 		border_avis_checkbox = wx.CheckBox(self, label = 'Always visible')
 		border_box_sizer.Add(border_box_grid_sizer, 0, wx.EXPAND | wx.ALL, 5)
 		border_box_sizer.Add(border_avis_checkbox, 0, wx.ALL, 5)
-		sizer.Add(border_box_sizer, 0, wx.EXPAND | wx.ALL, 5)
+		extra_boxes = \
+		[
+			wx.StaticBox(self, label = label)
+			for label in ('Highlight color and opacity', 'Line-specific properties', 'Text-specific properties')
+		]
+		extra_sizers = map(wx.StaticBoxSizer, extra_boxes)
+		extra_grid_sizers = [wx.FlexGridSizer(0, 2, 5, 5) for i in extra_sizers]
+		for extra_sizer, extra_grid_sizer in zip(extra_sizers, extra_grid_sizers):
+			extra_sizer.Add(extra_grid_sizer, 0, wx.EXPAND | wx.ALL, 5)
+		for box_sizer in [border_box_sizer] + extra_sizers:
+			sizer.Add(box_sizer, 0, wx.EXPAND | wx.ALL, 5)
+		highlight_sizer, line_specific_sizer, text_specific_sizer = extra_grid_sizers
+		highlight_label = wx.StaticText(self, label = 'Highlight color: ')
+		highlight_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY)
+		opacity_label = wx.StaticText(self, label = 'Opacity: ')
+		opacity_slider = wx.Slider(self,
+			value = 100,
+			size = (self.DEFAULT_TEXT_WIDTH, -1),
+			style = wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS
+		)
+		for widget in highlight_label, highlight_color_selector, opacity_label, opacity_slider:
+			highlight_sizer.Add(widget, 0, wx.ALIGN_CENTER_VERTICAL)
 		line = wx.StaticLine(self, -1, style = wx.LI_HORIZONTAL)
 		sizer.Add(line, 0, wx.EXPAND | wx.BOTTOM | wx.TOP, 5)
 		button_sizer = wx.StdDialogButtonSizer()
