@@ -89,6 +89,13 @@ class MapareaPropertiesDialog(wx.Dialog):
 		dummy = (0, 0)
 		for widget in line_arrow_checkbox, dummy, line_width_label, line_width_edit, line_color_label, line_color_selector:
 			line_specific_sizer.Add(widget, 0, wx.ALIGN_CENTER_VERTICAL)
+		text_background_color_label = wx.CheckBox(self, label = 'Background color: ')
+		text_background_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY)
+		text_color_label = wx.StaticText(self, label = 'Text color: ')
+		text_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY)
+		text_pushpin = wx.CheckBox(self, label = 'Push pin')
+		for widget in text_background_color_label, text_background_color_selector, text_color_label, text_color_selector, text_pushpin:
+			text_specific_sizer.Add(widget, 0, wx.ALIGN_CENTER_VERTICAL)
 		line = wx.StaticLine(self, -1, style = wx.LI_HORIZONTAL)
 		sizer.Add(line, 0, wx.EXPAND | wx.BOTTOM | wx.TOP, 5)
 		button_sizer = wx.StdDialogButtonSizer()
