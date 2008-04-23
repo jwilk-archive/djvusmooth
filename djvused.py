@@ -97,8 +97,7 @@ class StreamEditor(object):
 		self._add('save')
 
 	def _reader_thread(self, fo, result):
-		for line in fo:
-			result += line,
+		result[0] = fo.read(),
 
 	def _execute(self, commands, save = False):
 		args = [DJVUSED_PATH]
@@ -106,7 +105,7 @@ class StreamEditor(object):
 			args += '-s',
 		args += self._file_name,
 		djvused = subprocess.Popen(args, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-		result = []
+		result = [None]
 		reader_thread = threading.Thread(target = self._reader_thread, args = (djvused.stdout, result))
 		reader_thread.setDaemon(True)
 		reader_thread.start()
@@ -118,7 +117,7 @@ class StreamEditor(object):
 		if djvused.returncode:
 			raise IOError(djvused.stderr.readline().lstrip('* '))
 		reader_thread.join()
-		return result
+		return result[0]
 		
 	def commit(self):
 		try:
