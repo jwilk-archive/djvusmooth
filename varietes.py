@@ -116,10 +116,29 @@ replace_control_characters = re.compile('[\0-\x1f]+').sub
 
 class idict(object):
 
+	'''
+	>>> o = idict(eggs = 'spam', ham = 'eggs')
+	>>> o
+	varietes.idict(eggs='spam', ham='eggs')
+	>>> o.eggs
+	'spam'
+	>>> o.ham
+	'eggs'
+	>>> o.spam
+	Traceback (most recent call last):
+	...
+	AttributeError: 'idict' object has no attribute 'spam'
+	'''
+
 	def __init__(self, **kwargs):
 		self.__dict__.update(kwargs)
 	
 	def __repr__(self):
-		return '%s.%s(%r)' % (self.__module__, self.__class__.__name__, self.__dict)
+		return '%s.%s(%s)' % \
+		(
+			self.__module__,
+			self.__class__.__name__,
+			', '.join('%s=%r' % (k, v) for k, v in self.__dict__.iteritems())
+		)
 
 # vim:ts=4 sw=4
