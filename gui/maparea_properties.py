@@ -123,11 +123,11 @@ class MapareaPropertiesDialog(wx.Dialog):
 		for extra_sizer, extra_grid_sizer in zip(extra_sizers, extra_grid_sizers):
 			extra_sizer.Add(extra_grid_sizer, 0, wx.EXPAND | wx.ALL, 5)
 		highlight_specific_sizer, line_specific_sizer, text_specific_sizer = extra_grid_sizers
-		highlight_label = wx.StaticText(self, label = 'Highlight color: ')
+		highlight_label = wx.StaticText(self, label = 'Highlight color: ') # TODO: allow not to specify a color
 		highlight_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY)
 		opacity_label = wx.StaticText(self, label = 'Opacity: ')
 		opacity_slider = wx.Slider(self,
-			value = 100,
+			value = 50,
 			size = (self.DEFAULT_TEXT_WIDTH, -1),
 			style = wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS
 		)
