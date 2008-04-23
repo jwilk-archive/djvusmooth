@@ -47,6 +47,9 @@ class StreamEditor(object):
 	
 	def remove_annotations(self):
 		self._add('remove-ant')
+	
+	def print_annotations(self):
+		self._add('print-ant')
 
 	def set_metadata(self, meta):
 		self._add('set-meta')
