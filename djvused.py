@@ -43,7 +43,10 @@ class StreamEditor(object):
 		self._add('create-shared-ant')
 	
 	def set_annotations(self, annotations):
-		self._add('set-ant', str(annotations), '.')
+		self._add('set-ant')
+		for annotation in annotations:
+			self._add(str(annotation))
+		self._add('.')
 	
 	def remove_annotations(self):
 		self._add('remove-ant')
