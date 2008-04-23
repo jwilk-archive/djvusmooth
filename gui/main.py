@@ -179,7 +179,7 @@ class OutlineCallback(models.outline.OutlineCallback):
 
 	def notify_node_select(self, node):
 		try:
-			self._owner.SetStatusText('→ %s' % node.uri)
+			self._owner.SetStatusText('Link: %s' % node.uri)
 		except AttributeError:
 			pass
 
