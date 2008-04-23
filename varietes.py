@@ -114,4 +114,12 @@ def fix_uri(s):
 
 replace_control_characters = re.compile('[\0-\x1f]+').sub
 
+class idict(object):
+
+	def __init__(self, **kwargs):
+		self.__dict__.update(kwargs)
+	
+	def __repr__(self):
+		return '%s.%s(%r)' % (self.__module__, self.__class__.__name__, self.__dict)
+
 # vim:ts=4 sw=4
