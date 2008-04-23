@@ -7,7 +7,6 @@ import djvu.const
 from models import MultiPageModel
 from varietes import not_overridden
 
-
 class Border(object):
 
 	def __init__(self, *args, **kwargs):
@@ -242,6 +241,5 @@ class SharedAnnotations(object):
 
 	def export_select(self, djvused):
 		djvused.create_shared_annotations()
-			
 
 # vim:ts=4 sw=4
