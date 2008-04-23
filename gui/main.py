@@ -25,6 +25,7 @@ from gui.metadata import MetadataDialog
 from gui.flatten_text import FlattenTextDialog
 from gui.text_browser import TextBrowser
 from gui.outline_browser import OutlineBrowser
+from gui.maparea_browser import MapAreaBrowser
 import text.mangle as text_mangle
 import gui.dialogs
 import models
@@ -71,9 +72,10 @@ class OutlineModel(models.outline.Outline):
 		return outline.sexpr
 
 class PageProxy(object):
-	def __init__(self, page, text_model):
+	def __init__(self, page, text_model, annotations_model):
 		self._page = page
 		self._text = text_model
+		self._annotations = annotations_model
 	
 	@property
 	def page_job(self):
@@ -82,6 +84,10 @@ class PageProxy(object):
 	@property
 	def text(self):
 		return self._text
+	
+	@property
+	def annotations(self):
+		return self._annotations
 
 	def register_text_callback(self, callback):
 		self._text.register_callback(callback)
@@ -111,8 +117,9 @@ class AnnotationsModel(models.annotations.Annotations):
 			djvused.select_shared_annotations()
 		else:
 			djvused.select(n + 1)
-		s = '(%s)' % djvused.print_annotations() # FIXME: optimize
-		return djvu.sexpr.from_string(s)
+		djvused.print_annotations()
+		s = '(%s)' % djvused.commit() # FIXME: optimize
+		return djvu.sexpr.Expression.from_string(s)
 
 class MetadataModel(models.metadata.Metadata):
 	def __init__(self, document):
@@ -205,7 +212,7 @@ class MainWindow(wx.Frame):
 		self.sidebar = wx.Choicebook(self.splitter, wx.ID_ANY)
 		self.text_browser = TextBrowser(self.sidebar)
 		self.outline_browser = OutlineBrowser(self.sidebar)
-		self.maparea_browser = wx.Panel(self.sidebar)
+		self.maparea_browser = MapAreaBrowser(self.sidebar)
 		self.sidebar.AddPage(self.text_browser, 'Text')
 		self.sidebar.AddPage(self.outline_browser, 'Outline')
 		self.sidebar.AddPage(self.maparea_browser, 'Hyperlinks')
@@ -616,7 +623,7 @@ class MainWindow(wx.Frame):
 			self.metadata_model = MetadataModel(self.document)
 			self.text_model = TextModel(self.document)
 			self.outline_model = OutlineModel(self.document)
-			self.annotations_model = AnnotationsModel(self.document)
+			self.annotations_model = AnnotationsModel(path)
 			self.models = self.metadata_model, self.text_model, self.outline_model, self.annotations_model
 			self.enable_edit(True)
 		self.page_no = 0 # again, to set status bar text
@@ -633,13 +640,16 @@ class MainWindow(wx.Frame):
 			self.page_job = self.page.decode(wait = False)
 			self.page_proxy = PageProxy(
 				page = self.page,
-				text_model = self.text_model[self.page_no])
+				text_model = self.text_model[self.page_no],
+				annotations_model = self.annotations_model[self.page_no]
+			)
 			self.page_proxy.register_text_callback(self._page_text_callback)
 			if new_document:
 				self.document_proxy = DocumentProxy(document = self.document, outline = self.outline_model)
 				self.document_proxy.register_outline_callback(self._outline_callback)
 		self.page_widget.page = self.page_proxy
 		self.text_browser.page = self.page_proxy
+		self.maparea_browser.page = self.page_proxy
 		if new_document:
 			self.outline_browser.document = self.document_proxy
 
