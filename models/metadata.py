@@ -3,9 +3,7 @@
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
 from cStringIO import StringIO
-from models import MultiPageModel
-
-SHARED_ANNOTATIONS_PAGENO = -1
+from models import MultiPageModel, SHARED_ANNOTATIONS_PAGENO
 
 class Metadata(MultiPageModel):
 

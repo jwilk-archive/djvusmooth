@@ -27,6 +27,7 @@ from gui.text_browser import TextBrowser
 from gui.outline_browser import OutlineBrowser
 import text.mangle as text_mangle
 import gui.dialogs
+import models
 import models.metadata
 import models.text
 from external_editor import edit as external_edit
@@ -106,7 +107,7 @@ class MetadataModel(models.metadata.Metadata):
 		document_annotations = self._document.annotations
 		document_annotations.wait()
 		document_metadata = document_annotations.metadata
-		if n == models.metadata.SHARED_ANNOTATIONS_PAGENO:
+		if n == models.SHARED_ANNOTATIONS_PAGENO:
 			result = document_metadata
 		else:
 			page_annotations = self._document.pages[n].annotations
@@ -455,14 +456,14 @@ class MainWindow(wx.Frame):
 			dialog.Destroy()
 
 	def on_edit_metadata(self, event):
-		document_metadata_model = self.metadata_model[models.metadata.SHARED_ANNOTATIONS_PAGENO].clone()
+		document_metadata_model = self.metadata_model[models.SHARED_ANNOTATIONS_PAGENO].clone()
 		document_metadata_model.title = 'Document metadata'
 		page_metadata_model = self.metadata_model[self.page_no].clone()
 		page_metadata_model.title = 'Page %d metadata' % (self.page_no + 1)
 		dialog = MetadataDialog(self, models=(document_metadata_model, page_metadata_model), known_keys=djvu.const.METADATA_KEYS)
 		try:
 			if dialog.ShowModal() == wx.ID_OK:
-				self.metadata_model[models.metadata.SHARED_ANNOTATIONS_PAGENO] = document_metadata_model
+				self.metadata_model[models.SHARED_ANNOTATIONS_PAGENO] = document_metadata_model
 				self.metadata_model[self.page_no] = page_metadata_model
 				self.dirty = True
 		finally:

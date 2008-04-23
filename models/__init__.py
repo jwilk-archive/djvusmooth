@@ -1,6 +1,8 @@
 # encoding=UTF-8
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
+SHARED_ANNOTATIONS_PAGENO = -1
+
 class MultiPageModel(object):
 
 	def get_page_model_class(self, n):
@@ -25,6 +27,6 @@ class MultiPageModel(object):
 		for id in sorted(self._pages):
 			self._pages[id].export(djvused)
 
-__all__ = 'MultiPageModel',
+__all__ = 'MultiPageModel', 'SHARED_ANNOTATIONS_PAGENO'
 
 # vim:ts=4 sw=4
