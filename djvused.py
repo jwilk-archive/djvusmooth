@@ -21,6 +21,9 @@ class StreamEditor(object):
 		self._commands = []
 		self._autosave = autosave
 	
+	def clone(self):
+		return StreamEditor(self._filename, self._autosave)
+
 	def _add(self, *commands):
 		for command in commands:
 			if not isinstance(command, str):
