@@ -4,6 +4,7 @@
 import pkgconfig
 import os.path
 import subprocess
+import threading
 
 from djvu.sexpr import Expression, Symbol
 
@@ -89,12 +90,20 @@ class StreamEditor(object):
 	def save(self):
 		self._add('save')
 
+	def _reader_thread(self, fo, result):
+		for line in fo:
+			result += line,
+
 	def _execute(self, commands, save = False):
 		args = [DJVUSED_PATH]
 		if save:
 			args += '-s',
 		args += self._file_name,
 		djvused = subprocess.Popen(args, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+		result = []
+		reader_thread = threading.Thread(target = self._reader_thread, args = (djvused.stdout, result))
+		reader_thread.setDaemon(True)
+		reader_thread.start()
 		stdin = djvused.stdin
 		for command in commands:
 			stdin.write(command + '\n')
@@ -102,10 +111,13 @@ class StreamEditor(object):
 		djvused.wait()
 		if djvused.returncode:
 			raise IOError(djvused.stderr.readline().lstrip('* '))
-		return djvused.stdout.read()
+		reader_thread.join()
+		return result
 		
 	def commit(self):
-		self._execute(self._commands, save = self._autosave)
-		self._commands = []
+		try:
+			return self._execute(self._commands, save = self._autosave)
+		finally:
+			self._commands = []
 
 # vim:ts=4 sw=4 noet
