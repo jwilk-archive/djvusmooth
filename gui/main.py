@@ -29,6 +29,7 @@ import text.mangle as text_mangle
 import gui.dialogs
 import models
 import models.metadata
+import models.annotations
 import models.text
 from external_editor import edit as external_edit
 
@@ -97,6 +98,21 @@ class DocumentProxy(object):
 
 	def register_outline_callback(self, callback):
 		self._outline.register_callback(callback)
+
+class AnnotationsModel(models.annotations.Annotations):
+
+	def __init__(self, document_path):
+		models.annotations.Annotations.__init__(self)
+		self.__djvused = StreamEditor(document_path)
+	
+	def acquire_data(self, n):
+		djvused = self.__djvused
+		if n == models.SHARED_ANNOTATIONS_PAGENO:
+			djvused.select_shared_annotations()
+		else:
+			djvused.select(n + 1)
+		s = '(%s)' % djvused.print_annotations() # FIXME: optimize
+		return djvu.sexpr.from_string(s)
 
 class MetadataModel(models.metadata.Metadata):
 	def __init__(self, document):
@@ -590,7 +606,7 @@ class MainWindow(wx.Frame):
 		self.document = None
 		self.page_no = 0
 		if path is None:
-			self.metadata_model = self.text_model = self.outline_model = None
+			self.metadata_model = self.text_model = self.outline_model = self.annotations_model = None
 			self.models = ()
 			self.enable_edit(False)
 		else:
@@ -598,7 +614,8 @@ class MainWindow(wx.Frame):
 			self.metadata_model = MetadataModel(self.document)
 			self.text_model = TextModel(self.document)
 			self.outline_model = OutlineModel(self.document)
-			self.models = self.metadata_model, self.text_model, self.outline_model
+			self.annotations_model = AnnotationsModel(self.document)
+			self.models = self.metadata_model, self.text_model, self.outline_model, self.annotations_model
 			self.enable_edit(True)
 		self.page_no = 0 # again, to set status bar text
 		self.update_title()
