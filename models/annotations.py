@@ -2,10 +2,15 @@
 # encoding=UTF-8
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
+import weakref
+
 import djvu.const
 
-from models import MultiPageModel
+from models import MultiPageModel, SHARED_ANNOTATIONS_PAGENO
 from varietes import not_overridden
+
+class PageAnnotationsCallback(object):
+	pass
 
 class Border(object):
 
@@ -222,7 +227,28 @@ class PageAnnotations(object):
 
 	def __init__(self, n, original_data):
 		self._old_data = original_data
+		self._callbacks = weakref.WeakKeyDictionary()
 		self.revert()
+	
+	def register_callback(self, callback):
+		if not isinstance(callback, PageAnnotationsCallback):
+			raise TypeError
+		self._callbacks[callback] = 1
+
+	def _classify_data(self, items):
+		result = {}
+		for item in items:
+			cls = ANNOTATION_TYPE_TO_CLASS.get(item[0].value)
+			if cls is not None:
+				item = cls.from_sexpr(item)
+			if cls not in result:
+				result[cls] = []
+			result[cls].append(item)
+		return result
+	
+	@property
+	def mapareas(self):
+		return self._data.get(MapArea, ())
 	
 	def revert(self):
 		self._data = self._classify_data(self._old_data)
