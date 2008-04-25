@@ -10,7 +10,10 @@ from models import MultiPageModel, SHARED_ANNOTATIONS_PAGENO
 from varietes import not_overridden
 
 class PageAnnotationsCallback(object):
-	pass
+
+	@not_overridden
+	def notify_node_change(self, node):
+		pass
 
 class Border(object):
 
@@ -54,7 +57,7 @@ class MapArea(object):
 		pass
 
 	@classmethod 
-	def from_sexpr(cls, sexpr):
+	def from_sexpr(cls, sexpr, owner):
 		sexpr = iter(sexpr)
 		symbol = sexpr.next().value
 		if symbol is not djvu.const.ANNOTATION_MAPAREA:
@@ -72,7 +75,7 @@ class MapArea(object):
 		shape_iter = iter(shape)
 		cls = MAPAREA_SHAPE_TO_CLASS[shape_iter.next().value]
 		args = [int(item) for item in shape_iter]
-		kwargs = dict(uri = href, target = target, comment = comment)
+		kwargs = dict(uri = href, target = target, comment = comment, owner = owner)
 		for item in sexpr:
 			try:
 				key, value = item
@@ -117,24 +120,34 @@ class MapArea(object):
 		self._uri = options.pop('uri')
 		self._target = options.pop('target')
 		self._comment = options.pop('comment')
+		self._owner = options.pop('owner')
 	
 	@apply
 	def uri():
 		def get(self):
 			return self._uri
-		return property(get)
+		def set(self, value):
+			self._uri = value
+			self._notify_change()
+		return property(get, set)
 	
 	@apply
 	def target():
 		def get(self):
 			return self._target
-		return property(get)
+		def set(self, value):
+			self._target = value
+			self._notify_change()
+		return property(get, set)
 
 	@apply
 	def comment():
 		def get(self):
 			return self._comment
-		return property(get)
+		def set(self, value):
+			self._comment = value
+			self._notify_change()
+		return property(get, set)
 
 	def _parse_color(self, color):
 		# FIXME
@@ -151,6 +164,9 @@ class MapArea(object):
 		if w < 0:
 			raise ValueError
 		return w
+
+	def _notify_change(self):
+		return self._owner.notify_node_change(self)
 
 class RectangleMapArea(MapArea):
 
@@ -268,7 +284,7 @@ class PageAnnotations(object):
 		for item in items:
 			cls = ANNOTATION_TYPE_TO_CLASS.get(item[0].value)
 			if cls is not None:
-				item = cls.from_sexpr(item)
+				item = cls.from_sexpr(item, self)
 			if cls not in result:
 				result[cls] = []
 			result[cls].append(item)
@@ -290,6 +306,11 @@ class PageAnnotations(object):
 
 	def export_select(self, djvused):
 		djvused.select(self._n + 1)
+
+	def notify_node_change(self, node):
+		self._dirty = True
+		for callback in self._callbacks:
+			callback.notify_node_change(node)
 
 class SharedAnnotations(object):
 
