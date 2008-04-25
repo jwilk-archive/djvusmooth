@@ -288,9 +288,18 @@ class MainWindow(wx.Frame):
 			('&None\tAlt+N', 'Neither display the foreground layer nor the background layer', self.on_display_none)
 		]:
 			self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO)
-		submenu.AppendSeparator()
-		self.new_menu_item(submenu, '&Text\tAlt+T', u'Display the text layer', self.on_display_text, style=wx.ITEM_CHECK)
-		menu.AppendMenu(wx.ID_ANY, '&Display', submenu)
+		menu.AppendMenu(wx.ID_ANY, '&Image', submenu)
+		submenu = wx.Menu()
+		for caption, help, method in \
+		[
+			('&Text\tAlt+T', u'Display the text layer', self.on_display_text),
+			('&Hyperlinks\tAlt+H', u'Display overprinted annotations', self.on_display_maparea),
+			('&None', 'Don\'t display non-raster data', self.on_display_no_nonraster)
+		]:
+			item = self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO)
+			item.Check()
+
+		menu.AppendMenu(wx.ID_ANY, '&Non-raster data', submenu)
 		self.new_menu_item(menu, '&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh)
 		menu_bar.Append(menu, '&View')
 		menu = wx.Menu()
@@ -425,8 +434,15 @@ class MainWindow(wx.Frame):
 		self.page_widget.render_mode = None
 	
 	def on_display_text(self, event):
-		self.page_widget.render_text = event.IsChecked()
+		self.page_widget.render_text = True
 	
+	def on_display_maparea(self, event):
+		self.page_widget.render_text = False
+		raise NotImplementedError
+	
+	def on_display_no_nonraster(self, event):
+		self.page_widget.render_text = False
+
 	def on_refresh(self, event):
 		self.Refresh()
 
