@@ -197,6 +197,7 @@ class OvalMapArea(MapArea):
 class PolygonMapArea(MapArea):
 
 	def __init__(self, *coords, **options):
+		# TODO: parse coords
 		self._parse_border_options(options)
 		self._check_invalid_options(options)
 		self._check_common_options(options)
@@ -204,6 +205,7 @@ class PolygonMapArea(MapArea):
 class LineMapArea(MapArea):
 
 	def __init__(self, x1, y1, x2, y2, **options):
+		# TODO: parse x1, y1, x2, y2
 		try:
 			del options['s_arrow']
 		except KeyError:
