@@ -10,6 +10,9 @@ class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 
 	def __init__(self, owner):
 		self.__owner = owner
+	
+	def notify_node_change(self, node):
+		wx.CallAfter(lambda: self.__owner.on_node_change(node))
 
 class MapAreaBrowser(
 	wx.ListCtrl,
@@ -26,6 +29,10 @@ class MapAreaBrowser(
 		self.page = None
 		wx.lib.mixins.listctrl.ListCtrlAutoWidthMixin.__init__(self)
 		wx.lib.mixins.listctrl.TextEditMixin.__init__(self)
+	
+	def on_node_change(self, node):
+		# TODO
+		pass
 	
 	@apply
 	def page():

@@ -92,6 +92,9 @@ class PageProxy(object):
 	def register_text_callback(self, callback):
 		self._text.register_callback(callback)
 
+	def register_annotations_callback(self, callback):
+		self._annotations.register_callback(callback)
+
 class DocumentProxy(object):
 
 	def __init__(self, document, outline):
@@ -190,6 +193,14 @@ class OutlineCallback(models.outline.OutlineCallback):
 		except AttributeError:
 			pass
 
+class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
+
+	def __init__(self, owner):
+		self._owner = owner
+	
+	def notify_node_change(self, node):
+		self._owner.dirty = True
+
 class MainWindow(wx.Frame):
 	
 	def new_menu_item(self, menu, caption, help, method, style = wx.ITEM_NORMAL, icon = None, id = wx.ID_ANY):
@@ -206,6 +217,7 @@ class MainWindow(wx.Frame):
 		self.Connect(wx.ID_ANY, wx.ID_ANY, wx.EVT_DJVU_MESSAGE, self.handle_message)
 		self.context = Context(self)
 		self._page_text_callback = PageTextCallback(self)
+		self._page_annotations_callback = PageAnnotationsCallback(self)
 		self._outline_callback = OutlineCallback(self)
 		self.status_bar = self.CreateStatusBar(2, style = wx.ST_SIZEGRIP)
 		self.splitter = wx.SplitterWindow(self, style = wx.SP_LIVE_UPDATE)
@@ -660,6 +672,7 @@ class MainWindow(wx.Frame):
 				annotations_model = self.annotations_model[self.page_no]
 			)
 			self.page_proxy.register_text_callback(self._page_text_callback)
+			self.page_proxy.register_annotations_callback(self._page_annotations_callback)
 			if new_document:
 				self.document_proxy = DocumentProxy(document = self.document, outline = self.outline_model)
 				self.document_proxy.register_outline_callback(self._outline_callback)
