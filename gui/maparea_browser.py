@@ -2,6 +2,7 @@
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
 import wx
+import wx.lib.mixins.listctrl
 
 import models.annotations
 
@@ -10,13 +11,21 @@ class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 	def __init__(self, owner):
 		self.__owner = owner
 
-class MapAreaBrowser(wx.ListCtrl):
+class MapAreaBrowser(
+	wx.ListCtrl,
+	wx.lib.mixins.listctrl.ListCtrlAutoWidthMixin,
+	wx.lib.mixins.listctrl.TextEditMixin
+):
 
-	def __init__(self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.DefaultSize, style = wx.LC_ICON):
+	def __init__(self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.DefaultSize, style = wx.LC_REPORT):
 		wx.ListCtrl.__init__(self, parent, id, pos, size, style)
+		self.InsertColumn(0, 'URI')
+		self.InsertColumn(1, 'Comment')
 		self._have_items = False
 		self.page = None
-
+		wx.lib.mixins.listctrl.ListCtrlAutoWidthMixin.__init__(self)
+		wx.lib.mixins.listctrl.TextEditMixin.__init__(self)
+	
 	@apply
 	def page():
 		def get(self):
@@ -35,8 +44,9 @@ class MapAreaBrowser(wx.ListCtrl):
 		self.DeleteAllItems()
 		if self.page is None:
 			return
-		for item in self._model.mapareas:
-			self.InsertStringItem(0, '<map area>')
+		for i, node in enumerate(self._model.mapareas):
+			i = self.InsertStringItem(i, node.uri)
+			self.SetStringItem(i, 1, node.comment)
 
 __all__ = 'MapAreaBrowser',
 
