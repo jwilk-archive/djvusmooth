@@ -72,7 +72,7 @@ class MapArea(object):
 		shape_iter = iter(shape)
 		cls = MAPAREA_SHAPE_TO_CLASS[shape_iter.next().value]
 		args = [int(item) for item in shape_iter]
-		kwargs = {}
+		kwargs = dict(uri = href, target = target, comment = comment)
 		for item in sexpr:
 			try:
 				key, value = item
@@ -113,6 +113,29 @@ class MapArea(object):
 		if options:
 			raise ValueError('%r is invalid keyword argument for this function' % (iter(options).next(),))
 	
+	def _check_common_options(self, options):
+		self._uri = options.pop('uri')
+		self._target = options.pop('target')
+		self._comment = options.pop('comment')
+	
+	@apply
+	def uri():
+		def get(self):
+			return self._uri
+		return property(get)
+	
+	@apply
+	def target():
+		def get(self):
+			return self._target
+		return property(get)
+
+	@apply
+	def comment():
+		def get(self):
+			return self._comment
+		return property(get)
+
 	def _parse_color(self, color):
 		# FIXME
 		return color
@@ -144,6 +167,7 @@ class RectangleMapArea(MapArea):
 				raise ValueError
 		except KeyError:
 			self._opacity = 50
+		self._check_common_options(options)
 		self._check_invalid_options(options)
 
 class OvalMapArea(MapArea):
@@ -151,6 +175,7 @@ class OvalMapArea(MapArea):
 	def __init__(self, x, y, w, h, **options):
 		self._parse_xywh(x, y, w, h)
 		self._parse_border_options(options)
+		self._check_common_options(options)
 		self._check_invalid_options(options)
 
 class PolygonMapArea(MapArea):
@@ -158,6 +183,7 @@ class PolygonMapArea(MapArea):
 	def __init__(self, *coords, **options):
 		self._parse_border_options(options)
 		self._check_invalid_options(options)
+		self._check_common_options(options)
 
 class LineMapArea(MapArea):
 
@@ -178,6 +204,7 @@ class LineMapArea(MapArea):
 			self._line_color = self._parse_color(options.pop('s_lineclr'))
 		except KeyError:
 			self._line_color = None
+		self._check_common_options(options)
 		self._check_invalid_options(options)
 
 class TextMapArea(MapArea):
@@ -199,6 +226,7 @@ class TextMapArea(MapArea):
 			self._push_pin = False
 		else:
 			self._push_pin = True
+		self._check_common_options(options)
 		self._check_invalid_options(options)
 
 MAPAREA_SHADOW_BORDER_TO_CLASS = \
