@@ -356,15 +356,14 @@ class PageText(object):
 		return copy.copy(self)
 	
 	def export(self, djvused):
+		if not self._dirty:
+			return
 		djvused.select(self._n + 1)
 		djvused.set_text(self.raw_value)
 	
 	def revert(self):
 		self.raw_value = self._original_sexpr
 		self._dirty = False
-	
-	def is_dirty(self):
-		return self._dirty
 	
 	def notify_node_change(self, node):
 		self._dirty = True
