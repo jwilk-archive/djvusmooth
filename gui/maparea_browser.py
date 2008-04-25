@@ -22,6 +22,7 @@ class MapAreaBrowser(
 		self.InsertColumn(0, 'URI')
 		self.InsertColumn(1, 'Comment')
 		self._have_items = False
+		self._data = {}
 		self.page = None
 		wx.lib.mixins.listctrl.ListCtrlAutoWidthMixin.__init__(self)
 		wx.lib.mixins.listctrl.TextEditMixin.__init__(self)
@@ -39,14 +40,38 @@ class MapAreaBrowser(
 				self._model = self.page.annotations
 			self._recreate_items()
 		return property(get, set)
+
+	def SetStringItem(self, item, col, label, super = False):
+		wx.ListCtrl.SetStringItem(self, item, col, label)
+		if super:
+			return
+		node = self.GetPyData(item)
+		if node is None:
+			return
+		if col == 0:
+			node.uri = label
+		elif col == 1:
+			node.comment = label
+
+	def GetPyData(self, item):
+		return self._data.get(item)
 	
+	def SetPyData(self, item, data):
+		self._data[item] = data
+	
+	def DeleteAllItem(self):
+		wx.ListCtrl.DeleteAllItem(self)
+		self._data.clear()
+
 	def _recreate_items(self):
 		self.DeleteAllItems()
+		self._nodes = []
 		if self.page is None:
 			return
 		for i, node in enumerate(self._model.mapareas):
-			i = self.InsertStringItem(i, node.uri)
-			self.SetStringItem(i, 1, node.comment)
+			item = self.InsertStringItem(i, node.uri)
+			self.SetStringItem(item, 1, node.comment, super = True)
+			self.SetPyData(item, node)
 
 __all__ = 'MapAreaBrowser',
 
