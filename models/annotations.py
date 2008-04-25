@@ -275,6 +275,7 @@ class PageAnnotations(object):
 		self._old_data = original_data
 		self._callbacks = weakref.WeakKeyDictionary()
 		self.revert()
+		self._n = n
 	
 	def register_callback(self, callback):
 		if not isinstance(callback, PageAnnotationsCallback):
