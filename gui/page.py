@@ -155,10 +155,10 @@ class NodeShape(wx.lib.ogl.RectangleShape):
 
 	def _get_frame_color(self):
 		raise NotImplementedError
-	
+
 	def _get_text(self):
 		return None
-	
+
 	def __init__(self, node, has_text, xform_real_to_screen):
 		wx.lib.ogl.RectangleShape.__init__(self, 100, 100)
 		self._xform_real_to_screen = xform_real_to_screen
@@ -282,8 +282,9 @@ class PageTextCallback(models.text.PageTextCallback):
 		self._widget.page = True
 
 class TextShape(NodeShape):
-	
-	_FRAME_COLORS = {
+
+	_FRAME_COLORS = \
+	{
 		djvu.const.TEXT_ZONE_COLUMN:    (0x80, 0x80, 0x00),
 		djvu.const.TEXT_ZONE_REGION:    (0x80, 0x80, 0x80),
 		djvu.const.TEXT_ZONE_PARAGRAPH: (0x80, 0x00, 0x00),
@@ -294,17 +295,17 @@ class TextShape(NodeShape):
 
 	def _get_frame_color(self):
 		return wx.Color(*self._FRAME_COLORS[self._node.type])
-	
+
 	def _get_text(self):
 		if self._node.is_inner():
 			return
 		return self._node.text
 
 class MapareaShape(NodeShape):
-	
+
 	def _get_frame_color(self):
 		return wx.BLUE
-	
+
 	def _get_text(self):
 		return self._node.uri
 
