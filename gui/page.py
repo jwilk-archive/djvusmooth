@@ -279,7 +279,7 @@ class PageTextCallback(models.text.PageTextCallback):
 
 class TextShape(NodeShape):
 	
-	_TEXT_COLORS = {
+	_FRAME_COLORS = {
 		djvu.const.TEXT_ZONE_COLUMN:    (0x80, 0x80, 0x00),
 		djvu.const.TEXT_ZONE_REGION:    (0x80, 0x80, 0x80),
 		djvu.const.TEXT_ZONE_PARAGRAPH: (0x80, 0x00, 0x00),
@@ -289,7 +289,7 @@ class TextShape(NodeShape):
 	}
 
 	def _get_frame_color(self):
-		return wx.Color(*self._TEXT_COLORS[self._node.type])
+		return wx.Color(*self._FRAME_COLORS[self._node.type])
 	
 	def _get_text(self):
 		return self._node.text
