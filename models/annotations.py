@@ -15,6 +15,14 @@ class PageAnnotationsCallback(object):
 	def notify_node_change(self, node):
 		pass
 
+	@not_overridden
+	def notify_node_select(self, node):
+		pass
+
+	@not_overridden
+	def notify_node_deselect(self, node):
+		pass
+
 class Border(object):
 
 	def __init__(self, *args, **kwargs):
@@ -185,6 +193,12 @@ class MapArea(object):
 	def _notify_change(self):
 		return self._owner.notify_node_change(self)
 
+	def notify_select(self):
+		self._owner.notify_node_select(self)
+
+	def notify_deselect(self):
+		self._owner.notify_node_deselect(self)
+
 class RectangleMapArea(MapArea):
 
 	def __init__(self, x, y, w, h, **options):
@@ -337,6 +351,12 @@ class PageAnnotations(object):
 		self._dirty = True
 		for callback in self._callbacks:
 			callback.notify_node_change(node)
+
+	def notify_node_select(self, node):
+		for callback in self._callbacks: callback.notify_node_select(node)
+
+	def notify_node_deselect(self, node):
+		for callback in self._callbacks: callback.notify_node_deselect(node)
 
 class SharedAnnotations(object):
 
