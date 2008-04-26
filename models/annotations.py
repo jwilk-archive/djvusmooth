@@ -149,6 +149,15 @@ class MapArea(object):
 			self._notify_change()
 		return property(get, set)
 
+	def _set_rect(self, (x, y, w, h)):
+		raise NotImplementedError
+
+	@apply
+	def rect():
+		def not_implemented(self):
+			raise NotImplementedError
+		return property(not_implemented, not_implemented)
+
 	def _parse_color(self, color):
 		# FIXME
 		return color
@@ -158,6 +167,14 @@ class MapArea(object):
 		if w <= 0 or h <= 0:
 			raise ValueError
 		self._x, self._y, self._w, self._h = x, y, w, h
+	
+	@apply
+	def _rect_xywh():
+		def get(self):
+			return self._x, self._y, self._w, self._h
+		def set(self, (x, y, w, h)):
+			self._parse_xywh(x, y, w, h)
+		return property(get, set)
 	
 	def _parse_width(self, w):
 		w = int(w)
@@ -185,6 +202,8 @@ class RectangleMapArea(MapArea):
 			self._opacity = 50
 		self._check_common_options(options)
 		self._check_invalid_options(options)
+	
+	rect = MapArea._rect_xywh
 
 class OvalMapArea(MapArea):
 
@@ -193,6 +212,8 @@ class OvalMapArea(MapArea):
 		self._parse_border_options(options)
 		self._check_common_options(options)
 		self._check_invalid_options(options)
+
+	rect = MapArea._rect_xywh
 
 class PolygonMapArea(MapArea):
 
@@ -246,6 +267,8 @@ class TextMapArea(MapArea):
 			self._push_pin = True
 		self._check_common_options(options)
 		self._check_invalid_options(options)
+
+	rect = MapArea._rect_xywh
 
 MAPAREA_SHADOW_BORDER_TO_CLASS = \
 {
