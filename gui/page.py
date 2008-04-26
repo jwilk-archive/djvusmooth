@@ -156,14 +156,20 @@ TEXT_COLORS = {
 	djvu.const.TEXT_ZONE_CHARACTER: (0x00, 0x80, 0x00),
 }
 
-class TextShape(wx.lib.ogl.RectangleShape):
+class NodeShape(wx.lib.ogl.RectangleShape):
 
+	def _get_frame_color(self):
+		raise NotImplementedError
+	
+	def _get_text(self):
+		return None
+	
 	def __init__(self, node, has_text, xform_real_to_screen):
 		wx.lib.ogl.RectangleShape.__init__(self, 100, 100)
 		self._xform_real_to_screen = xform_real_to_screen
 		self._node = node
 		self._update_size()
-		self._text_color = wx.Color(*TEXT_COLORS[node.type])
+		self._text_color = self._get_frame_color()
 		self._text_pen = wx.Pen(self._text_color, 1)
 		self.SetBrush(wx.TRANSPARENT_BRUSH)
 		self._shows_text = has_text
@@ -197,10 +203,13 @@ class TextShape(wx.lib.ogl.RectangleShape):
 	def _update_text(self):
 		self.ClearText()
 		node = self._node
-		if self._shows_text and node.is_leaf():
-			text = self._text = node.text
-			self.AddText(text)
-			return text
+		if not self._shows_text:
+			return
+		text = self._text = self._get_text()
+		if text is None:
+			return
+		self.AddText(text)
+		return text
 
 	def update(self):
 		self._update_size()
@@ -276,6 +285,14 @@ class PageTextCallback(models.text.PageTextCallback):
 
 	def notify_tree_change(self, node):
 		self._widget.page = True
+
+class TextShape(NodeShape):
+
+	def _get_frame_color(self):
+		return wx.Color(*TEXT_COLORS[self._node.type])
+	
+	def _get_text(self):
+		return self._node.text
 
 class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 
