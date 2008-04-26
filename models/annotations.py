@@ -25,29 +25,63 @@ class PageAnnotationsCallback(object):
 
 class Border(object):
 
+	@not_overridden
 	def __init__(self, *args, **kwargs):
-		pass # FIXME
+		raise NotImplementedError
+	
+	@not_overridden
+	def _get_sexpr(self):
+		raise NotImplementedError
+
+	@apply
+	def sexpr():
+		def get(self):
+			return self._get_sexpr()
+		return property(get)
+
+class NoBorder(Border):
+
+	def __init__(self):
+		pass
+
+	def _get_sexpr(self):
+		return djvu.sexpr.Expression((djvu.const.MAPAREA_BORDER_NONE,))
 
 class XorBorder(Border):
-	pass
+
+	def __init__(self):
+		pass
+
+	def _get_sexpr(self):
+		return djvu.sexpr.Expression((djvu.const.MAPAREA_BORDER_XOR,))
 
 class SolidBorder(Border):
-	pass
+
+	def __init__(self, color):
+		self._color = color
+	
+	def _get_sexpr(self):
+		return djvu.sexpr.Expression((djvu.const.MAPAREA_BORDER_SOLID_COLOR, self._color))
 
 class BorderShadow(Border):
-	pass
+
+	def __init__(self, width):
+		self._width = width
+
+	def _get_sexpr(self):
+		return djvu.sexpr.Expression((self.SYMBOL, self._width))
 
 class BorderShadowIn(BorderShadow):
-	pass
+	SYMBOL = djvu.const.MAPAREA_BORDER_SHADOW_IN
 
 class BorderShadowOut(BorderShadow):
-	pass
+	SYMBOL = djvu.const.MAPAREA_BORDER_SHADOW_OUT
 
 class BorderEtchedIn(BorderShadow):
-	pass
+	SYMBOL = djvu.const.MAPAREA_BORDER_ETCHED_IN
 
 class BorderEtchedOut(BorderShadow):
-	pass
+	SYMBOL = djvu.const.MAPAREA_BORDER_ETCHED_OUT
 
 class Annotations(MultiPageModel):
 
@@ -96,12 +130,53 @@ class MapArea(object):
 			kwargs['s_%s' % key] = value
 		return cls(*args, **kwargs)
 
+	@not_overridden
+	def _get_sexpr_area(self):
+		raise NotImplementedError
+	
+	def _get_sexpr_area_xywh(self):
+		return (self.SYMBOL, self._x, self._y, self._w, self._h)
+
+	def _get_sexpr_extra(self):
+		return () # TODO
+	
+	def _get_sexpr_border(self):
+		if self._border is None:
+			return
+		return self._border.sexpr
+
+	@apply
+	def sexpr():
+		def get(self):
+			if self._target is None:
+				uri_part = self._uri
+			else:
+				uri_part = (djvu.const.MAPAREA_HREF, self._uri, self._target)
+			border_part = self._get_sexpr_border()
+			if border_part is None:
+				border_part = ()
+			else:
+				border_part = (border_part,)
+			return djvu.sexpr.Expression(
+				(
+					djvu.const.ANNOTATION_MAPAREA,
+					uri_part,
+					self._comment,
+					self._get_sexpr_area(),
+				) +
+				border_part +
+				self._get_sexpr_extra()
+			)
+		return property(get)
+	
 	def _parse_border_options(self, options):
 		self._border = None
 		try:
 			del options['s_none']
 		except KeyError:
 			pass
+		else:
+			self._border = NoBorder()
 		try:
 			del options['s_xor']
 		except KeyError:
@@ -157,9 +232,6 @@ class MapArea(object):
 			self._notify_change()
 		return property(get, set)
 
-	def _set_rect(self, (x, y, w, h)):
-		raise NotImplementedError
-
 	@apply
 	def rect():
 		def not_implemented(self):
@@ -182,6 +254,7 @@ class MapArea(object):
 			return self._x, self._y, self._w, self._h
 		def set(self, (x, y, w, h)):
 			self._parse_xywh(x, y, w, h)
+			self._notify_change()
 		return property(get, set)
 	
 	def _parse_width(self, w):
@@ -201,6 +274,8 @@ class MapArea(object):
 
 class RectangleMapArea(MapArea):
 
+	SYMBOL = djvu.const.MAPAREA_SHAPE_RECTANGLE
+
 	def __init__(self, x, y, w, h, **options):
 		self._parse_xywh(x, y, w, h)
 		self._parse_border_options(options)
@@ -218,8 +293,11 @@ class RectangleMapArea(MapArea):
 		self._check_invalid_options(options)
 	
 	rect = MapArea._rect_xywh
+	_get_sexpr_area = MapArea._get_sexpr_area_xywh
 
 class OvalMapArea(MapArea):
+
+	SYMBOL = djvu.const.MAPAREA_SHAPE_OVAL
 
 	def __init__(self, x, y, w, h, **options):
 		self._parse_xywh(x, y, w, h)
@@ -228,8 +306,11 @@ class OvalMapArea(MapArea):
 		self._check_invalid_options(options)
 
 	rect = MapArea._rect_xywh
+	_get_sexpr_area = MapArea._get_sexpr_area_xywh
 
 class PolygonMapArea(MapArea):
+
+	SYMBOL = djvu.const.MAPAREA_SHAPE_POLYGON
 
 	def __init__(self, *coords, **options):
 		# TODO: parse coords
@@ -238,6 +319,8 @@ class PolygonMapArea(MapArea):
 		self._check_common_options(options)
 
 class LineMapArea(MapArea):
+
+	SYMBOL = djvu.const.MAPAREA_SHAPE_LINE
 
 	def __init__(self, x1, y1, x2, y2, **options):
 		# TODO: parse x1, y1, x2, y2
@@ -262,6 +345,8 @@ class LineMapArea(MapArea):
 
 class TextMapArea(MapArea):
 
+	SYMBOL = djvu.const.MAPAREA_SHAPE_TEXT
+
 	def __init__(self, x, y, w, h, **options):
 		self._parse_xywh(x, y, w, h)
 		self._parse_border_options(options)
@@ -283,23 +368,17 @@ class TextMapArea(MapArea):
 		self._check_invalid_options(options)
 
 	rect = MapArea._rect_xywh
+	_get_sexpr_area = MapArea._get_sexpr_area_xywh
 
-MAPAREA_SHADOW_BORDER_TO_CLASS = \
-{
-	djvu.const.MAPAREA_BORDER_SHADOW_IN:  BorderShadowIn,
-	djvu.const.MAPAREA_BORDER_SHADOW_OUT: BorderShadowOut,
-	djvu.const.MAPAREA_BORDER_ETCHED_IN:  BorderEtchedIn,
-	djvu.const.MAPAREA_BORDER_ETCHED_OUT: BorderEtchedOut
-}
+MAPAREA_SHADOW_BORDER_TO_CLASS = dict(
+	(cls.SYMBOL, cls)
+	for cls in (BorderShadowIn, BorderShadowOut, BorderEtchedIn, BorderEtchedOut)
+)
 
-MAPAREA_SHAPE_TO_CLASS = \
-{
-	djvu.const.MAPAREA_SHAPE_RECTANGLE : RectangleMapArea,
-	djvu.const.MAPAREA_SHAPE_OVAL      : OvalMapArea,
-	djvu.const.MAPAREA_SHAPE_POLYGON   : PolygonMapArea,
-	djvu.const.MAPAREA_SHAPE_LINE      : LineMapArea,
-	djvu.const.MAPAREA_SHAPE_TEXT      : TextMapArea,
-}
+MAPAREA_SHAPE_TO_CLASS = dict(
+	(cls.SYMBOL, cls)
+	for cls in (RectangleMapArea, OvalMapArea, PolygonMapArea, LineMapArea, TextMapArea)
+)
 
 ANNOTATION_TYPE_TO_CLASS = \
 {
@@ -342,7 +421,7 @@ class PageAnnotations(object):
 		if not self._dirty:
 			return
 		self.export_select(djvused)
-		djvused.set_annotations(self._data)
+		djvused.set_annotations(node.sexpr for nodes in self._data.itervalues() for node in nodes)
 
 	def export_select(self, djvused):
 		djvused.select(self._n + 1)
