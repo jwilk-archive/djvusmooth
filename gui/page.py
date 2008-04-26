@@ -261,7 +261,7 @@ class PageTextCallback(models.text.PageTextCallback):
 		self._widget = widget
 
 	def notify_node_change(self, node):
-		shape = self._widget._text_shapes_map.get(node)
+		shape = self._widget._nonraster_shapes_map.get(node)
 		if shape is not None:
 			shape.update()
 
@@ -272,7 +272,7 @@ class PageTextCallback(models.text.PageTextCallback):
 		self._widget.on_node_deselected(node)
 
 	def notify_node_children_change(self, node):
-		shape = self._widget._text_shapes_map.get(node)
+		shape = self._widget._nonraster_shapes_map.get(node)
 		if shape is not None:
 			shape.deselect()
 		self._widget.page = True
@@ -353,7 +353,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			try:
 				link_getter = self._WXK_TO_LINK_GETTER[key_code]
 				next_node = link_getter(shape.node)
-				next_shape = self._text_shapes_map[next_node]
+				next_shape = self._nonraster_shapes_map[next_node]
 			except StopIteration:
 				return
 			except KeyError:
@@ -371,14 +371,14 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 
 	def on_node_selected(self, node):
 		try:
-			shape = self._text_shapes_map[node]
+			shape = self._nonraster_shapes_map[node]
 		except KeyError:
 			return
 		return self._on_shape_selected(shape)
 
 	def on_node_deselected(self, node):
 		try:
-			shape = self._text_shapes_map[node]
+			shape = self._nonraster_shapes_map[node]
 		except KeyError:
 			return
 		return self._on_shape_deselected(shape)
@@ -485,7 +485,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		if image is not None:
 			self.add_shape(image)
 		if self.render_nonraster == RENDER_NONRASTER_TEXT:
-			for shape in self._text_shapes:
+			for shape in self._nonraster_shapes:
 				self.add_shape(shape)
 				event_handler = ShapeEventHandler(self)
 				event_handler.SetShape(shape)
@@ -508,13 +508,12 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self.GetParent().SetupScrolling()
 
 	def setup_nonraster_shapes(self):
-		if self.render_nonraster != RENDER_NONRASTER_TEXT or self._page_text is None:
-			return
-		self.setup_text_shapes()
+		if self.render_nonraster == RENDER_NONRASTER_TEXT and self._page_text is not None:
+			self.setup_text_shapes()
 	
 	def setup_text_shapes(self):
-		self._text_shapes = ()
-		self._text_shapes_map = {}
+		self._nonraster_shapes = ()
+		self._nonraster_shapes_map = {}
 		xform_real_to_screen = self._xform_real_to_screen
 		have_text = self.render_mode is None
 		try:
@@ -525,8 +524,8 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 				for node in self._page_text.get_preorder_nodes()
 				if node.type < djvu.const.TEXT_ZONE_PAGE
 			]
-			self._text_shapes = tuple(shape for node, shape in items)
-			self._text_shapes_map = dict(items)
+			self._nonraster_shapes = tuple(shape for node, shape in items)
+			self._nonraster_shapes_map = dict(items)
 		except decode.NotAvailable, ex:
 			pass
 
