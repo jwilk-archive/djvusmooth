@@ -202,6 +202,15 @@ class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 	def notify_node_change(self, node):
 		self._owner.dirty = True
 
+	def notify_node_select(self, node):
+		try:
+			self._owner.SetStatusText('Link: %s' % node.uri)
+		except AttributeError:
+			pass
+
+	def notify_node_deselect(self, node):
+		self._owner.SetStatusText('')
+
 class MainWindow(wx.Frame):
 	
 	def new_menu_item(self, menu, caption, help, method, style = wx.ITEM_NORMAL, icon = None, id = wx.ID_ANY):
