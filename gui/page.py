@@ -296,6 +296,8 @@ class TextShape(NodeShape):
 		return wx.Color(*self._FRAME_COLORS[self._node.type])
 	
 	def _get_text(self):
+		if self._node.is_inner():
+			return
 		return self._node.text
 
 class MapareaShape(NodeShape):
