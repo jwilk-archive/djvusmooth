@@ -298,6 +298,14 @@ class TextShape(NodeShape):
 	def _get_text(self):
 		return self._node.text
 
+class MapareaShape(NodeShape):
+	
+	def _get_frame_color(self):
+		return wx.BLUE
+	
+	def _get_text(self):
+		return self._node.uri
+
 class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 
 	def __init__(self, widget):
@@ -488,7 +496,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		image = self._image
 		if image is not None:
 			self.add_shape(image)
-		if self.render_nonraster == RENDER_NONRASTER_TEXT:
+		if self.render_nonraster is not None:
 			for shape in self._nonraster_shapes:
 				self.add_shape(shape)
 				event_handler = ShapeEventHandler(self)
@@ -512,14 +520,33 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self.GetParent().SetupScrolling()
 
 	def setup_nonraster_shapes(self):
+		have_text = self.render_mode is None
 		if self.render_nonraster == RENDER_NONRASTER_TEXT and self._page_text is not None:
-			self.setup_text_shapes()
-	
-	def setup_text_shapes(self):
+			self.setup_text_shapes(have_text)
+		if self.render_nonraster == RENDER_NONRASTER_MAPAREA and self._page_mapareas is not None:
+			self.setup_maparea_shapes(have_text)
+
+	def clear_nonraster_shapes(self):
 		self._nonraster_shapes = ()
 		self._nonraster_shapes_map = {}
+
+	def setup_maparea_shapes(self, have_text = False):
+		self.clear_nonraster_shapes()
 		xform_real_to_screen = self._xform_real_to_screen
-		have_text = self.render_mode is None
+		try:
+			items = \
+			[
+				(node, MapareaShape(node, have_text, xform_real_to_screen))
+				for node in self._page_mapareas
+			]
+			self._nonraster_shapes = tuple(shape for node, shape in items)
+			self._nonraster_shapes_map = dict(items)
+		except decode.NotAvailable, ex:
+			pass
+
+	def setup_text_shapes(self, have_text = False):
+		self.clear_nonraster_shapes()
+		xform_real_to_screen = self._xform_real_to_screen
 		try:
 			page_type = sexpr.Symbol('page')
 			items = \
