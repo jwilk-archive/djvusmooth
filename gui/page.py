@@ -435,11 +435,13 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 				elif page is True:
 					page_job = self._page_job
 					page_text = self._page_text
+					page_mapareas = self._page_mapareas
 					callback = self._callback
 				else:
 					page_job = page.page_job
 					callback = PageTextCallback(self)
 					page_text = page.text
+					page_mapareas = page.annotations.mapareas
 					page_text.register_callback(callback)
 				real_page_size = (page_job.width, page_job.height)
 				viewport_size = tuple(self.GetParent().GetSize())
@@ -452,12 +454,14 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 				xform_real_to_screen = decode.AffineTransform((0, 0, 1, 1), (0, 0, 1, 1))
 				page_job = None
 				page_text = None
+				page_mapareas = None
 				need_recreate_text = True
 				callback = None
 			self._screen_page_size = screen_page_size
 			self._xform_real_to_screen = xform_real_to_screen
 			self._page_job = page_job
 			self._page_text = page_text
+			self._page_mapareas = page_mapareas
 			self._callback = callback
 			if page is None:
 				self.set_size(self._initial_size)
