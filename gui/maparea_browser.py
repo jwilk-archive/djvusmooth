@@ -13,6 +13,12 @@ class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 	
 	def notify_node_change(self, node):
 		wx.CallAfter(lambda: self.__owner.on_node_change(node))
+	
+	def notify_node_select(self, node):
+		wx.CallAfter(lambda: self.__owner.on_node_select(node))
+	
+	def notify_node_deselect(self, node):
+		pass
 
 class MapAreaBrowser(
 	wx.ListCtrl,
@@ -26,6 +32,7 @@ class MapAreaBrowser(
 		self.InsertColumn(1, 'Comment')
 		self._have_items = False
 		self._data = {}
+		self._data_map = {}
 		self.page = None
 		wx.lib.mixins.listctrl.ListCtrlAutoWidthMixin.__init__(self)
 		wx.lib.mixins.listctrl.TextEditMixin.__init__(self)
@@ -33,6 +40,16 @@ class MapAreaBrowser(
 	def on_node_change(self, node):
 		# TODO
 		pass
+	
+	def on_node_select(self, node):
+		try:
+			current_item = self._data_map[node]
+		except KeyError:
+			return
+		selected_item = self.GetFirstSelected()
+		if selected_item != current_item:
+			self.Select(selected_item, False)
+			self.Select(current_item, True)
 	
 	@apply
 	def page():
@@ -65,10 +82,12 @@ class MapAreaBrowser(
 	
 	def SetPyData(self, item, data):
 		self._data[item] = data
+		self._data_map[data] = item
 	
 	def DeleteAllItem(self):
 		wx.ListCtrl.DeleteAllItem(self)
 		self._data.clear()
+		self._data_map.clear()
 
 	def _recreate_items(self):
 		self.DeleteAllItems()
