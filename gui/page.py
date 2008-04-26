@@ -147,15 +147,6 @@ class PageImage(wx.lib.ogl.RectangleShape):
 			dc.DrawRectangle(x, y, w, h)
 		dc.EndDrawing()
 
-TEXT_COLORS = {
-	djvu.const.TEXT_ZONE_COLUMN:    (0x80, 0x80, 0x00),
-	djvu.const.TEXT_ZONE_REGION:    (0x80, 0x80, 0x80),
-	djvu.const.TEXT_ZONE_PARAGRAPH: (0x80, 0x00, 0x00),
-	djvu.const.TEXT_ZONE_LINE:      (0x80, 0x00, 0x80),
-	djvu.const.TEXT_ZONE_WORD:      (0x00, 0x00, 0x80),
-	djvu.const.TEXT_ZONE_CHARACTER: (0x00, 0x80, 0x00),
-}
-
 class NodeShape(wx.lib.ogl.RectangleShape):
 
 	def _get_frame_color(self):
@@ -287,9 +278,18 @@ class PageTextCallback(models.text.PageTextCallback):
 		self._widget.page = True
 
 class TextShape(NodeShape):
+	
+	_TEXT_COLORS = {
+		djvu.const.TEXT_ZONE_COLUMN:    (0x80, 0x80, 0x00),
+		djvu.const.TEXT_ZONE_REGION:    (0x80, 0x80, 0x80),
+		djvu.const.TEXT_ZONE_PARAGRAPH: (0x80, 0x00, 0x00),
+		djvu.const.TEXT_ZONE_LINE:      (0x80, 0x00, 0x80),
+		djvu.const.TEXT_ZONE_WORD:      (0x00, 0x00, 0x80),
+		djvu.const.TEXT_ZONE_CHARACTER: (0x00, 0x80, 0x00),
+	}
 
 	def _get_frame_color(self):
-		return wx.Color(*TEXT_COLORS[self._node.type])
+		return wx.Color(*self._TEXT_COLORS[self._node.type])
 	
 	def _get_text(self):
 		return self._node.text
