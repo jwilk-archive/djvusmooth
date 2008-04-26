@@ -16,6 +16,10 @@ PIXEL_FORMAT = decode.PixelFormatRgb()
 PIXEL_FORMAT.rows_top_to_bottom = 1
 PIXEL_FORMAT.y_top_to_bottom = 1
 
+RENDER_NONRASTER_TEXT = 0
+RENDER_NONRASTER_MAPAREA = 1
+RENDER_NONRASTER_VALUES = (RENDER_NONRASTER_TEXT, RENDER_NONRASTER_MAPAREA, None)
+
 class Zoom(object):
 
 	def rezoom_on_resize(self):
@@ -332,8 +336,8 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		dc = wx.ClientDC(self)
 		self.PrepareDC(dc)
 		self._render_mode = decode.RENDER_COLOR
-		self._render_text = False
-		self.setup_text_shapes()
+		self._render_nonraster = None
+		self.setup_nonraster_shapes()
 		self._zoom = PercentZoom()
 		self.page = None
 		self._current_shape = None
@@ -402,18 +406,16 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		return property(get, set)
 
 	@apply
-	def render_text():
+	def render_nonraster():
 		def get(self):
-			return self._render_text
+			return self._render_nonraster
 		def set(self, value):
-			self._render_text = value
-			self.setup_text_shapes()
+			if value not in RENDER_NONRASTER_VALUES:
+				raise ValueError
+			self._render_nonraster = value
+			self.setup_nonraster_shapes()
 			self.recreate_shapes()
 		return property(get, set)
-
-	def refresh_text(self):
-		if self.render_text:
-			self.Refresh()
 
 	@apply
 	def zoom():
@@ -473,7 +475,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 					zoom = self.zoom)
 				image.SetDraggable(False, False)
 				self._image = image
-			self.setup_text_shapes()
+			self.setup_nonraster_shapes()
 			self.recreate_shapes()
 		return property(fset = set)
 
@@ -482,7 +484,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		image = self._image
 		if image is not None:
 			self.add_shape(image)
-		if self.render_text:
+		if self.render_nonraster == RENDER_NONRASTER_TEXT:
 			for shape in self._text_shapes:
 				self.add_shape(shape)
 				event_handler = ShapeEventHandler(self)
@@ -505,11 +507,14 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self.GetParent().Layout()
 		self.GetParent().SetupScrolling()
 
+	def setup_nonraster_shapes(self):
+		if self.render_nonraster != RENDER_NONRASTER_TEXT or self._page_text is None:
+			return
+		self.setup_text_shapes()
+	
 	def setup_text_shapes(self):
 		self._text_shapes = ()
 		self._text_shapes_map = {}
-		if not self.render_text or self._page_text is None:
-			return
 		xform_real_to_screen = self._xform_real_to_screen
 		have_text = self.render_mode is None
 		try:
@@ -527,7 +532,8 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 
 __all__ = (
 	'Zoom', 'PercentZoom', 'OneToOneZoom', 'StretchZoom', 'FitWidthZoom', 'FitPageZoom',
-	'PageWidget'
+	'PageWidget',
+	'RENDER_NONRASTER_TEXT', 'RENDER_NONRASTER_MAPAREA'
 )
 
 # vim:ts=4 sw=4

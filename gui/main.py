@@ -21,6 +21,7 @@ import djvu.const
 
 from djvused import StreamEditor
 from gui.page import PageWidget, PercentZoom, OneToOneZoom, StretchZoom, FitWidthZoom, FitPageZoom
+from gui.page import RENDER_NONRASTER_TEXT, RENDER_NONRASTER_MAPAREA
 from gui.metadata import MetadataDialog
 from gui.flatten_text import FlattenTextDialog
 from gui.text_browser import TextBrowser
@@ -446,14 +447,13 @@ class MainWindow(wx.Frame):
 		self.page_widget.render_mode = None
 	
 	def on_display_text(self, event):
-		self.page_widget.render_text = True
+		self.page_widget.render_nonraster = RENDER_NONRASTER_TEXT
 	
 	def on_display_maparea(self, event):
-		self.page_widget.render_text = False
-		raise NotImplementedError
+		self.page_widget.render_nonraster = RENDER_NONRASTER_MAPAREA
 	
 	def on_display_no_nonraster(self, event):
-		self.page_widget.render_text = False
+		self.page_widget.render_nonraster = None
 
 	def on_refresh(self, event):
 		self.Refresh()
