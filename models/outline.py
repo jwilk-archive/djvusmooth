@@ -2,6 +2,14 @@
 # encoding=UTF-8
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
+'''
+Models for document outline.
+
+See Lizardtech DjVu Reference (DjVu 3):
+- 4 What's new in DjVu File Format.
+- 8.3.3 Document Outline Chunk.
+'''
+
 import weakref
 import itertools
 

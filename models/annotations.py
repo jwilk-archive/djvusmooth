@@ -2,6 +2,14 @@
 # encoding=UTF-8
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
+'''
+Models for annotations.
+
+See Lizardtech DjVu Reference (DjVu 3):
+- 3.3.1 Annotations.
+- 8.3.4 Annotation chunk.
+'''
+
 import weakref
 
 import djvu.const

@@ -2,6 +2,15 @@
 # encoding=UTF-8
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
+
+'''
+Models for metadata.
+
+See ``djvuchanges.txt``:
+- 4. Metadata Annotations. 
+- 5. Document Annotations and Metadata.
+'''
+
 from cStringIO import StringIO
 from models import MultiPageModel, SHARED_ANNOTATIONS_PAGENO
 

@@ -2,6 +2,14 @@
 # encoding=UTF-8
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
+'''
+Models for hidden text.
+
+See Lizardtech DjVu Reference (DjVu 3):
+- 3.3.2 Hidden text.
+- 8.3.5 Text Chunk.
+'''
+
 import copy
 import weakref
 import itertools
