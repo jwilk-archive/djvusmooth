@@ -114,6 +114,29 @@ def fix_uri(s):
 
 replace_control_characters = re.compile('[\0-\x1f]+').sub
 
+_is_html_color = re.compile('^[#][0-9a-fA-F]{6}$').match
+
+def is_html_color(s):
+	'''
+	>>> is_html_color('#000000')
+	True
+	>>> is_html_color('#ffffff')
+	True
+	>>> is_html_color('#FFFFFF')
+	True
+	>>> is_html_color('#c0c0f0')
+	True
+	>>> is_html_color('')
+	False
+	>>> is_html_color('#bcdefg')
+	False
+	>>> is_html_color('#ffffff ')
+	False
+	>>> is_html_color(' #ffffff')
+	False
+	'''
+	return bool(_is_html_color(s))
+
 class idict(object):
 
 	'''
