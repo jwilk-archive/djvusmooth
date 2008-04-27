@@ -323,7 +323,7 @@ class RectangleMapArea(MapArea):
 
 	def _get_sexpr_extra(self):
 		result = []
-		if self._opacity is not None:
+		if self._opacity != 50:
 			result += (djvu.const.MAPAREA_OPACITY, self._opacity),
 		if self._highlight_color is not None:
 			result += (djvu.const.MAPAREA_HIGHLIGHT_COLOR, self._highlight_color),
