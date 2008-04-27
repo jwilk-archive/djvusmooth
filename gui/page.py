@@ -543,6 +543,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self.GetParent().SetupScrolling()
 
 	def setup_nonraster_shapes(self):
+		self.clear_nonraster_shapes()
 		have_text = self.render_mode is None
 		if self.render_nonraster == RENDER_NONRASTER_TEXT and self._page_text is not None:
 			self.setup_text_shapes(have_text)
@@ -554,7 +555,6 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self._nonraster_shapes_map = {}
 
 	def setup_maparea_shapes(self, have_text = False):
-		self.clear_nonraster_shapes()
 		xform_real_to_screen = self._xform_real_to_screen
 		try:
 			items = \
@@ -568,7 +568,6 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			pass
 
 	def setup_text_shapes(self, have_text = False):
-		self.clear_nonraster_shapes()
 		xform_real_to_screen = self._xform_real_to_screen
 		try:
 			page_type = sexpr.Symbol('page')
