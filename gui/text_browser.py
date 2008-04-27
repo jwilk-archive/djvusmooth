@@ -87,6 +87,7 @@ class TextBrowser(wx.TreeCtrl):
 		node = self.GetPyData(item)
 		if node is None:
 			return
+		node.notify_select()
 
 	def on_begin_edit(self, event):
 		item = event.GetItem()
