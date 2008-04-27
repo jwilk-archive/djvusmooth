@@ -17,7 +17,7 @@ import djvu.const
 import djvu.decode
 
 from models import MultiPageModel, SHARED_ANNOTATIONS_PAGENO
-from varietes import not_overridden
+from varietes import not_overridden, is_html_color
 
 class PageAnnotationsCallback(object):
 
@@ -267,7 +267,9 @@ class MapArea(object):
 		return self._border_always_visible
 
 	def _parse_color(self, color):
-		# FIXME
+		color = str(color)
+		if not is_html_color(color):
+			raise ValueError
 		return color
 	
 	def _parse_xywh(self, x, y, w, h):
