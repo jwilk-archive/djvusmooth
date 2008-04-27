@@ -20,6 +20,12 @@ class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 	def notify_node_deselect(self, node):
 		pass
 
+def item_to_id(item):
+	try:
+		return int(item)
+	except TypeError:
+		return item.GetId()
+
 class MapAreaBrowser(
 	wx.ListCtrl,
 	wx.lib.mixins.listctrl.ListCtrlAutoWidthMixin,
@@ -36,6 +42,7 @@ class MapAreaBrowser(
 		self.page = None
 		wx.lib.mixins.listctrl.ListCtrlAutoWidthMixin.__init__(self)
 		wx.lib.mixins.listctrl.TextEditMixin.__init__(self)
+		self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_selection_changed, self)
 	
 	def on_node_change(self, node):
 		# TODO
@@ -50,6 +57,14 @@ class MapAreaBrowser(
 		if selected_item != current_item:
 			self.Select(selected_item, False)
 			self.Select(current_item, True)
+	
+	def on_selection_changed(self, event):
+		event.Skip()
+		item = event.m_itemIndex
+		node = self.GetPyData(item)
+		if node is None:
+			return
+		node.notify_select()
 	
 	@apply
 	def page():
@@ -77,10 +92,12 @@ class MapAreaBrowser(
 		elif col == 1:
 			node.comment = label
 
+
 	def GetPyData(self, item):
-		return self._data.get(item)
+		return self._data.get(item_to_id(item))
 	
 	def SetPyData(self, item, data):
+		id = item_to_id(item)
 		self._data[item] = data
 		self._data_map[data] = item
 	
