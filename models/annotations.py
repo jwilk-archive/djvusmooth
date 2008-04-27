@@ -453,7 +453,7 @@ class TextMapArea(MapArea):
 		self._parse_xywh(x, y, w, h)
 		self._parse_border_options(options)
 		self._parse_border_always_visible(options)
-			# XXX Reference (8.3.4.2.3.1 Miscellaneous parameters) states that (border_avis)
+			# XXX Reference (8.3.4.2.3.1 Miscellaneous parameters) states that ``(border_avis)``
 			# is not relevant for text mapareas. Nethertheless that option can be found
 			# in the wild, e.g. in the ``lizard2005-antz.djvu`` file.
 		try:
@@ -476,7 +476,7 @@ class TextMapArea(MapArea):
 	@property
 	def border_always_visible(self):
 		return NotImplemented
-	# XXX Reference (8.3.4.2.3.1 Miscellaneous parameters) states that (border_avis)
+	# XXX Reference (8.3.4.2.3.1 Miscellaneous parameters) states that ``(border_avis)``
 	# is not relevant for text mapareas. Nethertheless that option can be found
 	# in the wild, e.g. in the ``lizard2005-antz.djvu`` file. So…
 	del border_always_visible
