@@ -6,6 +6,8 @@ import wx.lib.mixins.listctrl
 
 import models.annotations
 
+from gui.maparea_properties import MapareaPropertiesDialog
+
 class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 
 	def __init__(self, owner):
@@ -43,7 +45,8 @@ class MapAreaBrowser(
 		wx.lib.mixins.listctrl.ListCtrlAutoWidthMixin.__init__(self)
 		wx.lib.mixins.listctrl.TextEditMixin.__init__(self)
 		self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_selection_changed, self)
-	
+		self.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.on_item_right_click, self)
+
 	def on_node_change(self, node):
 		# TODO
 		pass
@@ -57,6 +60,40 @@ class MapAreaBrowser(
 		if selected_item != current_item:
 			self.Select(selected_item, False)
 			self.Select(current_item, True)
+	
+	def on_item_right_click(self, event):
+		item = event.m_itemIndex
+		node = self.GetPyData(item)
+		# Yup, we accept the fact that `node` can be `None`
+		self.show_menu(node, event.GetPoint())
+	
+	def show_menu(self, node, point):
+		menu = wx.Menu()
+		menu_item = menu.Append(wx.ID_ANY, u'&New annotation…')
+		self.Bind(wx.EVT_MENU, lambda event: self.on_new_annotation(event))
+		if node is not None:
+			menu_item = menu.Append(wx.ID_ANY, u'&Properties…')
+			self.Bind(wx.EVT_MENU, lambda event: self.on_properties(event, node))
+		self.PopupMenu(menu, point)
+
+	def on_new_annotation(self, event):
+		dialog = MapareaPropertiesDialog(self)
+		try:
+			if dialog.ShowModal() != wx.ID_OK:
+				return
+			self.page.annotations.add_child(dialog.node)
+		finally:
+			dialog.Destroy()
+
+	def on_properties(self, event, node):
+		dialog = MapareaPropertiesDialog(self, node)
+		try:
+			if dialog.ShowModal() != wx.ID_OK:
+				return
+			node.devour(dialog.node)
+			raise NotImplementedError # TODO
+		finally:
+			dialog.Destroy()
 	
 	def on_selection_changed(self, event):
 		event.Skip()
