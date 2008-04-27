@@ -11,6 +11,7 @@ from djvu import decode, sexpr
 import djvu.const
 
 import models.text
+import models.annotations
 
 PIXEL_FORMAT = decode.PixelFormatRgb()
 PIXEL_FORMAT.rows_top_to_bottom = 1
@@ -309,6 +310,22 @@ class MapareaShape(NodeShape):
 	def _get_text(self):
 		return self._node.uri
 
+class MapareaCallback(models.annotations.PageAnnotationsCallback):
+
+	def __init__(self, widget):
+		self._widget = widget
+
+	def notify_node_change(self, node):
+		shape = self._widget._nonraster_shapes_map.get(node)
+		if shape is not None:
+			shape.update()
+
+	def notify_node_select(self, node):
+		self._widget.on_node_selected(node)
+
+	def notify_node_deselect(self, node):
+		self._widget.on_node_deselected(node)
+
 class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 
 	def __init__(self, widget):
@@ -447,13 +464,16 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 					page_job = self._page_job
 					page_text = self._page_text
 					page_mapareas = self._page_mapareas
-					callback = self._callback
+					callbacks = self._callbacks
 				else:
 					page_job = page.page_job
-					callback = PageTextCallback(self)
+					text_callback = PageTextCallback(self)
+					maparea_callback = MapareaCallback(self)
+					callbacks = text_callback, maparea_callback
 					page_text = page.text
+					page_text.register_callback(text_callback)
 					page_mapareas = page.annotations.mapareas
-					page_text.register_callback(callback)
+					page.annotations.register_callback(maparea_callback)
 				real_page_size = (page_job.width, page_job.height)
 				viewport_size = tuple(self.GetParent().GetSize())
 				screen_page_size = self._zoom.get_page_screen_size(page_job, viewport_size)
@@ -467,13 +487,13 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 				page_text = None
 				page_mapareas = None
 				need_recreate_text = True
-				callback = None
+				callbacks = ()
 			self._screen_page_size = screen_page_size
 			self._xform_real_to_screen = xform_real_to_screen
 			self._page_job = page_job
 			self._page_text = page_text
 			self._page_mapareas = page_mapareas
-			self._callback = callback
+			self._callbacks = callbacks
 			if page is None:
 				self.set_size(self._initial_size)
 			if self._image is not None:
