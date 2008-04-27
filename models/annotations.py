@@ -14,6 +14,7 @@ import weakref
 import itertools
 
 import djvu.const
+import djvu.decode
 
 from models import MultiPageModel, SHARED_ANNOTATIONS_PAGENO
 from varietes import not_overridden
@@ -256,7 +257,7 @@ class MapArea(object):
 
 	@apply
 	def rect():
-		@not_overriden
+		@not_overridden
 		def not_implemented(self):
 			raise NotImplementedError
 		return property(not_implemented, not_implemented)
@@ -378,7 +379,9 @@ class PolygonMapArea(MapArea):
 			if h <= 0: h = 1
 			return (x0, y0, w, h)
 		def set(self, value):
-			raise NotImplementedError # TODO
+			xform = djvu.decode.AffineTransform(self.rect, value)
+			self._coords = map(xform, self._coords)
+			self._notify_change()
 		return property(get, set)
 
 	def __init__(self, *coords, **options):
@@ -417,7 +420,10 @@ class LineMapArea(MapArea):
 			x0, y0, x1, y1 = self._x0, self._y0, self._x1, self._y1
 			return (min(x0, x1), min(y0, y1), abs(x0 - x1), abs(y0 - y1))
 		def set(self, value):
-			raise NotImplementedError # TODO
+			xform = djvu.decode.AffineTransform(self.rect, value)
+			self._x0, self._y0 = xform((self._x0, self._y0))
+			self._x1, self._y1 = xform((self._x1, self._y1))
+			self._notify_change()
 		return property(get, set)
 
 	def __init__(self, x1, y1, x2, y2, **options):
