@@ -19,6 +19,12 @@ import djvu.decode
 from models import MultiPageModel, SHARED_ANNOTATIONS_PAGENO
 from varietes import not_overridden, is_html_color
 
+def parse_color(color):
+	color = str(color).upper()
+	if not is_html_color(color):
+		raise ValueError
+	return color
+
 class PageAnnotationsCallback(object):
 
 	@not_overridden
@@ -68,7 +74,11 @@ class XorBorder(Border):
 class SolidBorder(Border):
 
 	def __init__(self, color):
-		self._color = color
+		self._color = parse_color(color)
+	
+	@property
+	def color(self):
+		return self._color
 	
 	def _get_sexpr(self):
 		return djvu.sexpr.Expression((djvu.const.MAPAREA_BORDER_SOLID_COLOR, self._color))
@@ -197,7 +207,7 @@ class MapArea(object):
 		else:
 			self._border = XorBorder()
 		try:
-			self._border = SolidBorder(self._parse_color(options.pop('s_%s' % djvu.const.MAPAREA_BORDER_SOLID_COLOR)))
+			self._border = SolidBorder(parse_color(options.pop('s_%s' % djvu.const.MAPAREA_BORDER_SOLID_COLOR)))
 		except KeyError:
 			pass
 	
@@ -265,13 +275,11 @@ class MapArea(object):
 	@property
 	def border_always_visible(self):
 		return self._border_always_visible
-
-	def _parse_color(self, color):
-		color = str(color)
-		if not is_html_color(color):
-			raise ValueError
-		return color
 	
+	@property
+	def border(self):
+		return self._border
+
 	def _parse_xywh(self, x, y, w, h):
 		x, y, w, h = map(int, (x, y, w, h))
 		if w <= 0 or h <= 0:
@@ -312,7 +320,7 @@ class RectangleMapArea(MapArea):
 		self._parse_shadow_border_options(options)
 		self._parse_border_always_visible(options)
 		try:
-			self._highlight_color = self._parse_color(options.pop('s_%s' % djvu.const.MAPAREA_HIGHLIGHT_COLOR))
+			self._highlight_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_HIGHLIGHT_COLOR))
 		except KeyError:
 			self._highlight_color = None
 		try:
@@ -443,16 +451,18 @@ class LineMapArea(MapArea):
 		except KeyError:
 			self._width = 1
 		try:
-			self._line_color = self._parse_color(options.pop('s_%s' % djvu.const.MAPAREA_LINE_COLOR))
+			self._line_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_LINE_COLOR))
 		except KeyError:
 			self._line_color = None
 		self._parse_border_options(options)
 		self._parse_common_options(options)
 		self._check_invalid_options(options)
 	
+	border_always_visible = property()
+	
 	@property
-	def border_always_visible(self):
-		return NotImplemented
+	def border(self):
+		return self._border
 
 class TextMapArea(MapArea):
 
@@ -466,11 +476,11 @@ class TextMapArea(MapArea):
 			# is not relevant for text mapareas. Nethertheless that option can be found
 			# in the wild, e.g. in the ``lizard2005-antz.djvu`` file.
 		try:
-			self._background_color = self._parse_color(options.pop('s_%s' % djvu.const.MAPAREA_BACKGROUND_COLOR))
+			self._background_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_BACKGROUND_COLOR))
 		except KeyError:
 			self._background_color = None
 		try:
-			self._text_color = self._parse_color(options.pop('s_%s' % djvu.const.MAPAREA_TEXT_COLOR))
+			self._text_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_TEXT_COLOR))
 		except KeyError:
 			self._text_color = None
 		try:
@@ -482,9 +492,7 @@ class TextMapArea(MapArea):
 		self._parse_common_options(options)
 		self._check_invalid_options(options)
 
-	@property
-	def border_always_visible(self):
-		return NotImplemented
+	border_always_visible = property()
 	# XXX Reference (8.3.4.2.3.1 Miscellaneous parameters) states that ``(border_avis)``
 	# is not relevant for text mapareas. Nethertheless that option can be found
 	# in the wild, e.g. in the ``lizard2005-antz.djvu`` file. So…
