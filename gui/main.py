@@ -245,7 +245,6 @@ class MainWindow(wx.Frame):
 		self.splitter._default_position = 160
 		self.splitter.SetSashGravity(0.1)
 		self.do_show_sidebar()
-		self.do_hide_sidebar()
 		sizer = wx.BoxSizer(wx.VERTICAL)
 		self.scrolled_panel.SetSizer(sizer)
 		self.scrolled_panel.SetAutoLayout(True)
