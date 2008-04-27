@@ -151,8 +151,9 @@ class MapareaPropertiesDialog(wx.Dialog):
 			text_specific_sizer.Add(widget, 0, wx.ALIGN_CENTER_VERTICAL)
 		return extra_sizers
 
-	def __init__(self, parent):
+	def __init__(self, parent, node = None):
 		wx.Dialog.__init__(self, parent, title = 'Overprinted annotations properties')
+		self._node = node
 		sizer = wx.BoxSizer(wx.VERTICAL)
 		self.Bind(wx.lib.colourselect.EVT_COLOURSELECT, self.on_select_color)
 		main_properties_box_sizer = self._setup_main_properties_box()
