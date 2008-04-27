@@ -11,6 +11,7 @@ See Lizardtech DjVu Reference (DjVu 3):
 '''
 
 import weakref
+import itertools
 
 import djvu.const
 
@@ -112,26 +113,26 @@ class MapArea(object):
 		symbol = sexpr.next().value
 		if symbol is not djvu.const.ANNOTATION_MAPAREA:
 			raise ValueError
-		href = sexpr.next().value
+		uri = sexpr.next().value
 		try:
-			symbol, href, target = href
+			symbol, uri, target = uri
 		except (TypeError, ValueError):
 			target = None
 		else:
-			if symbol is not djvu.const.MAPAREA_HREF:
+			if symbol is not djvu.const.MAPAREA_URI:
 				raise ValueError
 		comment = sexpr.next().value
 		shape = sexpr.next()
 		shape_iter = iter(shape)
 		cls = MAPAREA_SHAPE_TO_CLASS[shape_iter.next().value]
 		args = [int(item) for item in shape_iter]
-		kwargs = dict(uri = href, target = target, comment = comment, owner = owner)
+		kwargs = dict(uri = uri, target = target, comment = comment, owner = owner)
 		for item in sexpr:
 			try:
 				key, value = item
 				key = key.value
 				value = value.value
-			except TypeError:
+			except ValueError:
 				key, = item
 				key = key.value
 				value = True
@@ -145,8 +146,9 @@ class MapArea(object):
 	def _get_sexpr_area_xywh(self):
 		return (self.SYMBOL, self._x, self._y, self._w, self._h)
 
+	@not_overridden
 	def _get_sexpr_extra(self):
-		return () # TODO
+		return ()
 	
 	def _get_sexpr_border(self):
 		if self._border is None:
@@ -159,12 +161,14 @@ class MapArea(object):
 			if self._target is None:
 				uri_part = self._uri
 			else:
-				uri_part = (djvu.const.MAPAREA_HREF, self._uri, self._target)
+				uri_part = (djvu.const.MAPAREA_URI, self._uri, self._target)
 			border_part = self._get_sexpr_border()
 			if border_part is None:
 				border_part = ()
 			else:
 				border_part = (border_part,)
+			if self.border_always_visible is True:
+				border_part += (djvu.const.MAPAREA_BORDER_ALWAYS_VISIBLE,),
 			return djvu.sexpr.Expression(
 				(
 					djvu.const.ANNOTATION_MAPAREA,
@@ -180,21 +184,23 @@ class MapArea(object):
 	def _parse_border_options(self, options):
 		self._border = None
 		try:
-			del options['s_none']
+			del options['s_%s' % djvu.const.MAPAREA_BORDER_NONE]
 		except KeyError:
 			pass
 		else:
 			self._border = NoBorder()
 		try:
-			del options['s_xor']
+			del options['s_%s' % djvu.const.MAPAREA_BORDER_XOR]
 		except KeyError:
 			pass
 		else:
 			self._border = XorBorder()
 		try:
-			self._border = SolidBorder(self._parse_color(options.pop('s_border')))
+			self._border = SolidBorder(self._parse_color(options.pop('s_%s' % djvu.const.MAPAREA_BORDER_SOLID_COLOR)))
 		except KeyError:
 			pass
+	
+	def _parse_shadow_border_options(self, options):
 		for border_style in djvu.const.MAPAREA_SHADOW_BORDERS:
 			try:
 				width = self._parse_width(options.pop('s_%s' % border_style))
@@ -202,12 +208,20 @@ class MapArea(object):
 				continue
 			cls = MAPAREA_SHADOW_BORDER_TO_CLASS[border_style]
 			self._border = cls(width)
+	
+	def _parse_border_always_visible(self, options):
+		try:
+			del options['s_%s' % djvu.const.MAPAREA_BORDER_ALWAYS_VISIBLE]
+		except KeyError:
+			self._border_always_visible = False
+		else:
+			self._border_always_visible = True
 
 	def _check_invalid_options(self, options):
 		if options:
 			raise ValueError('%r is invalid keyword argument for this function' % (iter(options).next(),))
 	
-	def _check_common_options(self, options):
+	def _parse_common_options(self, options):
 		self._uri = options.pop('uri')
 		self._target = options.pop('target')
 		self._comment = options.pop('comment')
@@ -245,6 +259,10 @@ class MapArea(object):
 		def not_implemented(self):
 			raise NotImplementedError
 		return property(not_implemented, not_implemented)
+	
+	@property
+	def border_always_visible(self):
+		return self._border_always_visible
 
 	def _parse_color(self, color):
 		# FIXME
@@ -287,18 +305,28 @@ class RectangleMapArea(MapArea):
 	def __init__(self, x, y, w, h, **options):
 		self._parse_xywh(x, y, w, h)
 		self._parse_border_options(options)
+		self._parse_shadow_border_options(options)
+		self._parse_border_always_visible(options)
 		try:
-			self._highlight_color = self._parse_color(options.pop('s_hilite'))
+			self._highlight_color = self._parse_color(options.pop('s_%s' % djvu.const.MAPAREA_HIGHLIGHT_COLOR))
 		except KeyError:
 			self._highlight_color = None
 		try:
-			self._opacity = int(options.pop('s_opacity'))
+			self._opacity = int(options.pop('s_%s' % djvu.const.MAPAREA_OPACITY))
 			if not (0 <= self._opacity <= 100):
 				raise ValueError
 		except KeyError:
 			self._opacity = 50
-		self._check_common_options(options)
+		self._parse_common_options(options)
 		self._check_invalid_options(options)
+
+	def _get_sexpr_extra(self):
+		result = []
+		if self._opacity is not None:
+			result += (djvu.const.MAPAREA_OPACITY, self._opacity),
+		if self._highlight_color is not None:
+			result += (djvu.const.MAPAREA_HIGHLIGHT_COLOR, self._highlight_color),
+		return tuple(result)
 	
 	rect = MapArea._rect_xywh
 	_get_sexpr_area = MapArea._get_sexpr_area_xywh
@@ -310,46 +338,112 @@ class OvalMapArea(MapArea):
 	def __init__(self, x, y, w, h, **options):
 		self._parse_xywh(x, y, w, h)
 		self._parse_border_options(options)
-		self._check_common_options(options)
+		self._parse_border_always_visible(options)
+		self._parse_common_options(options)
 		self._check_invalid_options(options)
 
 	rect = MapArea._rect_xywh
 	_get_sexpr_area = MapArea._get_sexpr_area_xywh
 
+	def _get_sexpr_extra(self):
+		return ()
+
 class PolygonMapArea(MapArea):
 
 	SYMBOL = djvu.const.MAPAREA_SHAPE_POLYGON
 
+	def _get_sexpr_area(self):
+		return djvu.sexpr.Expression(itertools.chain(
+			(self.SYMBOL,),
+			itertools.chain(*self._coords)
+		))
+	
+	def _get_sexpr_extra(self):
+		return ()
+	
+	@apply
+	def rect():
+		def get(self):
+			x0 = y0 = 1e999
+			x1 = y1 = -1e999
+			for (x, y) in self._coords:
+				if x < x0: x0 = x
+				if y < y0: y0 = y
+				if x > x1: x1 = x
+				if y > y1: y1 = y
+			w = x1 - x0
+			h = y1 - y0
+			if w <= 0: w = 1
+			if h <= 0: h = 1
+			return (x0, y0, w, h)
+		def set(self, value):
+			raise NotImplementedError
+		return property(get, set)
+
 	def __init__(self, *coords, **options):
-		# TODO: parse coords
+		n_coords = len(coords)
+		if n_coords & 1:
+			raise ValueError('polygon with %2.f vertices' % (n_coords / 2.0))
+		if n_coords < 6:
+			raise ValueError('polygon with %d vertices' % (n_coords // 2))
+		coords = (int(x) for x in coords)
+		self._coords = zip(coords, coords)
 		self._parse_border_options(options)
+		self._parse_border_always_visible(options)
+		self._parse_common_options(options)
 		self._check_invalid_options(options)
-		self._check_common_options(options)
 
 class LineMapArea(MapArea):
 
 	SYMBOL = djvu.const.MAPAREA_SHAPE_LINE
 
+	def _get_sexpr_area(self):
+		return djvu.sexpr.Expression((self.SYMBOL, self._x0, self._y0, self._x1, self._y1))
+	
+	def _get_sexpr_extra(self):
+		result = []
+		if self._arrow:
+			result += (djvu.const.MAPAREA_ARROW,),
+		if self._width != 1:
+			result += (djvu.const.MAPAREA_LINE_WIDTH, self._width),
+		if self._line_color is not None:
+			result += (djvu.const.MAPAREA_LINE_COLOR, self._line_color),
+		return tuple(result)
+
+	@apply
+	def rect():
+		def get(self):
+			x0, y0, x1, y1 = self._x0, self._y0, self._x1, self._y1
+			return (min(x0, x1), min(y0, y1), abs(x0 - x1), abs(y0 - y1))
+		def set(self, value):
+			raise NotImplementedError
+		return property(get, set)
+
 	def __init__(self, x1, y1, x2, y2, **options):
-		# TODO: parse x1, y1, x2, y2
+		self._x0, self._y0, self._x1, self._y1 = itertools.imap(int, (x1, y1, x2, y2))
 		try:
-			del options['s_arrow']
+			del options['s_%s' % djvu.const.MAPAREA_ARROW]
 		except KeyError:
 			self._arrow = False
 		else:
 			self._arrow = True
 		try:
-			self._width = int(options.pop('s_width'))
+			self._width = int(options.pop('s_%s' % djvu.const.MAPAREA_LINE_WIDTH))
 			if self._width < 1:
 				raise ValueError
 		except KeyError:
 			self._width = 1
 		try:
-			self._line_color = self._parse_color(options.pop('s_lineclr'))
+			self._line_color = self._parse_color(options.pop('s_%s' % djvu.const.MAPAREA_LINE_COLOR))
 		except KeyError:
 			self._line_color = None
-		self._check_common_options(options)
+		self._parse_border_options(options)
+		self._parse_common_options(options)
 		self._check_invalid_options(options)
+	
+	@property
+	def border_always_visible(self):
+		return NotImplemented
 
 class TextMapArea(MapArea):
 
@@ -358,25 +452,47 @@ class TextMapArea(MapArea):
 	def __init__(self, x, y, w, h, **options):
 		self._parse_xywh(x, y, w, h)
 		self._parse_border_options(options)
+		self._parse_border_always_visible(options)
+			# XXX Reference (8.3.4.2.3.1 Miscellaneous parameters) states that (border_avis)
+			# is not relevant for text mapareas. Nethertheless that option can be found
+			# in the wild, e.g. in the ``lizard2005-antz.djvu`` file.
 		try:
-			self._background_color = self._parse_color(options.pop('s_backclr'))
+			self._background_color = self._parse_color(options.pop('s_%s' % djvu.const.MAPAREA_BACKGROUND_COLOR))
 		except KeyError:
 			self._background_color = None
 		try:
-			self._text_color = self._parse_color(options.pop('s_textclr'))
+			self._text_color = self._parse_color(options.pop('s_%s' % djvu.const.MAPAREA_TEXT_COLOR))
 		except KeyError:
 			self._text_color = None
 		try:
-			del options['s_pushpin']
+			del options['s_%s' % djvu.const.MAPAREA_PUSHPIN]
 		except KeyError:
 			self._push_pin = False
 		else:
 			self._push_pin = True
-		self._check_common_options(options)
+		self._parse_common_options(options)
 		self._check_invalid_options(options)
+
+	@property
+	def border_always_visible(self):
+		return NotImplemented
+	# XXX Reference (8.3.4.2.3.1 Miscellaneous parameters) states that (border_avis)
+	# is not relevant for text mapareas. Nethertheless that option can be found
+	# in the wild, e.g. in the ``lizard2005-antz.djvu`` file. So…
+	del border_always_visible
 
 	rect = MapArea._rect_xywh
 	_get_sexpr_area = MapArea._get_sexpr_area_xywh
+
+	def _get_sexpr_extra(self):
+		result = []
+		if self._background_color is not None:
+			result += (djvu.const.MAPAREA_BACKGROUND_COLOR, self._background_color),
+		if self._text_color is not None:
+			result += (djvu.const.MAPAREA_TEXT_COLOR, self._text_color),
+		if self._push_pin:
+			result += (djvu.const.MAPAREA_PUSHPIN,),
+		return tuple(result)
 
 MAPAREA_SHADOW_BORDER_TO_CLASS = dict(
 	(cls.SYMBOL, cls)
