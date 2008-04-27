@@ -335,7 +335,7 @@ class MainWindow(wx.Frame):
 			self.new_menu_item(menu, caption, help, method, icon = icon)
 		menu_bar.Append(menu, '&Go');
 		menu = wx.Menu()
-		self.new_menu_item(menu, 'Show &sidebar\tF9', 'Show/side the sidebar', self.on_show_sidebar, style=wx.ITEM_CHECK)
+		self.new_menu_item(menu, 'Show &sidebar\tF9', 'Show/side the sidebar', self.on_show_sidebar, style=wx.ITEM_CHECK).Check()
 		menu_bar.Append(menu, '&Settings');
 		menu = wx.Menu()
 		self.new_menu_item(menu, '&About\tF1', 'More information about this program', self.on_about, id=wx.ID_ABOUT)
