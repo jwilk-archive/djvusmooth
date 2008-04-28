@@ -21,6 +21,9 @@ class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 	
 	def notify_node_deselect(self, node):
 		pass
+	
+	def notify_node_add(self, node):
+		wx.CallAfter(lambda: self.__owner.on_node_add(node))
 
 def item_to_id(item):
 	try:
@@ -46,6 +49,10 @@ class MapAreaBrowser(
 		wx.lib.mixins.listctrl.TextEditMixin.__init__(self)
 		self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_selection_changed, self)
 		self.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.on_item_right_click, self)
+
+	def on_node_add(self, node):
+		item = self._insert_item(node)
+		self.Focus(item)
 
 	def on_node_change(self, node):
 		# TODO
@@ -84,7 +91,7 @@ class MapAreaBrowser(
 		try:
 			if dialog.ShowModal() != wx.ID_OK:
 				return
-			self.page.annotations.add_child(dialog.node)
+			self.page.annotations.add_maparea(dialog.node)
 		finally:
 			dialog.Destroy()
 
@@ -94,7 +101,6 @@ class MapAreaBrowser(
 			if dialog.ShowModal() != wx.ID_OK:
 				return
 			node.devour(dialog.node)
-			raise NotImplementedError # TODO
 		finally:
 			dialog.Destroy()
 	
@@ -132,7 +138,6 @@ class MapAreaBrowser(
 		elif col == 1:
 			node.comment = label
 
-
 	def GetPyData(self, item):
 		return self._data.get(item_to_id(item))
 	
@@ -145,16 +150,21 @@ class MapAreaBrowser(
 		wx.ListCtrl.DeleteAllItem(self)
 		self._data.clear()
 		self._data_map.clear()
+	
+	def _insert_item(self, node):
+		i = self.GetItemCount()
+		item = self.InsertStringItem(i, node.uri)
+		self.SetStringItem(item, 1, node.comment, super = True)
+		self.SetPyData(item, node)
+		return item
 
 	def _recreate_items(self):
 		self.DeleteAllItems()
 		self._nodes = []
 		if self.page is None:
 			return
-		for i, node in enumerate(self._model.mapareas):
-			item = self.InsertStringItem(i, node.uri)
-			self.SetStringItem(item, 1, node.comment, super = True)
-			self.SetPyData(item, node)
+		for node in self._model.mapareas:
+			self._insert_item(node)
 
 __all__ = 'MapAreaBrowser',
 
