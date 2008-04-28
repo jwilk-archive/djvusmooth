@@ -70,10 +70,10 @@ class MapAreaBrowser(
 	def show_menu(self, node, point):
 		menu = wx.Menu()
 		menu_item = menu.Append(wx.ID_ANY, u'&New annotation…')
-		self.Bind(wx.EVT_MENU, lambda event: self.on_new_annotation(event))
+		self.Bind(wx.EVT_MENU, lambda event: self.on_new_annotation(event), menu_item)
 		if node is not None:
 			menu_item = menu.Append(wx.ID_ANY, u'&Properties…')
-			self.Bind(wx.EVT_MENU, lambda event: self.on_properties(event, node))
+			self.Bind(wx.EVT_MENU, lambda event: self.on_properties(event, node), menu_item)
 		self.PopupMenu(menu, point)
 
 	def on_new_annotation(self, event):
