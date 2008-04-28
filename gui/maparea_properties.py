@@ -39,6 +39,9 @@ SHADOW_BORDERS = (
 	idict(model_class = models.annotations.BorderEtchedOut, label = 'Etched out')
 )
 
+def color_as_html(color):
+	return '#%02x%02x%02x' % color.Get()
+
 class MapareaPropertiesDialog(wx.Dialog):
 
 	DEFAULT_TEXT_WIDTH = 200
@@ -311,6 +314,47 @@ class MapareaPropertiesDialog(wx.Dialog):
 		self._edit_shape.SetSelection(i)
 		self.do_select_shape(shape)
 	
+	def get_node(self):
+		shape = SHAPES[self._edit_shape.GetSelection()]
+		model_class = shape.model_class
+		node = model_class.from_maparea(self._node, owner=None)
+		node.uri = self._edit_uri.GetValue()
+		node.target = self._edit_target.GetValue() or None
+		node.comment = self._edit_comment.GetValue()
+		if self._edit_border_none.GetValue():
+			node.border = models.annotations.NoBorder()
+		elif self._edit_border_xor.GetValue():
+			node.border = models.annotations.XorBorder()
+		elif self._edit_border_solid.GetValue():
+			color = color_as_html(self._edit_border_solid_color.GetColour())
+			node.border = models.annotations.SolidBorder(color)
+		elif model_class.can_have_shadow_border():
+			for widget in self._edit_border_shadows:
+				if widget.GetValue():
+					node.border = widget.model_class(self._edit_border_thickness.GetValue())
+					break
+		if self._edit_border_always_visible.GetValue():
+			node.border_always_visible = True
+		if isinstance(node, models.annotations.RectangleMapArea):
+			if self._edit_have_highlight.GetValue():
+				node.highlight_color = color_as_html(self._edit_highlight_color.GetColour())
+			else:
+				node.highlight_color = None
+			node.opacity = self._edit_opacity.GetValue()
+		elif isinstance(node, models.annotations.LineMapArea):
+			node.line_width = self._edit_line_width.GetValue()
+			node.line_color = color_as_html(self._edit_line_color.GetColour())
+			node.line_arrow = self._edit_line_arrow.GetValue()
+		elif isinstance(node, models.annotations.TextMapArea):
+			if self._edit_background_nontrasparent.GetValue():
+				node.background_color = color_as_html(self._edit_background_color.GetColour())
+			else:
+				node.background_color = None
+			self._edit_pushpin
+		return node
+
+	node = property(get_node)
+
 __all__ = 'MapareaPropertiesDialog'
 
 # vim:ts=4 sw=4
