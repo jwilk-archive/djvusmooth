@@ -329,7 +329,7 @@ class RectangleMapArea(MapArea):
 
 	@classmethod
 	def can_have_shadow_border(cls):
-		return False
+		return True
 
 	def __init__(self, x, y, w, h, **options):
 		self._parse_xywh(x, y, w, h)
