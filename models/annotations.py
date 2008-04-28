@@ -302,12 +302,18 @@ class MapArea(object):
 		return w
 
 	def _notify_change(self):
+		if self._owner is None:
+			return
 		return self._owner.notify_node_change(self)
 
 	def notify_select(self):
+		if self._owner is None:
+			return
 		self._owner.notify_node_select(self)
 
 	def notify_deselect(self):
+		if self._owner is None:
+			return
 		self._owner.notify_node_deselect(self)
 
 class RectangleMapArea(MapArea):
