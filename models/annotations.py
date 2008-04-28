@@ -117,6 +117,8 @@ class Annotations(MultiPageModel):
 
 class MapArea(object):
 
+	DEFAULT_ARGUMENTS = NotImplemented
+
 	@not_overridden
 	def __init__(self, *args, **kwargs):
 		pass
@@ -127,6 +129,19 @@ class MapArea(object):
 
 	def devour(self, other):
 		raise NotImplementedError
+
+	@classmethod
+	def from_maparea(cls, maparea, owner):
+		self = cls(
+			*cls.DEFAULT_ARGUMENTS,
+			**dict(
+				uri = maparea.uri,
+				target = maparea.target,
+				comment = maparea.comment,
+				owner = owner
+			)
+		)
+		return self
 
 	@classmethod 
 	def from_sexpr(cls, sexpr, owner):
@@ -272,12 +287,22 @@ class MapArea(object):
 			self._notify_change()
 		return property(get, set)
 
+	@not_overridden
+	def _set_rect(self, rect):
+		raise NotImplementedError
+	
+	@not_overridden
+	def _get_rect(self):
+		raise NotImplementedError
+
 	@apply
 	def rect():
-		@not_overridden
-		def not_implemented(self):
-			raise NotImplementedError
-		return property(not_implemented, not_implemented)
+		def get(self):
+			return self._get_rect()
+		def set(self, rect):
+			self._set_rect(self, rect)
+			self._notify_change(self)
+		return property(get, set)
 	
 	@property
 	def border_always_visible(self):
@@ -310,20 +335,25 @@ class MapArea(object):
 
 class XywhMapArea(MapArea):
 
+	DEFAULT_ARGUMENTS = (0, 0, 32, 32)
+
+	@classmethod
+	def from_maparea(cls, maparea, owner):
+		self = MapArea.from_maparea(cls, maparea, owner)
+		self._set_rect(maparea.rect)
+		return self
+
 	def _parse_xywh(self, x, y, w, h):
 		x, y, w, h = map(int, (x, y, w, h))
 		if w <= 0 or h <= 0:
 			raise ValueError
 		self._x, self._y, self._w, self._h = x, y, w, h
-	
-	@apply
-	def rect():
-		def get(self):
-			return self._x, self._y, self._w, self._h
-		def set(self, (x, y, w, h)):
-			self._parse_xywh(x, y, w, h)
-			self._notify_change()
-		return property(get, set)
+
+	def _set_rect(self, (x, y, w, h)):
+		self._parse_xywh(x, y, w, h)
+
+	def _get_rect(self):
+		return self._x, self._y, self._w, self._h
 	
 	def _get_sexpr_area(self):
 		return (self.SYMBOL, self._x, self._y, self._w, self._h)
@@ -335,6 +365,14 @@ class RectangleMapArea(XywhMapArea):
 	@classmethod
 	def can_have_shadow_border(cls):
 		return True
+
+	@classmethod
+	def from_maparea(cls, maparea, owner):
+		self = XywhArea.from_maparea(cls, maparea, owner)
+		if isinstance(maparea, RectangleMapArea):
+			self._opacity = maparea.opacity
+			self._highlight_color = maparea.highlight_color
+		return self
 
 	def __init__(self, x, y, w, h, **options):
 		self._parse_xywh(x, y, w, h)
@@ -391,6 +429,7 @@ class OvalMapArea(XywhMapArea):
 class PolygonMapArea(MapArea):
 
 	SYMBOL = djvu.const.MAPAREA_SHAPE_POLYGON
+	DEFAULT_ARGUMENTS = (0, 0, 32, 0, 32, 32, 0, 32, 32, 32)
 
 	def _get_sexpr_area(self):
 		return djvu.sexpr.Expression(itertools.chain(
@@ -401,26 +440,39 @@ class PolygonMapArea(MapArea):
 	def _get_sexpr_extra(self):
 		return ()
 	
+	def _get_rect(self):
+		x0 = y0 = 1e999
+		x1 = y1 = -1e999
+		for (x, y) in self._coords:
+			if x < x0: x0 = x
+			if y < y0: y0 = y
+			if x > x1: x1 = x
+			if y > y1: y1 = y
+		w = x1 - x0
+		h = y1 - y0
+		if w <= 0: w = 1
+		if h <= 0: h = 1
+		return (x0, y0, w, h)
+	
+	def _set_rect(self, rect):
+		xform = djvu.decode.AffineTransform(self.rect, rect)
+		self._coords = map(xform, self._coords)
+		self._notify_change()
+
+	@classmethod
+	def from_maparea(cls, maparea, owner):
+		self = MapArea.from_maparea(cls, maparea, owner)
+		if isinstance(maparea, PolygonMapArea):
+			self._coords = maparea.coordinates
+		else:
+			self._set_rect(maparea.rect)
+		return self
+
 	@apply
-	def rect():
+	def coordinates():
 		def get(self):
-			x0 = y0 = 1e999
-			x1 = y1 = -1e999
-			for (x, y) in self._coords:
-				if x < x0: x0 = x
-				if y < y0: y0 = y
-				if x > x1: x1 = x
-				if y > y1: y1 = y
-			w = x1 - x0
-			h = y1 - y0
-			if w <= 0: w = 1
-			if h <= 0: h = 1
-			return (x0, y0, w, h)
-		def set(self, value):
-			xform = djvu.decode.AffineTransform(self.rect, value)
-			self._coords = map(xform, self._coords)
-			self._notify_change()
-		return property(get, set)
+			return self._coords
+		return property(get)
 
 	def __init__(self, *coords, **options):
 		n_coords = len(coords)
@@ -438,6 +490,7 @@ class PolygonMapArea(MapArea):
 class LineMapArea(MapArea):
 
 	SYMBOL = djvu.const.MAPAREA_SHAPE_LINE
+	DEFAULT_ARGUMENTS = (0, 0, 32, 32)
 
 	def _get_sexpr_area(self):
 		return djvu.sexpr.Expression((self.SYMBOL, self._x0, self._y0, self._x1, self._y1))
@@ -452,17 +505,38 @@ class LineMapArea(MapArea):
 			result += (djvu.const.MAPAREA_LINE_COLOR, self._line_color),
 		return tuple(result)
 
+	def _get_rect(self):
+		x0, y0, x1, y1 = self._x0, self._y0, self._x1, self._y1
+		return (min(x0, x1), min(y0, y1), abs(x0 - x1), abs(y0 - y1))
+
+	def _set_rect(self, rect):
+		xform = djvu.decode.AffineTransform(self.rect, rect)
+		self._x0, self._y0 = xform((self._x0, self._y0))
+		self._x1, self._y1 = xform((self._x1, self._y1))
+	
 	@apply
-	def rect():
+	def point_from():
 		def get(self):
-			x0, y0, x1, y1 = self._x0, self._y0, self._x1, self._y1
-			return (min(x0, x1), min(y0, y1), abs(x0 - x1), abs(y0 - y1))
-		def set(self, value):
-			xform = djvu.decode.AffineTransform(self.rect, value)
-			self._x0, self._y0 = xform((self._x0, self._y0))
-			self._x1, self._y1 = xform((self._x1, self._y1))
-			self._notify_change()
-		return property(get, set)
+			return self._x0, self._y0
+		return property(get)
+	
+	@apply
+	def point_to():
+		def get(self):
+			return self._x1, self._y1
+		return property(get)
+
+	@classmethod
+	def from_maparea(cls, maparea, owner):
+		self = MapArea.from_maparea(cls, maparea, owner)
+		if isinstance(maparea, LineMapArea):
+			(self._x0, self._y0), (self._x1, self._y1) = maparea.point_from, maparea.point_to
+			self._line_arrow = maparea.line_arrow
+			self._line_width = maparea.line_width
+			self._line_color = maparea.line_color
+		else:
+			self._set_rect(maparea.rect)
+		return self
 
 	def __init__(self, x1, y1, x2, y2, **options):
 		self._x0, self._y0, self._x1, self._y1 = itertools.imap(int, (x1, y1, x2, y2))
@@ -515,6 +589,15 @@ class LineMapArea(MapArea):
 class TextMapArea(XywhMapArea):
 
 	SYMBOL = djvu.const.MAPAREA_SHAPE_TEXT
+
+	@classmethod
+	def from_maparea(cls, maparea, owner):
+		self = XywhMapArea.from_maparea(maparea, owner)
+		if isinstance(maparea, TextMapArea):
+			self._background_color = maparea.background_color
+			self._text_color = maparea.text_color
+			self._pushpin = maparea.pushpin
+		return self
 
 	def __init__(self, x, y, w, h, **options):
 		self._parse_xywh(x, y, w, h)
