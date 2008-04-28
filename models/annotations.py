@@ -38,6 +38,10 @@ class PageAnnotationsCallback(object):
 	@not_overridden
 	def notify_node_deselect(self, node):
 		pass
+	
+	@not_overridden
+	def notify_node_add(self, node):
+		pass
 
 class Border(object):
 
@@ -132,15 +136,29 @@ class MapArea(object):
 
 	@classmethod
 	def from_maparea(cls, maparea, owner):
+		if maparea is None:
+			uri = comment = ''
+			target = None
+		else:
+			uri = maparea.uri
+			target = maparea.target
+			comment = maparea.comment
 		self = cls(
 			*cls.DEFAULT_ARGUMENTS,
 			**dict(
-				uri = maparea.uri,
-				target = maparea.target,
-				comment = maparea.comment,
+				uri = uri,
+				target = target,
+				comment = comment,
 				owner = owner
 			)
 		)
+		if maparea is None:
+			self._border = NoBorder()
+		else:
+			self._border = maparea.border
+		if isinstance(self._border, BorderShadow) and not cls.can_have_shadow_border():
+			self._border = NoBorder()
+		self._border_always_visible = maparea is not None and maparea.border_always_visible is True
 		return self
 
 	@classmethod 
@@ -308,9 +326,18 @@ class MapArea(object):
 	def border_always_visible(self):
 		return self._border_always_visible
 	
-	@property
-	def border(self):
-		return self._border
+	@apply
+	def border():
+		def get(self):
+			return self._border
+		def set(self, border):
+			if not isinstance(border, Border):
+				raise TypeError
+			if not self.can_have_shadow_border() and isinstance(border, BorderShadow):
+				raise TypeError
+			self._border = border
+			self._notify_change()
+		return property(get, set)
 
 	def _parse_width(self, w):
 		w = int(w)
@@ -340,7 +367,8 @@ class XywhMapArea(MapArea):
 	@classmethod
 	def from_maparea(cls, maparea, owner):
 		self = super(XywhMapArea, cls).from_maparea(maparea, owner)
-		self._set_rect(maparea.rect)
+		if maparea is not None:
+			self._set_rect(maparea.rect)
 		return self
 
 	def _parse_xywh(self, x, y, w, h):
@@ -368,7 +396,7 @@ class RectangleMapArea(XywhMapArea):
 
 	@classmethod
 	def from_maparea(cls, maparea, owner):
-		self = super(XywhArea, cls).from_maparea(maparea, owner)
+		self = super(XywhMapArea, cls).from_maparea(maparea, owner)
 		if isinstance(maparea, RectangleMapArea):
 			self._opacity = maparea.opacity
 			self._highlight_color = maparea.highlight_color
@@ -404,13 +432,19 @@ class RectangleMapArea(XywhMapArea):
 	def opacity():
 		def get(self):
 			return self._opacity
-		return property(get)
+		def set(self, value):
+			self._opacity = value
+			self._notify_change()
+		return property(get, set)
 	
 	@apply
 	def highlight_color():
 		def get(self):
 			return self._highlight_color
-		return property(get)
+		def set(self, value):
+			self._highlight_color = parse_color(value)
+			self._notify_change()
+		return property(get, set)
 
 class OvalMapArea(XywhMapArea):
 
@@ -464,7 +498,7 @@ class PolygonMapArea(MapArea):
 		self = super(PolygonMapArea, cls).from_maparea(maparea, owner)
 		if isinstance(maparea, PolygonMapArea):
 			self._coords = maparea.coordinates
-		else:
+		elif maparea is not None:
 			self._set_rect(maparea.rect)
 		return self
 
@@ -534,7 +568,7 @@ class LineMapArea(MapArea):
 			self._line_arrow = maparea.line_arrow
 			self._line_width = maparea.line_width
 			self._line_color = maparea.line_color
-		else:
+		elif maparea is not None:
 			self._set_rect(maparea.rect)
 		return self
 
@@ -564,28 +598,33 @@ class LineMapArea(MapArea):
 	def line_width():
 		def get(self):
 			return self._line_width
-		return property(get)
+		def set(self, value):
+			self._line_width = value
+			self._notify_change()
+		return property(get, set)
 	
 	@apply
 	def line_color():
 		def get(self):
 			return self._line_color
-		return property(get)
+		def set(self, value):
+			self._line_color = parse_color(value)
+			self._notify_change()
+		return property(get, set)
 
 	@apply
 	def line_arrow():
 		def get(self):
 			return self._line_arrow
-		return property(get)
+		def set(self, value):
+			self._line_arrow = value
+			self._notify_change()
+		return property(get, set)
 
 	@property
 	def border_always_visible(self):
 		return NotImplemented
 	
-	@property
-	def border(self):
-		return self._border
-
 class TextMapArea(XywhMapArea):
 
 	SYMBOL = djvu.const.MAPAREA_SHAPE_TEXT
@@ -645,19 +684,28 @@ class TextMapArea(XywhMapArea):
 	def background_color():
 		def get(self):
 			return self._background_color
+		def set(self, color):
+			self._background_color = parse_color(color)
+			self._notify_change()
 		return property(get)
 
 	@apply
 	def text_color():
 		def get(self):
 			return self._text_color
-		return property(get)
+		def set(self, color):
+			self._text_color = parse_color(color)
+			self._notify_change()
+		return property(get, set)
 
 	@apply
 	def pushpin():
 		def get(self):
 			return self._pushpin
-		return property(get)
+		def set(self, value):
+			self._pushpin = value
+			self._notify_change()
+		return property(get, set)
 
 MAPAREA_SHADOW_BORDER_TO_CLASS = dict(
 	(cls.SYMBOL, cls)
@@ -698,6 +746,10 @@ class PageAnnotations(object):
 			result[cls].append(item)
 		return result
 	
+	def add_maparea(self, node):
+		self._data[MapArea] += node,
+		self.notify_node_add(node)
+	
 	@property
 	def mapareas(self):
 		return self._data.get(MapArea, ())
@@ -714,6 +766,11 @@ class PageAnnotations(object):
 
 	def export_select(self, djvused):
 		djvused.select(self._n + 1)
+
+	def notify_node_add(self, node):
+		self._dirty = True
+		for callback in self._callbacks:
+			callback.notify_node_add(node)
 
 	def notify_node_change(self, node):
 		self._dirty = True
