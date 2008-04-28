@@ -125,6 +125,9 @@ class MapArea(object):
 	def can_have_shadow_border(cls):
 		return False
 
+	def devour(self, other):
+		raise NotImplementedError
+
 	@classmethod 
 	def from_sexpr(cls, sexpr, owner):
 		sexpr = iter(sexpr)
@@ -161,9 +164,6 @@ class MapArea(object):
 	def _get_sexpr_area(self):
 		raise NotImplementedError
 	
-	def _get_sexpr_area_xywh(self):
-		return (self.SYMBOL, self._x, self._y, self._w, self._h)
-
 	@not_overridden
 	def _get_sexpr_extra(self):
 		return ()
@@ -287,21 +287,6 @@ class MapArea(object):
 	def border(self):
 		return self._border
 
-	def _parse_xywh(self, x, y, w, h):
-		x, y, w, h = map(int, (x, y, w, h))
-		if w <= 0 or h <= 0:
-			raise ValueError
-		self._x, self._y, self._w, self._h = x, y, w, h
-	
-	@apply
-	def _rect_xywh():
-		def get(self):
-			return self._x, self._y, self._w, self._h
-		def set(self, (x, y, w, h)):
-			self._parse_xywh(x, y, w, h)
-			self._notify_change()
-		return property(get, set)
-	
 	def _parse_width(self, w):
 		w = int(w)
 		if w < 0:
@@ -323,7 +308,27 @@ class MapArea(object):
 			return
 		self._owner.notify_node_deselect(self)
 
-class RectangleMapArea(MapArea):
+class XywhMapArea(MapArea):
+
+	def _parse_xywh(self, x, y, w, h):
+		x, y, w, h = map(int, (x, y, w, h))
+		if w <= 0 or h <= 0:
+			raise ValueError
+		self._x, self._y, self._w, self._h = x, y, w, h
+	
+	@apply
+	def rect():
+		def get(self):
+			return self._x, self._y, self._w, self._h
+		def set(self, (x, y, w, h)):
+			self._parse_xywh(x, y, w, h)
+			self._notify_change()
+		return property(get, set)
+	
+	def _get_sexpr_area(self):
+		return (self.SYMBOL, self._x, self._y, self._w, self._h)
+
+class RectangleMapArea(XywhMapArea):
 
 	SYMBOL = djvu.const.MAPAREA_SHAPE_RECTANGLE
 
@@ -357,9 +362,6 @@ class RectangleMapArea(MapArea):
 			result += (djvu.const.MAPAREA_HIGHLIGHT_COLOR, self._highlight_color),
 		return tuple(result)
 	
-	rect = MapArea._rect_xywh
-	_get_sexpr_area = MapArea._get_sexpr_area_xywh
-
 	@apply
 	def opacity():
 		def get(self):
@@ -372,7 +374,7 @@ class RectangleMapArea(MapArea):
 			return self._highlight_color
 		return property(get)
 
-class OvalMapArea(MapArea):
+class OvalMapArea(XywhMapArea):
 
 	SYMBOL = djvu.const.MAPAREA_SHAPE_OVAL
 
@@ -382,9 +384,6 @@ class OvalMapArea(MapArea):
 		self._parse_border_always_visible(options)
 		self._parse_common_options(options)
 		self._check_invalid_options(options)
-
-	rect = MapArea._rect_xywh
-	_get_sexpr_area = MapArea._get_sexpr_area_xywh
 
 	def _get_sexpr_extra(self):
 		return ()
@@ -447,7 +446,7 @@ class LineMapArea(MapArea):
 		result = []
 		if self._line_arrow:
 			result += (djvu.const.MAPAREA_ARROW,),
-		if self._width != 1:
+		if self._line_width != 1:
 			result += (djvu.const.MAPAREA_LINE_WIDTH, self._line_width),
 		if self._line_color is not None:
 			result += (djvu.const.MAPAREA_LINE_COLOR, self._line_color),
@@ -513,7 +512,7 @@ class LineMapArea(MapArea):
 	def border(self):
 		return self._border
 
-class TextMapArea(MapArea):
+class TextMapArea(XywhMapArea):
 
 	SYMBOL = djvu.const.MAPAREA_SHAPE_TEXT
 
@@ -548,9 +547,6 @@ class TextMapArea(MapArea):
 	# is not relevant for text mapareas. Nethertheless that option can be found
 	# in the wild, e.g. in the ``lizard2005-antz.djvu`` file. So…
 	del border_always_visible
-
-	rect = MapArea._rect_xywh
-	_get_sexpr_area = MapArea._get_sexpr_area_xywh
 
 	def _get_sexpr_extra(self):
 		result = []
