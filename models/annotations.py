@@ -86,6 +86,9 @@ class SolidBorder(Border):
 class BorderShadow(Border):
 
 	def __init__(self, width):
+		width = int(width)
+		if not 1 <= width <= 32:
+			raise ValueError
 		self._width = width
 
 	def _get_sexpr(self):
@@ -117,6 +120,10 @@ class MapArea(object):
 	@not_overridden
 	def __init__(self, *args, **kwargs):
 		pass
+
+	@classmethod
+	def can_have_shadow_border(cls):
+		return False
 
 	@classmethod 
 	def from_sexpr(cls, sexpr, owner):
@@ -319,6 +326,10 @@ class MapArea(object):
 class RectangleMapArea(MapArea):
 
 	SYMBOL = djvu.const.MAPAREA_SHAPE_RECTANGLE
+
+	@classmethod
+	def can_have_shadow_border(cls):
+		return False
 
 	def __init__(self, x, y, w, h, **options):
 		self._parse_xywh(x, y, w, h)
