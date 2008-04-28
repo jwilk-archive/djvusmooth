@@ -135,7 +135,7 @@ class MapareaPropertiesDialog(wx.Dialog):
 			box_grid_sizer.Add(widget, 0, wx.ALIGN_CENTER_VERTICAL)
 			shadow_widgets += widget,
 		avis_checkbox = wx.CheckBox(self, label = 'Always visible') # TODO: hide it for irrelevant shapes, i.e. `line` and maybe `text`
-		if node.border_always_visible is True:
+		if node is not None and node.border_always_visible is True:
 			avis_checkbox.SetValue(True)
 		box_sizer.Add(box_grid_sizer, 0, wx.EXPAND | wx.ALL, 5)
 		box_sizer.Add(avis_checkbox, 0, wx.ALL, 5)
@@ -166,7 +166,12 @@ class MapareaPropertiesDialog(wx.Dialog):
 			extra_sizer.Add(extra_grid_sizer, 0, wx.EXPAND | wx.ALL, 5)
 		highlight_specific_sizer, line_specific_sizer, text_specific_sizer = extra_grid_sizers
 		highlight_color_label = wx.CheckBox(self, label = 'Highlight color: ')
-		highlight_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY) # TODO: hide if label not checked
+		highlight_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY)
+		highlight_color_selector.SetColour(wx.BLUE)
+		highlight_color_selector.Enable(False)
+		def on_switch_highlight_color(event):
+			highlight_color_selector.Enable(event.IsChecked())
+		self.Bind(wx.EVT_CHECKBOX, on_switch_highlight_color, highlight_color_label)
 		opacity_label = wx.StaticText(self, label = 'Opacity: ')
 		opacity_slider = wx.Slider(self,
 			value = 50,
@@ -178,8 +183,10 @@ class MapareaPropertiesDialog(wx.Dialog):
 		if isinstance(node, models.annotations.RectangleMapArea):
 			if node.highlight_color is None:
 				highlight_color_label.SetValue(False)
+				highlight_color_selector.Enable(False)
 			else:
 				highlight_color_label.SetValue(True)
+				highlight_color_selector.Enable(True)
 				highlight_color_selector.SetColour(node.highlight_color)
 			opacity_slider.SetValue(node.opacity)
 		line_width_label = wx.StaticText(self, label = 'Line width: ')
@@ -196,7 +203,12 @@ class MapareaPropertiesDialog(wx.Dialog):
 			line_color_selector.SetColour(node.line_color)
 			line_arrow_checkbox.SetValue(node.line_arrow)
 		text_background_color_label = wx.CheckBox(self, label = 'Background color: ')
-		text_background_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY) # TODO: hide if label not checked
+		text_background_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY)
+		text_background_color_selector.SetColour(wx.WHITE)
+		text_background_color_selector.Enable(False)
+		def on_switch_text_background_color(event):
+			text_background_color_selector.Enable(event.IsChecked())
+		self.Bind(wx.EVT_CHECKBOX, on_switch_text_background_color, text_background_color_label)
 		text_color_label = wx.StaticText(self, label = 'Text color: ')
 		text_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY)
 		text_pushpin = wx.CheckBox(self, label = 'Pushpin')
@@ -205,9 +217,11 @@ class MapareaPropertiesDialog(wx.Dialog):
 		if isinstance(node, models.annotations.TextMapArea):
 			if node.background_color is not None:
 				text_background_color_label.SetValue(True)
+				text_background_color_selector.Enable(True)
 				text_background_color_selector.SetColour(node.background_color)
 			else:
 				text_background_color_label.SetValue(False)
+				text_background_color_select.Enabled(False)
 			text_color_selector.SetColour(node.text_color)
 			text_pushpin.SetValue(node.pushpin)
 		self._edit_have_highlight = highlight_color_label
@@ -225,7 +239,6 @@ class MapareaPropertiesDialog(wx.Dialog):
 		wx.Dialog.__init__(self, parent, title = 'Overprinted annotation (hyperlink) properties')
 		self._node = node
 		sizer = wx.BoxSizer(wx.VERTICAL)
-		self.Bind(wx.lib.colourselect.EVT_COLOURSELECT, self.on_select_color)
 		main_properties_box_sizer = self._setup_main_properties_box()
 		shape_box_sizer = self._setup_shape_box()
 		border_box_sizer = self._setup_border_box()
@@ -257,9 +270,6 @@ class MapareaPropertiesDialog(wx.Dialog):
 		self._edit_shape.SetSelection(i)
 		self.do_select_shape(shape)
 	
-	def on_select_color(self, event):
-		wx.CallAfter(lambda: self.radio_border_solid.SetValue(1))
-
 __all__ = 'MapareaPropertiesDialog'
 
 # vim:ts=4 sw=4
