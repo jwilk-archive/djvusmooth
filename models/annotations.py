@@ -343,6 +343,18 @@ class RectangleMapArea(MapArea):
 	rect = MapArea._rect_xywh
 	_get_sexpr_area = MapArea._get_sexpr_area_xywh
 
+	@apply
+	def opacity():
+		def get(self):
+			return self._opacity
+		return property(get)
+	
+	@apply
+	def opacity()
+		def get(self):
+			return self._highlight_color
+		return property(get)
+
 class OvalMapArea(MapArea):
 
 	SYMBOL = djvu.const.MAPAREA_SHAPE_OVAL
@@ -416,10 +428,10 @@ class LineMapArea(MapArea):
 	
 	def _get_sexpr_extra(self):
 		result = []
-		if self._arrow:
+		if self._line_arrow:
 			result += (djvu.const.MAPAREA_ARROW,),
 		if self._width != 1:
-			result += (djvu.const.MAPAREA_LINE_WIDTH, self._width),
+			result += (djvu.const.MAPAREA_LINE_WIDTH, self._line_width),
 		if self._line_color is not None:
 			result += (djvu.const.MAPAREA_LINE_COLOR, self._line_color),
 		return tuple(result)
@@ -441,15 +453,15 @@ class LineMapArea(MapArea):
 		try:
 			del options['s_%s' % djvu.const.MAPAREA_ARROW]
 		except KeyError:
-			self._arrow = False
+			self._line_arrow = False
 		else:
-			self._arrow = True
+			self._line_arrow = True
 		try:
-			self._width = int(options.pop('s_%s' % djvu.const.MAPAREA_LINE_WIDTH))
-			if self._width < 1:
+			self._line_width = int(options.pop('s_%s' % djvu.const.MAPAREA_LINE_WIDTH))
+			if self._line_width < 1:
 				raise ValueError
 		except KeyError:
-			self._width = 1
+			self._line_width = 1
 		try:
 			self._line_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_LINE_COLOR))
 		except KeyError:
@@ -457,6 +469,24 @@ class LineMapArea(MapArea):
 		self._parse_border_options(options)
 		self._parse_common_options(options)
 		self._check_invalid_options(options)
+
+	@apply
+	def line_width():
+		def get(self):
+			return self._line_width
+		return property(get)
+	
+	@apply
+	def line_color():
+		def get(self):
+			return self._line_color
+		return property(get)
+
+	@apply
+	def line_arrow():
+		def get(self):
+			return self._line_arrow
+		return property(get)
 
 	@property
 	def border_always_visible(self):
@@ -488,9 +518,9 @@ class TextMapArea(MapArea):
 		try:
 			del options['s_%s' % djvu.const.MAPAREA_PUSHPIN]
 		except KeyError:
-			self._push_pin = False
+			self._pushpin = False
 		else:
-			self._push_pin = True
+			self._pushpin = True
 		self._parse_common_options(options)
 		self._check_invalid_options(options)
 
@@ -511,9 +541,27 @@ class TextMapArea(MapArea):
 			result += (djvu.const.MAPAREA_BACKGROUND_COLOR, self._background_color),
 		if self._text_color is not None:
 			result += (djvu.const.MAPAREA_TEXT_COLOR, self._text_color),
-		if self._push_pin:
+		if self._pushpin:
 			result += (djvu.const.MAPAREA_PUSHPIN,),
 		return tuple(result)
+	
+	@apply
+	def background_color():
+		def get(self):
+			return self._background_color
+		return property(get)
+
+	@apply
+	def text_color():
+		def get(self):
+			return self._text_color
+		return property(get)
+
+	@apply
+	def pushpin():
+		def get(self):
+			return self._pushpin
+		return property(get)
 
 MAPAREA_SHADOW_BORDER_TO_CLASS = dict(
 	(cls.SYMBOL, cls)
