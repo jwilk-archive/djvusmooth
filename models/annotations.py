@@ -350,7 +350,7 @@ class RectangleMapArea(MapArea):
 		return property(get)
 	
 	@apply
-	def opacity()
+	def highlight_color():
 		def get(self):
 			return self._highlight_color
 		return property(get)
