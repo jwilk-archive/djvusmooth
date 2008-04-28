@@ -339,7 +339,7 @@ class XywhMapArea(MapArea):
 
 	@classmethod
 	def from_maparea(cls, maparea, owner):
-		self = MapArea.from_maparea(cls, maparea, owner)
+		self = super(XywhMapArea, cls).from_maparea(maparea, owner)
 		self._set_rect(maparea.rect)
 		return self
 
@@ -368,7 +368,7 @@ class RectangleMapArea(XywhMapArea):
 
 	@classmethod
 	def from_maparea(cls, maparea, owner):
-		self = XywhArea.from_maparea(cls, maparea, owner)
+		self = super(XywhArea, cls).from_maparea(maparea, owner)
 		if isinstance(maparea, RectangleMapArea):
 			self._opacity = maparea.opacity
 			self._highlight_color = maparea.highlight_color
@@ -461,7 +461,7 @@ class PolygonMapArea(MapArea):
 
 	@classmethod
 	def from_maparea(cls, maparea, owner):
-		self = MapArea.from_maparea(cls, maparea, owner)
+		self = super(PolygonMapArea, cls).from_maparea(maparea, owner)
 		if isinstance(maparea, PolygonMapArea):
 			self._coords = maparea.coordinates
 		else:
@@ -528,7 +528,7 @@ class LineMapArea(MapArea):
 
 	@classmethod
 	def from_maparea(cls, maparea, owner):
-		self = MapArea.from_maparea(cls, maparea, owner)
+		self = super(LineMapArea, cls).from_maparea(maparea, owner)
 		if isinstance(maparea, LineMapArea):
 			(self._x0, self._y0), (self._x1, self._y1) = maparea.point_from, maparea.point_to
 			self._line_arrow = maparea.line_arrow
@@ -592,7 +592,7 @@ class TextMapArea(XywhMapArea):
 
 	@classmethod
 	def from_maparea(cls, maparea, owner):
-		self = XywhMapArea.from_maparea(maparea, owner)
+		self = super(TextMapArea, cls).from_maparea(maparea, owner)
 		if isinstance(maparea, TextMapArea):
 			self._background_color = maparea.background_color
 			self._text_color = maparea.text_color
