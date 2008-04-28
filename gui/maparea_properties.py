@@ -263,7 +263,7 @@ class MapareaPropertiesDialog(wx.Dialog):
 				text_background_color_selector.SetColour(node.background_color)
 			else:
 				text_background_color_label.SetValue(False)
-				text_background_color_selector.Enabled(False)
+				text_background_color_selector.Enable(False)
 			text_color_selector.SetColour(node.text_color)
 			text_pushpin.SetValue(node.pushpin)
 		self._edit_have_highlight = highlight_color_label
