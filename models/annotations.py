@@ -329,9 +329,14 @@ class MapArea(object):
 			self._notify_change(self)
 		return property(get, set)
 	
-	@property
-	def border_always_visible(self):
-		return self._border_always_visible
+	@apply
+	def border_always_visible():
+		def get(self):
+			return self._border_always_visible
+		def set(self, value):
+			self._border_always_visible = value
+			self._notify_change()
+		return property(get, set)
 	
 	@apply
 	def border():
@@ -628,9 +633,13 @@ class LineMapArea(MapArea):
 			self._notify_change()
 		return property(get, set)
 
-	@property
-	def border_always_visible(self):
-		return NotImplemented
+	@apply
+	def border_always_visible():
+		def get(self):
+			return NotImplemented
+		def set(self, value):
+			pass # FIXME?
+		return property(get, set)
 	
 class TextMapArea(XywhMapArea):
 
@@ -668,14 +677,6 @@ class TextMapArea(XywhMapArea):
 			self._pushpin = True
 		self._parse_common_options(options)
 		self._check_invalid_options(options)
-
-	@property
-	def border_always_visible(self):
-		return NotImplemented
-	# XXX Reference (8.3.4.2.3.1 Miscellaneous parameters) states that ``(border_avis)``
-	# is not relevant for text mapareas. Nethertheless that option can be found
-	# in the wild, e.g. in the ``lizard2005-antz.djvu`` file. So…
-	del border_always_visible
 
 	def _get_sexpr_extra(self):
 		result = []
