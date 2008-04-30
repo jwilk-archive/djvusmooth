@@ -61,16 +61,11 @@ class MapAreaBrowser(
 		self.Focus(item)
 	
 	def on_node_replace(self, node, other_node):
-		# TODO: something lighter is needed
-		self._recreate_items()
-		try:
-			item = self._data_map[node]
-		except KeyError:
-			return
+		item = self._insert_item(other_node, replace_node=node)
 		self.Focus(item)
 
 	def on_node_change(self, node):
-		self.on_node_replace(self, node, node)
+		self.on_node_replace(node, node)
 	
 	def on_node_select(self, node):
 		try:
@@ -153,21 +148,30 @@ class MapAreaBrowser(
 			node.comment = label
 
 	def GetPyData(self, item):
-		return self._data.get(item_to_id(item))
+		id = item_to_id(item)
+		return self._data.get(id)
 	
 	def SetPyData(self, item, data):
 		id = item_to_id(item)
-		self._data[item] = data
-		self._data_map[data] = item
+		try:
+			del self._data_map[self._data[id]]
+		except KeyError:
+			pass
+		self._data[id] = data
+		self._data_map[data] = id
 	
 	def DeleteAllItem(self):
 		wx.ListCtrl.DeleteAllItem(self)
 		self._data.clear()
 		self._data_map.clear()
 	
-	def _insert_item(self, node):
-		i = self.GetItemCount()
-		item = self.InsertStringItem(i, node.uri)
+	def _insert_item(self, node, replace_node = None):
+		if replace_node in self._data_map:
+			item = self._data_map[replace_node]
+			i = item_to_id(item)
+		else:
+			i = self.GetItemCount()
+			item = self.InsertStringItem(i, node.uri)
 		self.SetStringItem(item, 1, node.comment, super = True)
 		self.SetPyData(item, node)
 		return item
