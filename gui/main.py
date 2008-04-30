@@ -201,6 +201,12 @@ class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 	
 	def notify_node_change(self, node):
 		self._owner.dirty = True
+	def notify_node_add(self, node):
+		self._owner.dirty = True
+	def notify_node_delete(self, node):
+		self._owner.dirty = True
+	def notify_node_replace(self, node, other_node):
+		self._owner.dirty = True
 
 	def notify_node_select(self, node):
 		try:
