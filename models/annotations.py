@@ -418,7 +418,7 @@ class RectangleMapArea(XywhMapArea):
 
 	@classmethod
 	def from_maparea(cls, maparea, owner):
-		self = super(XywhMapArea, cls).from_maparea(maparea, owner)
+		self = super(RectangleMapArea, cls).from_maparea(maparea, owner)
 		if isinstance(maparea, RectangleMapArea):
 			self._opacity = maparea.opacity
 			self._highlight_color = maparea.highlight_color
