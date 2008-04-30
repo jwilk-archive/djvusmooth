@@ -659,7 +659,7 @@ class TextMapArea(XywhMapArea):
 		self._parse_border_options(options)
 		self._parse_border_always_visible(options)
 			# XXX Reference (8.3.4.2.3.1 Miscellaneous parameters) states that ``(border_avis)``
-			# is not relevant for text mapareas. Nethertheless that option can be found
+			# is not relevant for text mapareas. Nevertheless that option can be found
 			# in the wild, e.g. in the ``lizard2005-antz.djvu`` file.
 		try:
 			self._background_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_BACKGROUND_COLOR))
