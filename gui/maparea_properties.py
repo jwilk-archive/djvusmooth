@@ -281,6 +281,7 @@ class MapareaPropertiesDialog(wx.Dialog):
 		self._edit_arrow = line_arrow_checkbox
 		self._edit_background_nontrasparent = text_background_color_label
 		self._edit_background_color = text_background_color_selector
+		self._edit_text_color = text_color_selector
 		self._edit_pushpin = text_pushpin
 		return extra_sizers
 
@@ -354,7 +355,8 @@ class MapareaPropertiesDialog(wx.Dialog):
 				node.background_color = color_as_html(self._edit_background_color.GetColour())
 			else:
 				node.background_color = None
-			self._edit_pushpin
+			node.text_color = color_as_html(self._edit_text_color.GetColour())
+			node.pushpin = self._edit_pushpin.GetValue()
 		return node
 
 	node = property(get_node)
