@@ -45,6 +45,14 @@ class PageAnnotationsCallback(object):
 	def notify_node_add(self, node):
 		pass
 
+	@not_overridden
+	def notify_node_delete(self, node):
+		pass
+
+	@not_overridden
+	def notify_node_replace(self, node, other_node):
+		pass
+
 class Border(object):
 
 	@not_overridden
@@ -134,6 +142,7 @@ class MapArea(object):
 			raise TypeError
 		if self._owner is None:
 			return
+		other._owner = self._owner
 		self._owner.replace_maparea(self, other)
 	
 	def delete(self):
@@ -758,12 +767,18 @@ class PageAnnotations(object):
 		self.notify_node_add(node)
 	
 	def delete_maparea(self, node):
-		self._data[MapArea].remove(node)
+		try:
+			self._data[MapArea].remove(node)
+		except ValueError:
+			return
 		self.notify_node_delete(node)
 	
 	def replace_maparea(self, node, other_node):
 		mapareas = self._data[MapArea]
-		i = mapareas.index(node)
+		try:
+			i = mapareas.index(node)
+		except ValueError:
+			return
 		mapareas[i] = other_node
 		self.notify_node_replace(node, other_node)
 	
