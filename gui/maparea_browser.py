@@ -24,6 +24,12 @@ class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 	
 	def notify_node_add(self, node):
 		wx.CallAfter(lambda: self.__owner.on_node_add(node))
+	
+	def notify_node_replace(self, node, other_node):
+		wx.CallAfter(lambda: self.__owner.on_node_replace(node, other_node))
+	
+	def notify_node_delete(self, node):
+		wx.CallAfter(lambda: self.__owner.on_node_delete(node))
 
 def item_to_id(item):
 	try:
@@ -53,10 +59,18 @@ class MapAreaBrowser(
 	def on_node_add(self, node):
 		item = self._insert_item(node)
 		self.Focus(item)
+	
+	def on_node_replace(self, node, other_node):
+		# TODO: something lighter is needed
+		self._recreate_items()
+		try:
+			item = self._data_map[node]
+		except KeyError:
+			return
+		self.Focus(item)
 
 	def on_node_change(self, node):
-		# TODO
-		pass
+		self.on_node_replace(self, node, node)
 	
 	def on_node_select(self, node):
 		try:
