@@ -19,10 +19,12 @@ import djvu.decode
 from models import MultiPageModel, SHARED_ANNOTATIONS_PAGENO
 from varietes import not_overridden, is_html_color
 
-def parse_color(color):
+def parse_color(color, allow_none=False):
+	if allow_none and color is None:
+		return
 	color = str(color).upper()
 	if not is_html_color(color):
-		raise ValueError
+		raise ValueError('%r is not a valid color' % (color,))
 	return color
 
 class PageAnnotationsCallback(object):
@@ -123,16 +125,21 @@ class MapArea(object):
 
 	DEFAULT_ARGUMENTS = NotImplemented
 
-	@not_overridden
-	def __init__(self, *args, **kwargs):
-		pass
-
 	@classmethod
 	def can_have_shadow_border(cls):
 		return False
 
-	def devour(self, other):
-		raise NotImplementedError
+	def replace(self, other):
+		if not isinstance(other, MapArea):
+			raise TypeError
+		if self._owner is None:
+			return
+		self._owner.replace_maparea(self, other)
+	
+	def delete(self):
+		if self._owner is None:
+			return
+		self._onwer.remove_maparea(self)
 
 	@classmethod
 	def from_maparea(cls, maparea, owner):
@@ -416,13 +423,13 @@ class RectangleMapArea(XywhMapArea):
 			if not (0 <= self._opacity <= 100):
 				raise ValueError
 		except KeyError:
-			self._opacity = 50
+			self._opacity = djvu.const.MAPAREA_OPACITY_DEFAULT
 		self._parse_common_options(options)
 		self._check_invalid_options(options)
 
 	def _get_sexpr_extra(self):
 		result = []
-		if self._opacity != 50:
+		if self._opacity != djvu.const.MAPAREA_OPACITY_DEFAULT:
 			result += (djvu.const.MAPAREA_OPACITY, self._opacity),
 		if self._highlight_color is not None:
 			result += (djvu.const.MAPAREA_HIGHLIGHT_COLOR, self._highlight_color),
@@ -442,7 +449,7 @@ class RectangleMapArea(XywhMapArea):
 		def get(self):
 			return self._highlight_color
 		def set(self, value):
-			self._highlight_color = parse_color(value)
+			self._highlight_color = parse_color(value, allow_none=True)
 			self._notify_change()
 		return property(get, set)
 
@@ -535,7 +542,7 @@ class LineMapArea(MapArea):
 			result += (djvu.const.MAPAREA_ARROW,),
 		if self._line_width != 1:
 			result += (djvu.const.MAPAREA_LINE_WIDTH, self._line_width),
-		if self._line_color is not None:
+		if self._line_color != djvu.const.MAPAREA_LINE_COLOR_DEFAULT:
 			result += (djvu.const.MAPAREA_LINE_COLOR, self._line_color),
 		return tuple(result)
 
@@ -589,7 +596,7 @@ class LineMapArea(MapArea):
 		try:
 			self._line_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_LINE_COLOR))
 		except KeyError:
-			self._line_color = None
+			self._line_color = djvu.const.MAPAREA_LINE_COLOR_DEFAULT
 		self._parse_border_options(options)
 		self._parse_common_options(options)
 		self._check_invalid_options(options)
@@ -652,7 +659,7 @@ class TextMapArea(XywhMapArea):
 		try:
 			self._text_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_TEXT_COLOR))
 		except KeyError:
-			self._text_color = None
+			self._text_color = djvu.const.MAPAREA_TEXT_COLOR_DEFAULT
 		try:
 			del options['s_%s' % djvu.const.MAPAREA_PUSHPIN]
 		except KeyError:
@@ -674,7 +681,7 @@ class TextMapArea(XywhMapArea):
 		result = []
 		if self._background_color is not None:
 			result += (djvu.const.MAPAREA_BACKGROUND_COLOR, self._background_color),
-		if self._text_color is not None:
+		if self._text_color != djvu.const.MAPAREA_TEXT_COLOR_DEFAULT:
 			result += (djvu.const.MAPAREA_TEXT_COLOR, self._text_color),
 		if self._pushpin:
 			result += (djvu.const.MAPAREA_PUSHPIN,),
@@ -685,7 +692,7 @@ class TextMapArea(XywhMapArea):
 		def get(self):
 			return self._background_color
 		def set(self, color):
-			self._background_color = parse_color(color)
+			self._background_color = parse_color(color, allow_none=True)
 			self._notify_change()
 		return property(get)
 
@@ -736,19 +743,28 @@ class PageAnnotations(object):
 		self._callbacks[callback] = 1
 
 	def _classify_data(self, items):
-		result = {}
+		result = dict((key, []) for key in ANNOTATION_TYPE_TO_CLASS.itervalues())
+		result[None] = []
 		for item in items:
 			cls = ANNOTATION_TYPE_TO_CLASS.get(item[0].value)
 			if cls is not None:
 				item = cls.from_sexpr(item, self)
-			if cls not in result:
-				result[cls] = []
 			result[cls].append(item)
 		return result
 	
 	def add_maparea(self, node):
 		self._data[MapArea] += node,
 		self.notify_node_add(node)
+	
+	def delete_maparea(self, node):
+		self._data[MapArea].remove(node)
+		self.notify_node_delete(node)
+	
+	def replace_maparea(self, node, other_node):
+		mapareas = self._data[MapArea]
+		i = mapareas.index(node)
+		mapareas[i] = other_node
+		self.notify_node_replace(node, other_node)
 	
 	@property
 	def mapareas(self):
@@ -776,6 +792,16 @@ class PageAnnotations(object):
 		self._dirty = True
 		for callback in self._callbacks:
 			callback.notify_node_change(node)
+	
+	def notify_node_replace(self, node, other_node):
+		self._dirty = True
+		for callback in self._callbacks:
+			callback.notify_node_replace(node, other_node)
+
+	def notify_node_delete(self, node):
+		self._dirty = True
+		for callback in self._callbacks:
+			callback.notify_node_delete(node)
 
 	def notify_node_select(self, node):
 		for callback in self._callbacks: callback.notify_node_select(node)
