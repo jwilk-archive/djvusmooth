@@ -100,7 +100,7 @@ class MapAreaBrowser(
 		try:
 			if dialog.ShowModal() != wx.ID_OK:
 				return
-			node.devour(dialog.node)
+			node.replace(dialog.node)
 		finally:
 			dialog.Destroy()
 	
