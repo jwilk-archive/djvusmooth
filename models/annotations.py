@@ -14,6 +14,7 @@ import weakref
 import itertools
 
 import djvu.const
+import djvu.sexpr
 import djvu.decode
 
 from models import MultiPageModel, SHARED_ANNOTATIONS_PAGENO
@@ -95,7 +96,7 @@ class SolidBorder(Border):
 		return self._color
 	
 	def _get_sexpr(self):
-		return djvu.sexpr.Expression((djvu.const.MAPAREA_BORDER_SOLID_COLOR, self._color))
+		return djvu.sexpr.Expression((djvu.const.MAPAREA_BORDER_SOLID_COLOR, djvu.sexpr.Symbol(self._color)))
 
 class BorderShadow(Border):
 
@@ -446,7 +447,7 @@ class RectangleMapArea(XywhMapArea):
 		if self._opacity != djvu.const.MAPAREA_OPACITY_DEFAULT:
 			result += (djvu.const.MAPAREA_OPACITY, self._opacity),
 		if self._highlight_color is not None:
-			result += (djvu.const.MAPAREA_HIGHLIGHT_COLOR, self._highlight_color),
+			result += (djvu.const.MAPAREA_HIGHLIGHT_COLOR, djvu.sexpr.Symbol(self._highlight_color)),
 		return tuple(result)
 	
 	@apply
@@ -690,9 +691,9 @@ class TextMapArea(XywhMapArea):
 	def _get_sexpr_extra(self):
 		result = []
 		if self._background_color is not None:
-			result += (djvu.const.MAPAREA_BACKGROUND_COLOR, self._background_color),
+			result += (djvu.const.MAPAREA_BACKGROUND_COLOR, djvu.sexpr.Symbol(self._background_color)),
 		if self._text_color != djvu.const.MAPAREA_TEXT_COLOR_DEFAULT:
-			result += (djvu.const.MAPAREA_TEXT_COLOR, self._text_color),
+			result += (djvu.const.MAPAREA_TEXT_COLOR, djvu.sexpr.Symbol(self._text_color)),
 		if self._pushpin:
 			result += (djvu.const.MAPAREA_PUSHPIN,),
 		return tuple(result)
