@@ -219,7 +219,7 @@ class MapareaPropertiesDialog(wx.Dialog):
 		self.Bind(wx.EVT_CHECKBOX, on_switch_highlight_color, highlight_color_label)
 		opacity_label = wx.StaticText(self, label = 'Opacity: ')
 		opacity_slider = wx.Slider(self,
-			value = 50,
+			value = djvu.const.MAPAREA_OPACITY_DEFAULT,
 			size = (self.DEFAULT_TEXT_WIDTH, -1),
 			style = wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS
 		)
@@ -247,6 +247,8 @@ class MapareaPropertiesDialog(wx.Dialog):
 			line_width_edit.SetValue(node.line_width)
 			line_color_selector.SetColour(node.line_color)
 			line_arrow_checkbox.SetValue(node.line_arrow)
+		else:
+			line_color_selector.SetColour(djvu.const.MAPAREA_LINE_COLOR_DEFAULT)
 		text_background_color_label = wx.CheckBox(self, label = 'Background color: ')
 		text_background_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY)
 		text_background_color_selector.SetColour(wx.WHITE)
@@ -269,6 +271,8 @@ class MapareaPropertiesDialog(wx.Dialog):
 				text_background_color_selector.Enable(False)
 			text_color_selector.SetColour(node.text_color)
 			text_pushpin.SetValue(node.pushpin)
+		else:
+			text_color_selector.SetColour(djvu.const.MAPAREA_LINE_COLOR_DEFAULT)
 		self._edit_have_highlight = highlight_color_label
 		self._edit_highlight_color = highlight_color_selector
 		self._edit_opacity = opacity_slider
