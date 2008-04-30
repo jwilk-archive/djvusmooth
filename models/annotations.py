@@ -704,7 +704,7 @@ class TextMapArea(XywhMapArea):
 		def set(self, color):
 			self._background_color = parse_color(color, allow_none=True)
 			self._notify_change()
-		return property(get)
+		return property(get, set)
 
 	@apply
 	def text_color():
