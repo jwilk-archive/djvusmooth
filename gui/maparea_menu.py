@@ -13,6 +13,9 @@ def show_menu(parent, annotations, node, point, origin=None):
 		if node is not None:
 			menu_item = menu.Append(wx.ID_ANY, u'&Properties…')
 			parent.Bind(wx.EVT_MENU, lambda event: on_properties(event, parent, node), menu_item)
+			menu_item = menu.Append(wx.ID_ANY, u'&Remove\tDel')
+			parent.Bind(wx.EVT_MENU, lambda event: on_delete(event, parent, node), menu_item)
+		del menu_item
 		parent.PopupMenu(menu, point)
 	finally:
 		menu.Destroy()
@@ -34,5 +37,8 @@ def on_properties(event, parent, node):
 		node.replace(dialog.node)
 	finally:
 		dialog.Destroy()
+
+def on_delete(event, parent, node):
+	node.delete()
 
 # vim:ts=4 sw=4

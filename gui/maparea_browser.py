@@ -55,6 +55,27 @@ class MapAreaBrowser(
 		wx.lib.mixins.listctrl.TextEditMixin.__init__(self)
 		self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_selection_changed, self)
 		self.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.on_item_right_click, self)
+		self.Bind(wx.EVT_CHAR, self.on_char, self)
+
+
+	def do_remove_node(self, node):
+		node.delete()
+
+	_WXK_TO_METHOD = {
+		wx.WXK_DELETE: do_remove_node
+	}
+
+	def on_char(self, event):
+		key_code = event.GetKeyCode()
+		try:
+			method = self._WXK_TO_METHOD[key_code]
+		except KeyError:
+			return
+		item = self.GetFirstSelected()
+		node = self.GetPyData(item)
+		if node is None:
+			return
+		method(self, node)
 
 	def on_node_add(self, node):
 		item = self._insert_item(node)
