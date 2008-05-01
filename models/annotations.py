@@ -435,7 +435,7 @@ class RectangleMapArea(XywhMapArea):
 			self._highlight_color = None
 		try:
 			self._opacity = int(options.pop('s_%s' % djvu.const.MAPAREA_OPACITY))
-			if not (0 <= self._opacity <= 100):
+			if not (djvu.const.MAPAREA_OPACITY_MIN <= self._opacity <= djvu.const.MAPAREA_OPACITY_MAX):
 				raise ValueError
 		except KeyError:
 			self._opacity = djvu.const.MAPAREA_OPACITY_DEFAULT
@@ -455,6 +455,9 @@ class RectangleMapArea(XywhMapArea):
 		def get(self):
 			return self._opacity
 		def set(self, value):
+			value = int(value)
+			if not (djvu.const.MAPAREA_OPACITY_MIN <= self._opacity <= djvu.const.MAPAREA_OPACITY_MAX):
+				raise ValueError
 			self._opacity = value
 			self._notify_change()
 		return property(get, set)
