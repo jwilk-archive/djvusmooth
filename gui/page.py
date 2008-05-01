@@ -10,6 +10,8 @@ from math import floor
 from djvu import decode, sexpr
 import djvu.const
 
+import gui.maparea_menu
+
 import models.text
 import models.annotations
 
@@ -110,6 +112,9 @@ class PageImage(wx.lib.ogl.RectangleShape):
 		if to_deselect:
 			canvas.Redraw(dc)
 			shape.node.notify_deselect()
+	
+	def OnRightClick(self, x, y, keys=0, attachment=0):
+		wx.CallAfter(lambda: self._widget.on_right_click((x, y), None))
 
 	def OnDraw(self, dc):
 		x, y, w, h = self.GetCanvas().GetUpdateRegion().GetBox()
@@ -328,6 +333,9 @@ class MapareaCallback(models.annotations.PageAnnotationsCallback):
 
 	def notify_node_deselect(self, node):
 		self._widget.on_node_deselected(node)
+
+	def notify_node_add(self, node):
+		self._widget.on_maparea_add(node)
 	
 	def notify_node_replace(self, node, other_node):
 		self._widget.on_maparea_replace(node, other_node)
@@ -347,6 +355,10 @@ class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 			shape.deselect(notify = True)
 		else:
 			shape.select(notify = True)
+	
+	def OnRightClick(self, x, y, keys=0, attachment=0):
+		shape = self.GetShape()
+		wx.CallAfter(lambda: self._widget.on_right_click((x, y), shape.node))
 
 class PageWidget(wx.lib.ogl.ShapeCanvas):
 
@@ -402,6 +414,14 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			shape.deselect()
 			next_shape.select()
 		wx.CallAfter(reselect)
+	
+	def on_right_click(self, point, node):
+		if self.render_nonraster == RENDER_NONRASTER_MAPAREA:
+			self.show_maparea_menu(node, point)
+	
+	def show_maparea_menu(self, node, point, extra={}):
+		origin = self._xform_real_to_screen.inverse(point)
+		gui.maparea_menu.show_menu(self, self._page_annotations, node, point, origin)
 
 	def on_node_selected(self, node):
 		try:
@@ -417,6 +437,10 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			return
 		return self._on_shape_deselected(shape)
 	
+	def on_maparea_add(self, node):
+		self.page = True
+		# TODO: something lighter
+
 	def on_maparea_replace(self, node, other_node):
 		if node not in self._nonraster_shapes_map:
 			return
@@ -475,7 +499,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 				elif page is True:
 					page_job = self._page_job
 					page_text = self._page_text
-					page_mapareas = self._page_mapareas
+					page_annotations = self._page_annotations
 					callbacks = self._callbacks
 				else:
 					page_job = page.page_job
@@ -484,8 +508,8 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 					callbacks = text_callback, maparea_callback
 					page_text = page.text
 					page_text.register_callback(text_callback)
-					page_mapareas = page.annotations.mapareas
-					page.annotations.register_callback(maparea_callback)
+					page_annotations = page.annotations
+					page_annotations.register_callback(maparea_callback)
 				real_page_size = (page_job.width, page_job.height)
 				viewport_size = tuple(self.GetParent().GetSize())
 				screen_page_size = self._zoom.get_page_screen_size(page_job, viewport_size)
@@ -497,14 +521,14 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 				xform_real_to_screen = decode.AffineTransform((0, 0, 1, 1), (0, 0, 1, 1))
 				page_job = None
 				page_text = None
-				page_mapareas = None
+				page_annotations = None
 				need_recreate_text = True
 				callbacks = ()
 			self._screen_page_size = screen_page_size
 			self._xform_real_to_screen = xform_real_to_screen
 			self._page_job = page_job
 			self._page_text = page_text
-			self._page_mapareas = page_mapareas
+			self._page_annotations = page_annotations
 			self._callbacks = callbacks
 			if page is None:
 				self.set_size(self._initial_size)
@@ -559,7 +583,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		have_text = self.render_mode is None
 		if self.render_nonraster == RENDER_NONRASTER_TEXT and self._page_text is not None:
 			self.setup_text_shapes(have_text)
-		if self.render_nonraster == RENDER_NONRASTER_MAPAREA and self._page_mapareas is not None:
+		if self.render_nonraster == RENDER_NONRASTER_MAPAREA and self._page_annotations is not None:
 			self.setup_maparea_shapes(have_text)
 
 	def clear_nonraster_shapes(self):
@@ -572,7 +596,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			items = \
 			[
 				(node, MapareaShape(node, have_text, xform_real_to_screen))
-				for node in self._page_mapareas
+				for node in self._page_annotations.mapareas
 			]
 			self._nonraster_shapes = tuple(shape for node, shape in items)
 			self._nonraster_shapes_map = dict(items)
