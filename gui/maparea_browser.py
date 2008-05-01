@@ -11,25 +11,25 @@ from gui.maparea_properties import MapareaPropertiesDialog
 class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 
 	def __init__(self, owner):
-		self.__owner = owner
+		self._owner = owner
 	
 	def notify_node_change(self, node):
-		wx.CallAfter(lambda: self.__owner.on_node_change(node))
+		wx.CallAfter(lambda: self._owner.on_node_change(node))
 	
 	def notify_node_select(self, node):
-		wx.CallAfter(lambda: self.__owner.on_node_select(node))
+		wx.CallAfter(lambda: self._owner.on_node_select(node))
 	
 	def notify_node_deselect(self, node):
 		pass
 	
 	def notify_node_add(self, node):
-		wx.CallAfter(lambda: self.__owner.on_node_add(node))
+		wx.CallAfter(lambda: self._owner.on_node_add(node))
 	
 	def notify_node_replace(self, node, other_node):
-		wx.CallAfter(lambda: self.__owner.on_node_replace(node, other_node))
+		wx.CallAfter(lambda: self._owner.on_node_replace(node, other_node))
 	
 	def notify_node_delete(self, node):
-		wx.CallAfter(lambda: self.__owner.on_node_delete(node))
+		wx.CallAfter(lambda: self._owner.on_node_delete(node))
 
 def item_to_id(item):
 	try:
