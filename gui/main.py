@@ -478,7 +478,11 @@ class MainWindow(wx.Frame):
 	def get_page_uri(self, page_no = None):
 		if page_no is None:
 			page_no = self.page_no
-		return '#%d' % (self.page_no + 1)
+		try:
+			id = self.document.pages[page_no].file.id
+		except decode.NotAvailable:
+			id = str(page_no)
+		return '#' + id
 
 	@apply
 	def page_no():
