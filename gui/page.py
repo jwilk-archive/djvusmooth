@@ -305,7 +305,10 @@ class TextShape(NodeShape):
 class MapareaShape(NodeShape):
 
 	def _get_frame_color(self):
-		return wx.BLUE
+		try:
+			return self._node.border.color
+		except AttributeError:
+			return wx.BLUE
 
 	def _get_text(self):
 		return self._node.uri
