@@ -67,6 +67,9 @@ class MapAreaBrowser(
 	def on_node_change(self, node):
 		self.on_node_replace(node, node)
 	
+	def on_node_delete(self, node):
+		self._remove_item(node)
+	
 	def on_node_select(self, node):
 		try:
 			current_item = self._data_map[node]
@@ -133,11 +136,17 @@ class MapAreaBrowser(
 		self._data[id] = data
 		self._data_map[data] = id
 	
-	def DeleteAllItem(self):
-		wx.ListCtrl.DeleteAllItem(self)
+	def _remove_all_items(self):
+		wx.ListCtrl.DeleteAllItems(self)
 		self._data.clear()
 		self._data_map.clear()
-	
+
+	def _remove_item(self, node):
+		item = self._data_map.pop(node)
+		i = item_to_id(item)
+		del self._data[i]
+		self.DeleteItem(i)
+
 	def _insert_item(self, node, replace_node = None):
 		if replace_node in self._data_map:
 			item = self._data_map[replace_node]
@@ -151,7 +160,7 @@ class MapAreaBrowser(
 		return item
 
 	def _recreate_items(self):
-		self.DeleteAllItems()
+		self._remove_all_items()
 		self._nodes = []
 		if self.page is None:
 			return

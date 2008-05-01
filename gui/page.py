@@ -333,6 +333,10 @@ class MapareaCallback(models.annotations.PageAnnotationsCallback):
 
 	def notify_node_deselect(self, node):
 		self._widget.on_node_deselected(node)
+	
+	def notify_node_delete(self, node):
+		self._widget.page = True
+		# FIXME: consider something lighter here
 
 	def notify_node_add(self, node):
 		self._widget.on_maparea_add(node)
