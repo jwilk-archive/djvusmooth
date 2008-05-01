@@ -659,18 +659,25 @@ class MainWindow(wx.Frame):
 		self.path = path
 		self.document = None
 		self.page_no = 0
-		if path is None:
+		def clear_models():
 			self.metadata_model = self.text_model = self.outline_model = self.annotations_model = None
 			self.models = ()
 			self.enable_edit(False)
+		if path is None:
+			clear_models()
 		else:
-			self.document = self.context.new_document(decode.FileURI(path))
-			self.metadata_model = MetadataModel(self.document)
-			self.text_model = TextModel(self.document)
-			self.outline_model = OutlineModel(self.document)
-			self.annotations_model = AnnotationsModel(path)
-			self.models = self.metadata_model, self.text_model, self.outline_model, self.annotations_model
-			self.enable_edit(True)
+			try:
+				self.document = self.context.new_document(decode.FileURI(path))
+				self.metadata_model = MetadataModel(self.document)
+				self.text_model = TextModel(self.document)
+				self.outline_model = OutlineModel(self.document)
+				self.annotations_model = AnnotationsModel(path)
+				self.models = self.metadata_model, self.text_model, self.outline_model, self.annotations_model
+				self.enable_edit(True)
+			except djvu.decode.JobFailed:
+				clear_models()
+				self.document = None
+				# Do *not* display error message here. It will be displayed by `handle_message()`.
 		self.page_no = 0 # again, to set status bar text
 		self.update_title()
 		self.update_page_widget(new_document = True, new_page = True)
@@ -718,7 +725,9 @@ License: %(LICENSE)s''' % globals()
 	def handle_message(self, event):
 		message = event.message
 		# TODO: remove debug prints
-		if message.document is not self.document:
+		if isinstance(message, decode.ErrorMessage):
+			wx.MessageBox(caption='Error', message=str(message), style=wx.ICON_ERROR)
+		elif message.document is not self.document:
 			print 'IGNORED', message
 		self.update_title()
 		if isinstance(message, (decode.RedisplayMessage, decode.RelayoutMessage)):
