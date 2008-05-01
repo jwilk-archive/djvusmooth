@@ -328,6 +328,9 @@ class MapareaCallback(models.annotations.PageAnnotationsCallback):
 
 	def notify_node_deselect(self, node):
 		self._widget.on_node_deselected(node)
+	
+	def notify_node_replace(self, node, other_node):
+		self._widget.on_maparea_replace(node, other_node)
 
 class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 
@@ -413,6 +416,12 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		except KeyError:
 			return
 		return self._on_shape_deselected(shape)
+	
+	def on_maparea_replace(self, node, other_node):
+		if node not in self._nonraster_shapes_map:
+			return
+		self.page = True
+		# TODO: something lighter
 
 	def _on_shape_selected(self, shape):
 		shape.select(notify = False) # in case it was selected otherwhere
