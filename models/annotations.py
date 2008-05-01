@@ -136,7 +136,35 @@ class Annotations(MultiPageModel):
 		else:
 			return PageAnnotations
 
-class MapArea(object):
+class Annotation(object):
+
+	@classmethod 
+	def from_sexpr(cls, sexpr, owner):
+		raise NotImplementedError
+
+	@not_overridden
+	def _get_sexpr(self):
+		raise NotImplementedError
+
+	@apply
+	def sexpr():
+		def get(self):
+			return self._get_sexpr()
+		return property(get)
+
+class OtherAnnotation(Annotation):
+
+	def __init__(self, sexpr, owner=None):
+		self._sexpr = sexpr
+	
+	@classmethod
+	def from_sexpr(cls, sexpr, owner):
+		return cls(sexpr, owner)
+	
+	def _get_sexpr(self):
+		return self._sexpr
+
+class MapArea(Annotation):
 
 	DEFAULT_ARGUMENTS = NotImplemented
 
@@ -237,31 +265,28 @@ class MapArea(object):
 			return
 		return self._border.sexpr
 
-	@apply
-	def sexpr():
-		def get(self):
-			if self._target is None:
-				uri_part = self._uri
-			else:
-				uri_part = (djvu.const.MAPAREA_URI, self._uri, self._target)
-			border_part = self._get_sexpr_border()
-			if border_part is None:
-				border_part = ()
-			else:
-				border_part = (border_part,)
-			if self.border_always_visible is True:
-				border_part += (djvu.const.MAPAREA_BORDER_ALWAYS_VISIBLE,),
-			return djvu.sexpr.Expression(
-				(
-					djvu.const.ANNOTATION_MAPAREA,
-					uri_part,
-					self._comment,
-					self._get_sexpr_area(),
-				) +
-				border_part +
-				self._get_sexpr_extra()
-			)
-		return property(get)
+	def _get_sexpr(self):
+		if self._target is None:
+			uri_part = self._uri
+		else:
+			uri_part = (djvu.const.MAPAREA_URI, self._uri, self._target)
+		border_part = self._get_sexpr_border()
+		if border_part is None:
+			border_part = ()
+		else:
+			border_part = (border_part,)
+		if self.border_always_visible is True:
+			border_part += (djvu.const.MAPAREA_BORDER_ALWAYS_VISIBLE,),
+		return djvu.sexpr.Expression(
+			(
+				djvu.const.ANNOTATION_MAPAREA,
+				uri_part,
+				self._comment,
+				self._get_sexpr_area(),
+			) +
+			border_part +
+			self._get_sexpr_extra()
+		)
 	
 	def _parse_border_options(self, options):
 		self._border = None
@@ -812,6 +837,8 @@ class PageAnnotations(object):
 			cls = ANNOTATION_TYPE_TO_CLASS.get(item[0].value)
 			if cls is not None:
 				item = cls.from_sexpr(item, self)
+			else:
+				item = OtherAnnotation(item)
 			result[cls].append(item)
 		return result
 	
