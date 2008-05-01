@@ -287,9 +287,15 @@ class MapareaPropertiesDialog(wx.Dialog):
 		self._edit_pushpin = text_pushpin
 		return extra_sizers
 
-	def __init__(self, parent, node = None):
+	def __init__(self, parent, node=None, origin=None):
 		wx.Dialog.__init__(self, parent, title = 'Overprinted annotation (hyperlink) properties')
 		self._node = node
+		if origin is None:
+			self._origin = None
+		else:
+			self._origin = tuple(origin)
+			if len(self._origin) != 2:
+				raise ValueError
 		sizer = wx.BoxSizer(wx.VERTICAL)
 		main_properties_box_sizer = self._setup_main_properties_box()
 		shape_box_sizer = self._setup_shape_box()
@@ -359,6 +365,8 @@ class MapareaPropertiesDialog(wx.Dialog):
 				node.background_color = None
 			node.text_color = color_as_html(self._edit_text_color.GetColour())
 			node.pushpin = self._edit_pushpin.GetValue()
+		if self._origin:
+			node.origin = self._origin
 		return node
 
 	node = property(get_node)

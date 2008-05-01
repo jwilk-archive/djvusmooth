@@ -5,11 +5,11 @@ import wx
 
 from gui.maparea_properties import MapareaPropertiesDialog
 
-def show_menu(parent, annotations, node, point):
+def show_menu(parent, annotations, node, point, origin=None):
 	menu = wx.Menu()
 	try:
 		menu_item = menu.Append(wx.ID_ANY, u'&New hyperlink…')
-		parent.Bind(wx.EVT_MENU, lambda event: on_new_annotation(event, parent, annotations), menu_item)
+		parent.Bind(wx.EVT_MENU, lambda event: on_new_annotation(event, parent, annotations, origin), menu_item)
 		if node is not None:
 			menu_item = menu.Append(wx.ID_ANY, u'&Properties…')
 			parent.Bind(wx.EVT_MENU, lambda event: on_properties(event, parent, node), menu_item)
@@ -17,8 +17,8 @@ def show_menu(parent, annotations, node, point):
 	finally:
 		menu.Destroy()
 	
-def on_new_annotation(event, parent, annotations):
-	dialog = MapareaPropertiesDialog(parent)
+def on_new_annotation(event, parent, annotations, origin):
+	dialog = MapareaPropertiesDialog(parent, origin=origin)
 	try:
 		if dialog.ShowModal() != wx.ID_OK:
 			return
