@@ -335,8 +335,8 @@ class MapArea(object):
 		def get(self):
 			return self._get_rect()
 		def set(self, rect):
-			self._set_rect(self, rect)
-			self._notify_change(self)
+			self._set_rect(rect)
+			self._notify_change()
 		return property(get, set)
 	
 	@apply
