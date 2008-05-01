@@ -20,6 +20,12 @@ import djvu.decode
 from models import MultiPageModel, SHARED_ANNOTATIONS_PAGENO
 from varietes import not_overridden, is_html_color
 
+class AnnotationSyntaxError(ValueError):
+	pass
+
+class MapAreaSyntaxError(AnnotationSyntaxError):
+	pass
+
 def parse_color(color, allow_none=False):
 	if allow_none and color is None:
 		return
@@ -187,32 +193,35 @@ class MapArea(object):
 	@classmethod 
 	def from_sexpr(cls, sexpr, owner):
 		sexpr = iter(sexpr)
-		symbol = sexpr.next().value
-		if symbol is not djvu.const.ANNOTATION_MAPAREA:
-			raise ValueError
-		uri = sexpr.next().value
-		if isinstance(uri, tuple):
-			symbol, uri, target = uri
-			if symbol is not djvu.const.MAPAREA_URI:
-				raise ValueError
-		else:
-			target = None
-		comment = sexpr.next().value
-		shape = sexpr.next()
-		shape_iter = iter(shape)
-		cls = MAPAREA_SHAPE_TO_CLASS[shape_iter.next().value]
-		args = [int(item) for item in shape_iter]
-		kwargs = dict(uri = uri, target = target, comment = comment, owner = owner)
-		for item in sexpr:
-			try:
-				key, value = item
-				key = key.value
-				value = value.value
-			except ValueError:
-				key, = item
-				key = key.value
-				value = True
-			kwargs['s_%s' % key] = value
+		try:
+			symbol = sexpr.next().value
+			if symbol is not djvu.const.ANNOTATION_MAPAREA:
+				raise MapAreaSyntaxError
+			uri = sexpr.next().value
+			if isinstance(uri, tuple):
+				symbol, uri, target = uri
+				if symbol is not djvu.const.MAPAREA_URI:
+					raise MapAreaSyntaxError
+			else:
+				target = None
+			comment = sexpr.next().value
+			shape = sexpr.next()
+			shape_iter = iter(shape)
+			cls = MAPAREA_SHAPE_TO_CLASS[shape_iter.next().value]
+			args = [int(item) for item in shape_iter]
+			kwargs = dict(uri = uri, target = target, comment = comment, owner = owner)
+			for item in sexpr:
+				try:
+					key, value = item
+					key = key.value
+					value = value.value
+				except ValueError:
+					key, = item
+					key = key.value
+					value = True
+				kwargs['s_%s' % key] = value
+		except (StopIteration, TypeError), ex:
+			raise MapAreaSyntaxError(ex)
 		return cls(*args, **kwargs)
 
 	@not_overridden
@@ -272,6 +281,8 @@ class MapArea(object):
 			self._border = SolidBorder(parse_color(options.pop('s_%s' % djvu.const.MAPAREA_BORDER_SOLID_COLOR)))
 		except KeyError:
 			pass
+		except (TypeError, ValueError), ex:
+			raise MapAreaSyntaxError(ex)
 	
 	def _parse_shadow_border_options(self, options):
 		for border_style in djvu.const.MAPAREA_SHADOW_BORDERS:
@@ -279,6 +290,8 @@ class MapArea(object):
 				width = self._parse_width(options.pop('s_%s' % border_style))
 			except KeyError:
 				continue
+			except (TypeError, ValueError), ex:
+				raise MapAreaSyntaxError(ex)
 			cls = MAPAREA_SHADOW_BORDER_TO_CLASS[border_style]
 			self._border = cls(width)
 	
@@ -291,6 +304,9 @@ class MapArea(object):
 			self._border_always_visible = True
 
 	def _check_invalid_options(self, options):
+		for option in options:
+			if option.startswith('s_'):
+				raise MapAreaSyntaxError('%r is invalid option for %r annotations' % (option[2:], self.SYMBOL))
 		if options:
 			raise ValueError('%r is invalid keyword argument for this function' % (iter(options).next(),))
 	
@@ -454,12 +470,16 @@ class RectangleMapArea(XywhMapArea):
 			self._highlight_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_HIGHLIGHT_COLOR))
 		except KeyError:
 			self._highlight_color = None
+		except (TypeError, ValueError), ex:
+			raise MapAreaSyntaxError(ex)
 		try:
 			self._opacity = int(options.pop('s_%s' % djvu.const.MAPAREA_OPACITY))
 			if not (djvu.const.MAPAREA_OPACITY_MIN <= self._opacity <= djvu.const.MAPAREA_OPACITY_MAX):
-				raise ValueError
+				raise MapAreaSyntaxError
 		except KeyError:
 			self._opacity = djvu.const.MAPAREA_OPACITY_DEFAULT
+		except (TypeError, ValueError), ex:
+			raise MapAreaSyntaxError(ex)
 		self._parse_common_options(options)
 		self._check_invalid_options(options)
 
@@ -632,10 +652,14 @@ class LineMapArea(MapArea):
 				raise ValueError
 		except KeyError:
 			self._line_width = djvu.const.MAPAREA_LINE_MIN_WIDTH
+		except (TypeError, ValueError), ex:
+			raise MapAreaSyntaxError(ex)
 		try:
 			self._line_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_LINE_COLOR))
 		except KeyError:
 			self._line_color = djvu.const.MAPAREA_LINE_COLOR_DEFAULT
+		except (TypeError, ValueError), ex:
+			raise MapAreaSyntaxError(ex)
 		self._parse_border_options(options)
 		self._parse_common_options(options)
 		self._check_invalid_options(options)
@@ -699,10 +723,14 @@ class TextMapArea(XywhMapArea):
 			self._background_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_BACKGROUND_COLOR))
 		except KeyError:
 			self._background_color = None
+		except (TypeError, ValueError), ex:
+			raise MapAreaSyntaxError(ex)
 		try:
 			self._text_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_TEXT_COLOR))
 		except KeyError:
 			self._text_color = djvu.const.MAPAREA_TEXT_COLOR_DEFAULT
+		except (TypeError, ValueError), ex:
+			raise MapAreaSyntaxError(ex)
 		try:
 			del options['s_%s' % djvu.const.MAPAREA_PUSHPIN]
 		except KeyError:
