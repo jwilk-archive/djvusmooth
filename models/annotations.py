@@ -102,7 +102,7 @@ class BorderShadow(Border):
 
 	def __init__(self, width):
 		width = int(width)
-		if not djvu.const.MAPAREA_SHADOW_BORDER_MIN_WIDTH <= width <= djvu.const.MAPAREA_SHAPE_BORDER_MAX_WIDTH:
+		if not djvu.const.MAPAREA_SHADOW_BORDER_MIN_WIDTH <= width <= djvu.const.MAPAREA_SHADOW_BORDER_MAX_WIDTH:
 			raise ValueError
 		self._width = width
 
