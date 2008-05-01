@@ -102,7 +102,7 @@ class BorderShadow(Border):
 
 	def __init__(self, width):
 		width = int(width)
-		if not 1 <= width <= 32:
+		if not djvu.const.MAPAREA_SHADOW_BORDER_MIN_WIDTH <= width <= djvu.const.MAPAREA_SHAPE_BORDER_MAX_WIDTH:
 			raise ValueError
 		self._width = width
 
@@ -555,7 +555,7 @@ class LineMapArea(MapArea):
 		result = []
 		if self._line_arrow:
 			result += (djvu.const.MAPAREA_ARROW,),
-		if self._line_width != 1:
+		if self._line_width != MAPAREA_LINE_MIN_WIDTH:
 			result += (djvu.const.MAPAREA_LINE_WIDTH, self._line_width),
 		if self._line_color != djvu.const.MAPAREA_LINE_COLOR_DEFAULT:
 			result += (djvu.const.MAPAREA_LINE_COLOR, self._line_color),
@@ -604,10 +604,10 @@ class LineMapArea(MapArea):
 			self._line_arrow = True
 		try:
 			self._line_width = int(options.pop('s_%s' % djvu.const.MAPAREA_LINE_WIDTH))
-			if self._line_width < 1:
+			if self._line_width < djvu.const.MAPAREA_LINE_MIN_WIDTH:
 				raise ValueError
 		except KeyError:
-			self._line_width = 1
+			self._line_width = djvu.const.MAPAREA_LINE_MIN_WIDTH
 		try:
 			self._line_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_LINE_COLOR))
 		except KeyError:
