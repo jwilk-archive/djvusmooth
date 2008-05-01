@@ -185,13 +185,12 @@ class MapArea(object):
 		if symbol is not djvu.const.ANNOTATION_MAPAREA:
 			raise ValueError
 		uri = sexpr.next().value
-		try:
+		if isinstance(uri, tuple):
 			symbol, uri, target = uri
-		except (TypeError, ValueError):
-			target = None
-		else:
 			if symbol is not djvu.const.MAPAREA_URI:
 				raise ValueError
+		else:
+			target = None
 		comment = sexpr.next().value
 		shape = sexpr.next()
 		shape_iter = iter(shape)
@@ -329,6 +328,22 @@ class MapArea(object):
 	@not_overridden
 	def _get_rect(self):
 		raise NotImplementedError
+	
+	def _get_orign(self):
+		return self._get_rect()[:2]
+	
+	def _set_origin(self, (x1, y1)):
+		x0, y0, w, h = self._get_rect()
+		self._set_rect((x1, y1, w, h))
+
+	@apply
+	def origin():
+		def get(self):
+			return self._get_origin()
+		def set(self, rect):
+			self._set_origin(rect)
+			self._notify_change()
+		return property(get, set)
 
 	@apply
 	def rect():
