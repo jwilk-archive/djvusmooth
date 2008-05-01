@@ -143,13 +143,18 @@ class MapArea(object):
 			raise TypeError
 		if self._owner is None:
 			return
-		other._owner = self._owner
 		self._owner.replace_maparea(self, other)
+		other._owner = self._owner
 	
 	def delete(self):
-		if self._owner is None:
+		former_owner = self._owner
+		if former_owner is None:
 			return
-		self._onwer.remove_maparea(self)
+		self._owner.remove_maparea(self)
+		self._owner = None
+	
+	def insert(self, owner):
+		owner.add_maparea(owner, self)
 
 	@classmethod
 	def from_maparea(cls, maparea, owner):
@@ -785,7 +790,7 @@ class PageAnnotations(object):
 		self._data[MapArea] += node,
 		self.notify_node_add(node)
 	
-	def delete_maparea(self, node):
+	def remove_maparea(self, node):
 		try:
 			self._data[MapArea].remove(node)
 		except ValueError:

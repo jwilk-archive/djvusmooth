@@ -22,7 +22,7 @@ def on_new_annotation(event, parent, annotations, origin):
 	try:
 		if dialog.ShowModal() != wx.ID_OK:
 			return
-		annotations.add_maparea(dialog.node)
+		dialog.node.insert(annotations)
 	finally:
 		dialog.Destroy()
 
