@@ -154,7 +154,8 @@ class MapArea(object):
 		self._owner = None
 	
 	def insert(self, owner):
-		owner.add_maparea(owner, self)
+		owner.add_maparea(self)
+		self._owner = owner
 
 	@classmethod
 	def from_maparea(cls, maparea, owner):
