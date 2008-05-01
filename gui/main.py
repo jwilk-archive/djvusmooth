@@ -679,8 +679,10 @@ class MainWindow(wx.Frame):
 	
 	def update_page_widget(self, new_document = False, new_page = False):
 		if self.document is None:
+			self.page_widget.Hide()
 			self.page = self.page_job = self.page_proxy = self.document_proxy = None
 		elif self.page_job is None or new_page:
+			self.page_widget.Show()
 			self.page = self.document.pages[self.page_no]
 			self.page_job = self.page.decode(wait = False)
 			self.page_proxy = PageProxy(
