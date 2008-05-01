@@ -171,8 +171,9 @@ class MapAreaBrowser(
 			i = item_to_id(item)
 		else:
 			i = self.GetItemCount()
-			item = self.InsertStringItem(i, node.uri)
-		self.SetStringItem(item, 1, node.comment, super = True)
+			item = self.InsertStringItem(i, '')
+		for i, s in enumerate((node.uri, node.comment)):
+			self.SetStringItem(item, i, s, super = True)
 		self.SetPyData(item, node)
 		return item
 
