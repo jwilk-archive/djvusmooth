@@ -6,7 +6,7 @@ import wx.lib.mixins.listctrl
 
 import models.annotations
 
-from gui.maparea_properties import MapareaPropertiesDialog
+import gui.maparea_menu
 
 class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 
@@ -84,35 +84,8 @@ class MapAreaBrowser(
 		self.show_menu(node, event.GetPoint())
 	
 	def show_menu(self, node, point):
-		menu = wx.Menu()
-		try:
-			menu_item = menu.Append(wx.ID_ANY, u'&New hyperlink…')
-			self.Bind(wx.EVT_MENU, lambda event: self.on_new_annotation(event), menu_item)
-			if node is not None:
-				menu_item = menu.Append(wx.ID_ANY, u'&Properties…')
-				self.Bind(wx.EVT_MENU, lambda event: self.on_properties(event, node), menu_item)
-			self.PopupMenu(menu, point)
-		finally:
-			menu.Destroy()
+		gui.maparea_menu.show_menu(self, self.page.annotations, node, point)
 
-	def on_new_annotation(self, event):
-		dialog = MapareaPropertiesDialog(self)
-		try:
-			if dialog.ShowModal() != wx.ID_OK:
-				return
-			self.page.annotations.add_maparea(dialog.node)
-		finally:
-			dialog.Destroy()
-
-	def on_properties(self, event, node):
-		dialog = MapareaPropertiesDialog(self, node)
-		try:
-			if dialog.ShowModal() != wx.ID_OK:
-				return
-			node.replace(dialog.node)
-		finally:
-			dialog.Destroy()
-	
 	def on_selection_changed(self, event):
 		event.Skip()
 		item = event.m_itemIndex
