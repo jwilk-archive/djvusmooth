@@ -123,7 +123,10 @@ class AnnotationsModel(models.annotations.Annotations):
 			djvused.select(n + 1)
 		djvused.print_annotations()
 		s = '(%s)' % djvused.commit() # FIXME: optimize
-		return djvu.sexpr.Expression.from_string(s)
+		try:
+			return djvu.sexpr.Expression.from_string(s)
+		except djvu.sexpr.ExpressionSyntaxError:
+			raise # FIXME
 
 class MetadataModel(models.metadata.Metadata):
 	def __init__(self, document):
