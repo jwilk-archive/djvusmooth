@@ -11,6 +11,8 @@ import os.path
 import threading
 from Queue import Queue, Empty as QueueEmpty
 
+import dependencies as __dependencies
+
 import wx
 import wx.lib.ogl
 import wx.lib.scrolledpanel
