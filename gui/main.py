@@ -9,6 +9,7 @@ __author__ = 'Jakub Wilk <ubanus@users.sf.net>'
 import itertools
 import os.path
 import threading
+import tempfile
 from Queue import Queue, Empty as QueueEmpty
 
 import dependencies as __dependencies
@@ -16,9 +17,8 @@ import dependencies as __dependencies
 import wx
 import wx.lib.ogl
 import wx.lib.scrolledpanel
-import tempfile
 
-from djvu import decode
+import djvu.decode
 import djvu.const
 
 from djvused import StreamEditor
@@ -35,7 +35,7 @@ import models
 import models.metadata
 import models.annotations
 import models.text
-from external_editor import edit as external_edit
+import external_editor
 
 MENU_ICON_SIZE = (16, 16)
 DJVU_WILDCARD = 'DjVu files (*.djvu, *.djv)|*.djvu;*.djv|All files|*'
@@ -451,16 +451,16 @@ class MainWindow(wx.Frame):
 		self.splitter.Unsplit(self.sidebar)
 
 	def on_display_everything(self, event):
-		self.page_widget.render_mode = decode.RENDER_COLOR
+		self.page_widget.render_mode = djvu.decode.RENDER_COLOR
 	
 	def on_display_foreground(self, event):
-		self.page_widget.render_mode = decode.RENDER_FOREGROUND
+		self.page_widget.render_mode = djvu.decode.RENDER_FOREGROUND
 
 	def on_display_background(self, event):
-		self.page_widget.render_mode = decode.RENDER_BACKGROUND
+		self.page_widget.render_mode = djvu.decode.RENDER_BACKGROUND
 	
 	def on_display_stencil(self, event):
-		self.page_widget.render_mode = decode.RENDER_BLACK
+		self.page_widget.render_mode = djvu.decode.RENDER_BLACK
 	
 	def on_display_none(self, event):
 		self.page_widget.render_mode = None
@@ -482,7 +482,7 @@ class MainWindow(wx.Frame):
 			page_no = self.page_no
 		try:
 			id = self.document.pages[page_no].file.id
-		except decode.NotAvailable:
+		except djvu.decode.NotAvailable:
 			id = str(page_no)
 		return '#' + id
 
@@ -580,7 +580,7 @@ class MainWindow(wx.Frame):
 				try:
 					model.export_as_plaintext(tmp_file)
 					tmp_file.flush()
-					external_edit(tmp_file.name)
+					external_editor.edit(tmp_file.name)
 					tmp_file.seek(0)
 					new_repr = map(str.expandtabs, itertools.imap(str.rstrip, tmp_file))
 				finally:
@@ -612,7 +612,7 @@ class MainWindow(wx.Frame):
 				try:
 					text_mangle.export(sexpr, tmp_file)
 					tmp_file.flush()
-					external_edit(tmp_file.name)
+					external_editor.edit(tmp_file.name)
 					tmp_file.seek(0)
 					try:
 						new_sexpr = text_mangle.import_(sexpr, tmp_file)
@@ -673,7 +673,7 @@ class MainWindow(wx.Frame):
 			clear_models()
 		else:
 			try:
-				self.document = self.context.new_document(decode.FileURI(path))
+				self.document = self.context.new_document(djvu.decode.FileURI(path))
 				self.metadata_model = MetadataModel(self.document)
 				self.text_model = TextModel(self.document)
 				self.outline_model = OutlineModel(self.document)
@@ -731,22 +731,22 @@ License: %(LICENSE)s''' % globals()
 	def handle_message(self, event):
 		message = event.message
 		# TODO: remove debug prints
-		if isinstance(message, decode.ErrorMessage):
+		if isinstance(message, djvu.decode.ErrorMessage):
 			wx.MessageBox(caption='Error', message=str(message), style=wx.ICON_ERROR)
 		elif message.document is not self.document:
 			print 'IGNORED', message
 		self.update_title()
-		if isinstance(message, (decode.RedisplayMessage, decode.RelayoutMessage)):
+		if isinstance(message, (djvu.decode.RedisplayMessage, djvu.decode.RelayoutMessage)):
 			if self.page_job is message.page_job:
 				self.update_page_widget()
 
-class Context(decode.Context):
+class Context(djvu.decode.Context):
 
 	def __new__(self, window):
-		return decode.Context.__new__(self)
+		return djvu.decode.Context.__new__(self)
 
 	def __init__(self, window):
-		decode.Context.__init__(self)
+		djvu.decode.Context.__init__(self)
 		self.window = window
 
 	def handle_message(self, message):
