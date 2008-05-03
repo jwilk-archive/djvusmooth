@@ -425,7 +425,8 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			except KeyError:
 				if key_code == wx.WXK_DELETE:
 					wx.CallAfter(shape.node.delete)
-					return
+					skip = False
+				return
 			skip = False
 		finally:
 			if skip:
