@@ -334,14 +334,18 @@ class MainWindow(wx.Frame):
 			self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO)
 		menu.AppendMenu(wx.ID_ANY, '&Image', submenu)
 		submenu = wx.Menu()
+		_checked = False
 		for caption, help, method in \
 		[
 			('&None',              u'Don\'t display non-raster data',  self.on_display_no_nonraster),
 			('&Hyperlinks\tAlt+H', u'Display overprinted annotations', self.on_display_maparea),
 			('&Text\tAlt+T',       u'Display the text layer',          self.on_display_text),
 		]:
+			if not _checked:
+				item.Check()
+				_checked = True
 			item = self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO)
-			item.Check()
+		del _checked
 
 		menu.AppendMenu(wx.ID_ANY, '&Non-raster data', submenu)
 		self.new_menu_item(menu, '&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh)
