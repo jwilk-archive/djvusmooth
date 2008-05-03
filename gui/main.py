@@ -238,6 +238,7 @@ class MainWindow(wx.Frame):
 
 	def __init__(self):
 		wx.Frame.__init__(self, None, size=wx.Size(640, 480))
+		self.external_editor = external_editor.RunMailcapEditor()
 		self.Bind(wx.EVT_DJVU_MESSAGE, self.handle_message)
 		self.context = Context(self)
 		self._page_text_callback = PageTextCallback(self)
@@ -625,7 +626,7 @@ class MainWindow(wx.Frame):
 				try:
 					model.export_as_plaintext(tmp_file)
 					tmp_file.flush()
-					external_editor.edit(tmp_file.name)
+					self.external_editor(tmp_file.name)
 					tmp_file.seek(0)
 					new_repr = map(str.expandtabs, itertools.imap(str.rstrip, tmp_file))
 				finally:
@@ -660,7 +661,7 @@ class MainWindow(wx.Frame):
 				try:
 					text_mangle.export(sexpr, tmp_file)
 					tmp_file.flush()
-					external_editor.edit(tmp_file.name)
+					self.external_editor(tmp_file.name)
 					tmp_file.seek(0)
 					try:
 						new_sexpr = text_mangle.import_(sexpr, tmp_file)
