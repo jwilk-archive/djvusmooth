@@ -431,10 +431,13 @@ class MainWindow(wx.Frame):
 
 	def on_save(self, event):
 		self.do_save()
-	
+
+	def on_save_failed(self, exception):
+		self.error_box('Saving document failed:\n%s' % exception)
+
 	def do_save(self):
 		if not self.dirty:
-			return
+			return True
 		queue = Queue()
 		sed = StreamEditor(self.path, autosave=True)
 		for model in self.models:
@@ -452,8 +455,10 @@ class MainWindow(wx.Frame):
 		dialog = None
 		try:
 			try:
-				queue.get(block = True, timeout = 0.1)
-				return
+				exception = queue.get(block = True, timeout = 0.1)
+				if exception is not None:
+					self.on_save_failed(exception)
+					return False
 			except QueueEmpty:
 				dialog = gui.dialogs.ProgressDialog(
 					title = 'Saving document',
@@ -461,19 +466,21 @@ class MainWindow(wx.Frame):
 					parent = self,
 					style = wx.PD_APP_MODAL | wx.PD_ELAPSED_TIME
 				)
-			while True:
+			while dialog is not None:
 				try:
 					exception = queue.get(block = True, timeout = 0.1)
 					if exception is not None:
-						raise exception
+						self.on_save_failed(exception)
+						return False
 					break
 				except QueueEmpty:
 					dialog.Pulse()
 		finally:
 			thread.join()
-			self.dirty = False
 			if dialog is not None:
 				dialog.Destroy()
+		self.dirty = False
+		return True
 
 	def on_show_sidebar(self, event):
 		if event.IsChecked():
@@ -721,7 +728,7 @@ class MainWindow(wx.Frame):
 			try:
 				rc = dialog.ShowModal()
 				if rc == wx.ID_YES:
-					self.do_save()
+					return self.do_save()
 				elif rc == wx.ID_NO:
 					pass
 				elif rc == wx.ID_CANCEL:
