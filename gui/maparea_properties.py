@@ -22,12 +22,12 @@ class Shape(idict):
 		idict.__init__(self, **kwargs)
 
 SHAPE_TEXT = Shape(label = 'Text', model_class = models.annotations.TextMapArea)
-SHAPE_LINE = Shape(label = 'Line', model_class = models.annotations.LineMapArea)
+SHAPE_LINE = Shape(label = 'Line', model_class = models.annotations.LineMapArea, enabled=False)
 SHAPE_RECTANGLE = Shape(label = 'Rectangle', model_class = models.annotations.RectangleMapArea)
 SHAPES = (
 	SHAPE_RECTANGLE,
 	Shape(label = 'Oval', model_class = models.annotations.OvalMapArea),
-	Shape(label = 'Polygon', model_class = models.annotations.PolygonMapArea, enabled = False),
+	Shape(label = 'Polygon', model_class = models.annotations.PolygonMapArea, enabled=False),
 	SHAPE_LINE,
 	SHAPE_TEXT,
 )
