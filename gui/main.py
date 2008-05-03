@@ -363,6 +363,7 @@ class MainWindow(wx.Frame):
 		self.SetMenuBar(menu_bar)
 		self.dirty = False
 		self.do_open(None)
+		self.Bind(wx.EVT_CLOSE, self.on_exit)
 	
 	def enable_edit(self, enable=True):
 		for i in 1, 3:
