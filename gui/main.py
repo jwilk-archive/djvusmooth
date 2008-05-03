@@ -630,11 +630,14 @@ class MainWindow(wx.Frame):
 		disabler = wx.WindowDisabler()
 		thread = threading.Thread(target = job)
 		thread.start()
-	
+
+	def on_external_edit_failed(self, exception):
+		self.error_box('External edit failed:\n%s' % exception)
+
 	def after_external_edit_outline(self, new_repr, disabler, exception):
 		if exception is not None:
-			raise exception
-		# TODO: how to check is actually something changed?
+			self.external_edit_failed(exception)
+		# TODO: how to check if actually something changed?
 		self.outline_model.import_plaintext(new_repr)
 
 	def on_external_edit_text(self, event):
@@ -676,6 +679,8 @@ class MainWindow(wx.Frame):
 			except text_mangle.LengthChanged:
 				self.error_box('Number of lines changed.')
 				return
+			except:
+				self.on_external_edit_failed(exception)
 		if sexpr is None:
 			# nothing changed
 			return
