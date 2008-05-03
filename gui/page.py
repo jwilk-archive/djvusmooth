@@ -134,7 +134,7 @@ class PageImage(wx.lib.ogl.RectangleShape):
 
 	def OnDraw(self, dc):
 		x, y, w, h = self.GetCanvas().GetUpdateRegion().GetBox()
-		if w < 0 or h < 0:
+		if w < 0 or h < 0 or x == y == w == h == 0:
 			# This is not a regular refresh. 
 			# So just see what might have been overwritten.
 			x, y, w, h = dc.GetBoundingBox()
