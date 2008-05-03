@@ -145,11 +145,17 @@ class PageImage(wx.lib.ogl.RectangleShape):
 			if page_job is None:
 				raise decode.NotAvailable
 			page_width, page_height = self._screen_page_size
-			if x >= page_width:
+			if x < 0:
+				w += x
+				x = 0
+			if x >= page_width or w <= 0:
 				raise decode.NotAvailable
 			if x + w > page_width:
 				w = page_width - x
-			if y >= page_height:
+			if y < 0:
+				h += y
+				y = 0
+			if y >= page_height or h <= 0:
 				raise decode.NotAvailable
 			if y + h > page_height:
 				h = page_height - y
