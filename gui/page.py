@@ -594,6 +594,8 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self._diagram.RemoveAllShapes()
 
 	def set_size(self, size):
+		if self.GetSize() == size:
+			return
 		self.SetSize(size)
 		self.SetBestFittingSize(size)
 		self.GetParent().Layout()
