@@ -261,6 +261,7 @@ class MainWindow(wx.Frame):
 		self.scrolled_panel.SetAutoLayout(True)
 		self.scrolled_panel.SetupScrolling()
 		self.page_widget = PageWidget(self.scrolled_panel)
+		self.page_widget.Bind(wx.EVT_CHAR, self.on_char)
 		self.scrolled_panel.Bind(wx.EVT_SIZE, self.page_widget.on_parent_resize)
 		sizer.Add(self.page_widget, 0, wx.ALL, 0)
 		self.editable_menu_items = []
@@ -364,7 +365,16 @@ class MainWindow(wx.Frame):
 		self.dirty = False
 		self.do_open(None)
 		self.Bind(wx.EVT_CLOSE, self.on_exit)
-	
+
+	def on_char(self, event):
+		key_code = event.GetKeyCode()
+		if key_code == ord('-'):
+			self.on_zoom_out(event)
+		elif key_code == ord('+'):
+			self.on_zoom_in(event)
+		else:
+			event.Skip()
+
 	def enable_edit(self, enable=True):
 		for i in 1, 3:
 			self.GetMenuBar().EnableTop(i, enable)
