@@ -16,6 +16,7 @@ import dependencies as __dependencies
 
 import wx
 import wx.lib.ogl
+import wx.lib.newevent
 import wx.lib.scrolledpanel
 
 import djvu.decode
@@ -40,13 +41,7 @@ import external_editor
 MENU_ICON_SIZE = (16, 16)
 DJVU_WILDCARD = 'DjVu files (*.djvu, *.djv)|*.djvu;*.djv|All files|*'
 
-wx.EVT_DJVU_MESSAGE = wx.NewId()
-
-class WxDjVuMessage(wx.PyEvent):
-	def __init__(self, message):
-		wx.PyEvent.__init__(self)
-		self.SetEventType(wx.EVT_DJVU_MESSAGE)
-		self.message = message
+WxDjVuMessage, wx.EVT_DJVU_MESSAGE = wx.lib.newevent.NewEvent()
 
 class OpenDialog(wx.FileDialog):
 
@@ -235,7 +230,7 @@ class MainWindow(wx.Frame):
 
 	def __init__(self):
 		wx.Frame.__init__(self, None, size=wx.Size(640, 480))
-		self.Connect(wx.ID_ANY, wx.ID_ANY, wx.EVT_DJVU_MESSAGE, self.handle_message)
+		self.Bind(wx.EVT_DJVU_MESSAGE, self.handle_message)
 		self.context = Context(self)
 		self._page_text_callback = PageTextCallback(self)
 		self._page_annotations_callback = PageAnnotationsCallback(self)
@@ -794,7 +789,7 @@ class Context(djvu.decode.Context):
 		self.window = window
 
 	def handle_message(self, message):
-		wx.PostEvent(self.window, WxDjVuMessage(message))
+		wx.PostEvent(self.window, WxDjVuMessage(message=message))
 
 class Application(wx.App):
 
