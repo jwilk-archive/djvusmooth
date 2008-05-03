@@ -217,6 +217,13 @@ class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 	def notify_node_deselect(self, node):
 		self._owner.SetStatusText('')
 
+class ScrolledPanel(wx.lib.scrolledpanel.ScrolledPanel):
+
+	def OnChildFocus(self, event):
+		# We *don't* want to scroll to the child window which just got the focus.
+		# So just skip the event:
+		event.Skip()
+
 class MainWindow(wx.Frame):
 	
 	def new_menu_item(self, menu, caption, help, method, style = wx.ITEM_NORMAL, icon = None, id = wx.ID_ANY):
@@ -254,7 +261,7 @@ class MainWindow(wx.Frame):
 		sidebar_sizer = wx.BoxSizer(wx.VERTICAL)
 		self.sidebar.SetSizer(sidebar_sizer)
 		sidebar_sizer.Add(self.text_browser, 1, wx.ALL | wx.EXPAND)
-		self.scrolled_panel = wx.lib.scrolledpanel.ScrolledPanel(self.splitter)
+		self.scrolled_panel = ScrolledPanel(self.splitter)
 		self.splitter._default_position = 160
 		self.splitter.SetSashGravity(0.1)
 		self.do_show_sidebar()
