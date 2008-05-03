@@ -294,17 +294,17 @@ class MainWindow(wx.Frame):
 		submenu = wx.Menu()
 		for caption, help, method, id in \
 		[
-			('Zoom &in', 'Increase the magnification', self.on_zoom_in, wx.ID_ZOOM_IN),
+			('Zoom &in',  'Increase the magnification', self.on_zoom_in, wx.ID_ZOOM_IN),
 			('Zoom &out', 'Decrease the magnification', self.on_zoom_out, wx.ID_ZOOM_OUT),
 		]:
 			self.new_menu_item(submenu, caption, help, method, id = id or wx.ID_ANY)
 		submenu.AppendSeparator()
 		for caption, help, zoom, id in \
 		[
-			('Fit &width', 'Set magnification to fit page width', FitWidthZoom(), None),
-			('Fit &page', 'Set magnification to fit page', FitPageZoom(), wx.ID_ZOOM_FIT),
-			('&Stretch', 'Stretch the image to the window size', StretchZoom(), None),
-			('One &to one', 'Set full resolution magnification.', OneToOneZoom(), wx.ID_ZOOM_100),
+			('Fit &width',  'Set magnification to fit page width',  FitWidthZoom(), None),
+			('Fit &page',   'Set magnification to fit page',        FitPageZoom(),  wx.ID_ZOOM_FIT),
+			('&Stretch',    'Stretch the image to the window size', StretchZoom(),  None),
+			('One &to one', 'Set full resolution magnification.',  OneToOneZoom(),  wx.ID_ZOOM_100),
 		]:
 			self.new_menu_item(submenu, caption, help, self.on_zoom(zoom), style=wx.ITEM_RADIO, id = id or wx.ID_ANY)
 		submenu.AppendSeparator()
@@ -325,20 +325,20 @@ class MainWindow(wx.Frame):
 		submenu = wx.Menu()
 		for caption, help, method in \
 		[
-			('&Color\tAlt+C', 'Display everything', self.on_display_everything),
-			('&Stencil', 'Display only the document bitonal stencil', self.on_display_stencil),
-			('&Foreground', 'Display only the foreground layer', self.on_display_foreground),
-			('&Background', 'Display only the foreground layer', self.on_display_background),
-			('&None\tAlt+N', 'Neither display the foreground layer nor the background layer', self.on_display_none)
+			('&Color\tAlt+C', 'Display everything',                                            self.on_display_everything),
+			('&Stencil',      'Display only the document bitonal stencil',                     self.on_display_stencil),
+			('&Foreground',   'Display only the foreground layer',                             self.on_display_foreground),
+			('&Background',   'Display only the foreground layer',                             self.on_display_background),
+			('&None\tAlt+N',  'Neither display the foreground layer nor the background layer', self.on_display_none)
 		]:
 			self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO)
 		menu.AppendMenu(wx.ID_ANY, '&Image', submenu)
 		submenu = wx.Menu()
 		for caption, help, method in \
 		[
-			('&None', 'Don\'t display non-raster data', self.on_display_no_nonraster)
+			('&None',              u'Don\'t display non-raster data',  self.on_display_no_nonraster),
 			('&Hyperlinks\tAlt+H', u'Display overprinted annotations', self.on_display_maparea),
-			('&Text\tAlt+T', u'Display the text layer', self.on_display_text),
+			('&Text\tAlt+T',       u'Display the text layer',          self.on_display_text),
 		]:
 			item = self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO)
 			item.Check()
@@ -349,13 +349,13 @@ class MainWindow(wx.Frame):
 		menu = wx.Menu()
 		for caption, help, method, icon in \
 		[
-			('&First page\tCtrl-Home', 'Jump to first document page', self.on_first_page, None),
-			('&Previous page\tPgUp', 'Jump to previous document page', self.on_previous_page, wx.ART_GO_UP),
-			('&Next page\tPgDn', 'Jump to next document page', self.on_next_page, wx.ART_GO_DOWN),
-			('&Last page\tCtrl-End', 'Jump to last document page', self.on_last_page, None),
-			(u'&Go to page…', u'Jump to page…', self.on_goto_page, None)
+			('&First page\tCtrl-Home', u'first document page',    self.on_first_page,    None),
+			('&Previous page\tPgUp',   u'previous document page', self.on_previous_page, wx.ART_GO_UP),
+			('&Next page\tPgDn',       u'next document page',     self.on_next_page,     wx.ART_GO_DOWN),
+			('&Last page\tCtrl-End',   u'last document page',     self.on_last_page,     None),
+			(u'&Go to page…',          u'page…',                  self.on_goto_page,     None)
 		]:
-			self.new_menu_item(menu, caption, help, method, icon = icon)
+			self.new_menu_item(menu, 'Jump to ' + caption, help, method, icon = icon)
 		menu_bar.Append(menu, '&Go');
 		menu = wx.Menu()
 		self.new_menu_item(menu, 'Show &sidebar\tF9', 'Show/side the sidebar', self.on_show_sidebar, style=wx.ITEM_CHECK).Check()
@@ -777,13 +777,13 @@ class MainWindow(wx.Frame):
 %(APPLICATION_NAME)s %(__version__)s
 Author: %(__author__)s
 License: %(LICENSE)s''' % globals()
-		wx.MessageBox(message, u'About…')
+		wx.MessageBox(message = message, caption = u'About…')
 	
 	def handle_message(self, event):
 		message = event.message
 		# TODO: remove debug prints
 		if isinstance(message, djvu.decode.ErrorMessage):
-			wx.MessageBox(caption='Error', message=str(message), style=wx.ICON_ERROR)
+			self.error_box(message = str(message))
 		elif message.document is not self.document:
 			print 'IGNORED', message
 		self.update_title()
