@@ -289,16 +289,24 @@ class MainWindow(wx.Frame):
 		menu_bar.Append(menu, '&Edit');
 		menu = wx.Menu()
 		submenu = wx.Menu()
+		for caption, help, method, id in \
+		[
+			('Zoom &in', 'Increase the magnification', self.on_zoom_in, wx.ID_ZOOM_IN),
+			('Zoom &out', 'Decrease the magnification', self.on_zoom_out, wx.ID_ZOOM_OUT),
+		]:
+			self.new_menu_item(submenu, caption, help, method, id = id or wx.ID_ANY)
+		submenu.AppendSeparator()
 		for caption, help, zoom, id in \
 		[
 			('Fit &width', 'Set magnification to fit page width', FitWidthZoom(), None),
 			('Fit &page', 'Set magnification to fit page', FitPageZoom(), wx.ID_ZOOM_FIT),
 			('&Stretch', 'Stretch the image to the window size', StretchZoom(), None),
-			('One to &one', 'Set full resolution magnification.', OneToOneZoom(), wx.ID_ZOOM_100),
+			('One &to one', 'Set full resolution magnification.', OneToOneZoom(), wx.ID_ZOOM_100),
 		]:
 			self.new_menu_item(submenu, caption, help, self.on_zoom(zoom), style=wx.ITEM_RADIO, id = id or wx.ID_ANY)
 		submenu.AppendSeparator()
-		for percent in 300, 200, 150, 100, 75, 50:
+		self.zoom_menu_items = {}
+		for percent in 300, 200, 150, 100, 75, 50, 25:
 			item = self.new_menu_item(
 				submenu,
 				'%d%%' % percent,
@@ -308,6 +316,7 @@ class MainWindow(wx.Frame):
 			)
 			if percent == 100:
 				item.Check()
+			self.zoom_menu_items[percent] = item
 		menu.AppendMenu(wx.ID_ANY, '&Zoom', submenu)
 
 		submenu = wx.Menu()
@@ -643,7 +652,31 @@ class MainWindow(wx.Frame):
 			# nothing changed
 			return
 		self.text_model[self.page_no].raw_value = sexpr
-	
+
+	def do_percent_zoom(self, percent):
+		self.page_widget.zoom = PercentZoom(percent)
+		self.zoom_menu_items[percent].Check()
+
+	def on_zoom_out(self, event):
+		try:
+			percent = self.page_widget.zoom.percent
+		except ValueError:
+			return # FIXME
+		candidates = [k for k in self.zoom_menu_items.iterkeys() if k < percent]
+		if not candidates:
+			return
+		self.do_percent_zoom(max(candidates))
+
+	def on_zoom_in(self, event):
+		try:
+			percent = self.page_widget.zoom.percent
+		except ValueError:
+			return # FIXME
+		candidates = [k for k in self.zoom_menu_items.iterkeys() if k > percent]
+		if not candidates:
+			return
+		self.do_percent_zoom(min(candidates))
+
 	def on_zoom(self, zoom):
 		def event_handler(event):
 			self.page_widget.zoom = zoom
