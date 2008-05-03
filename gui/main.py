@@ -244,6 +244,13 @@ class MainWindow(wx.Frame):
 		self.sidebar.AddPage(self.outline_browser, 'Outline')
 		self.sidebar.AddPage(self.maparea_browser, 'Hyperlinks')
 		self.sidebar.AddPage(self.text_browser, 'Text')
+		self.sidebar.Bind(
+			wx.EVT_CHOICEBOOK_PAGE_CHANGED,
+			self._on_sidebar_page_changed(
+				self.on_display_no_nonraster,
+				self.on_display_maparea,
+				self.on_display_text)
+		)
 		sidebar_sizer = wx.BoxSizer(wx.VERTICAL)
 		self.sidebar.SetSizer(sidebar_sizer)
 		sidebar_sizer.Add(self.text_browser, 1, wx.ALL | wx.EXPAND)
@@ -329,9 +336,9 @@ class MainWindow(wx.Frame):
 		submenu = wx.Menu()
 		for caption, help, method in \
 		[
-			('&Text\tAlt+T', u'Display the text layer', self.on_display_text),
-			('&Hyperlinks\tAlt+H', u'Display overprinted annotations', self.on_display_maparea),
 			('&None', 'Don\'t display non-raster data', self.on_display_no_nonraster)
+			('&Hyperlinks\tAlt+H', u'Display overprinted annotations', self.on_display_maparea),
+			('&Text\tAlt+T', u'Display the text layer', self.on_display_text),
 		]:
 			item = self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO)
 			item.Check()
@@ -360,6 +367,11 @@ class MainWindow(wx.Frame):
 		self.dirty = False
 		self.do_open(None)
 		self.Bind(wx.EVT_CLOSE, self.on_exit)
+	
+	def _on_sidebar_page_changed(self, *methods):
+		def event_handler(event):
+			methods[event.GetSelection()](event)
+		return event_handler
 
 	def on_char(self, event):
 		key_code = event.GetKeyCode()
