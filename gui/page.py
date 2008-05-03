@@ -414,6 +414,12 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 		self.page = None
 		self._current_shape = None
 		self.Bind(wx.EVT_CHAR, self.on_char)
+	
+	def OnMouseEvent(self, event):
+		if event.GetEventType() == wx.wxEVT_MOUSEWHEEL:
+			event.Skip()
+			return
+		wx.lib.ogl.ShapeCanvas.OnMouseEvent(self, event)
 
 	def on_char(self, event):
 		skip = True
