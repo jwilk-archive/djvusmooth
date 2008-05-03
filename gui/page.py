@@ -15,6 +15,8 @@ import gui.maparea_menu
 import models.text
 import models.annotations
 
+from varietes import not_overridden
+
 PIXEL_FORMAT = decode.PixelFormatRgb()
 PIXEL_FORMAT.rows_top_to_bottom = 1
 PIXEL_FORMAT.y_top_to_bottom = 1
@@ -25,11 +27,22 @@ RENDER_NONRASTER_VALUES = (RENDER_NONRASTER_TEXT, RENDER_NONRASTER_MAPAREA, None
 
 class Zoom(object):
 
+	@not_overridden
 	def rezoom_on_resize(self):
 		raise NotImplementedError
 
+	@not_overridden
 	def get_page_screen_size(self, page_job, viewport_size):
 		raise NotImplementedError
+
+	def _get_percent(self):
+		raise ValueError
+	
+	@apply
+	def percent():
+		def get(self):
+			return self._get_percent()
+		return property(get)
 
 class PercentZoom(Zoom):
 
@@ -44,6 +57,9 @@ class PercentZoom(Zoom):
 		real_page_size = (page_job.width, page_job.height)
 		screen_page_size = tuple(int(t * self._percent / dpi) for t in (real_page_size))
 		return screen_page_size
+
+	def _get_percent(self):
+		return self._percent
 
 class OneToOneZoom(Zoom):
 
