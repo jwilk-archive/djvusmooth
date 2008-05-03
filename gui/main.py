@@ -260,7 +260,6 @@ class MainWindow(wx.Frame):
 		self.do_show_sidebar()
 		sizer = wx.BoxSizer(wx.VERTICAL)
 		self.scrolled_panel.SetSizer(sizer)
-		self.scrolled_panel.SetAutoLayout(True)
 		self.scrolled_panel.SetupScrolling()
 		self.page_widget = PageWidget(self.scrolled_panel)
 		self.page_widget.Bind(wx.EVT_CHAR, self.on_char)
