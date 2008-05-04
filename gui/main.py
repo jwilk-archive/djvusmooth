@@ -249,6 +249,22 @@ class MainWindow(wx.Frame):
 				self._config.WriteInt('main_window_%s' % key, value)
 		return property(get, set)
 	
+	@apply
+	def default_splitter_sash():
+		def get(self):
+			return self._config.ReadInt('main_window_splitter_sash', 160)
+		def set(self, value):
+			self._config.WriteInt('main_window_splitter_sash', value)
+		return property(get, set)
+
+	@apply
+	def default_sidebar_shown():
+		def get(self):
+			return self._config.ReadBool('main_window_sidebar_shown', True)
+		def set(self, value):
+			self._config.WriteBool('main_window_sidebar_shown', value)
+		return property(get, set)
+	
 	def save_defaults(self):
 		self._config.Flush()
 	
@@ -264,6 +280,7 @@ class MainWindow(wx.Frame):
 		self._outline_callback = OutlineCallback(self)
 		self.status_bar = self.CreateStatusBar(2, style = wx.ST_SIZEGRIP)
 		self.splitter = wx.SplitterWindow(self, style = wx.SP_LIVE_UPDATE)
+		self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.on_splitter_sash_changed)
 		self.sidebar = wx.Choicebook(self.splitter, wx.ID_ANY)
 		self.text_browser = TextBrowser(self.sidebar)
 		self.outline_browser = OutlineBrowser(self.sidebar)
@@ -282,9 +299,11 @@ class MainWindow(wx.Frame):
 		self.sidebar.SetSizer(sidebar_sizer)
 		sidebar_sizer.Add(self.text_browser, 1, wx.ALL | wx.EXPAND)
 		self.scrolled_panel = ScrolledPanel(self.splitter)
-		self.splitter._default_position = 160
+		sidebar_shown = self.default_sidebar_shown
 		self.splitter.SetSashGravity(0.1)
 		self.do_show_sidebar()
+		if not sidebar_shown:
+			self.do_hide_sidebar()
 		sizer = wx.BoxSizer(wx.VERTICAL)
 		self.scrolled_panel.SetSizer(sizer)
 		self.scrolled_panel.SetupScrolling()
@@ -388,7 +407,9 @@ class MainWindow(wx.Frame):
 			self.new_menu_item(menu, 'Jump to ' + caption, help, method, icon = icon)
 		menu_bar.Append(menu, '&Go');
 		menu = wx.Menu()
-		self.new_menu_item(menu, 'Show &sidebar\tF9', 'Show/side the sidebar', self.on_show_sidebar, style=wx.ITEM_CHECK).Check()
+		sidebar_menu_item = self.new_menu_item(menu, 'Show &sidebar\tF9', 'Show/side the sidebar', self.on_show_sidebar, style=wx.ITEM_CHECK)
+		if sidebar_shown:
+			sidebar_menu_item.Check()
 		menu_bar.Append(menu, '&Settings');
 		menu = wx.Menu()
 		self.new_menu_item(menu, '&About\tF1', 'More information about this program', self.on_about, id=wx.ID_ABOUT)
@@ -397,6 +418,10 @@ class MainWindow(wx.Frame):
 		self.dirty = False
 		self.do_open(None)
 		self.Bind(wx.EVT_CLOSE, self.on_exit)
+	
+	def on_splitter_sash_changed(self, event):
+		print event, event.GetSashPosition()
+		self.default_splitter_sash = event.GetSashPosition()
 	
 	def _on_sidebar_page_changed(self, *methods):
 		def event_handler(event):
@@ -513,10 +538,12 @@ class MainWindow(wx.Frame):
 			self.do_hide_sidebar()
 	
 	def do_show_sidebar(self):
-		self.splitter.SplitVertically(self.sidebar, self.scrolled_panel, self.splitter._default_position)
+		self.splitter.SplitVertically(self.sidebar, self.scrolled_panel, self.default_splitter_sash)
+		self.default_sidebar_shown = True
 	
 	def do_hide_sidebar(self):
 		self.splitter.Unsplit(self.sidebar)
+		self.default_sidebar_shown = False
 
 	def on_display_everything(self, event):
 		self.page_widget.render_mode = djvu.decode.RENDER_COLOR
