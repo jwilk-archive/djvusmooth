@@ -833,6 +833,14 @@ class Application(wx.App):
 		self._argv = argv
 		sys.excepthook = self.except_hook
 		wx.App.__init__(self)
+		self.SetAppName(APPLICATION_NAME)
+		self._config = wx.Config.Get()
+	
+	@apply
+	def config():
+		def get(self):
+			return self._config
+		return property(get)
 	
 	def except_hook(self, *args):
 		sys.__excepthook__(*args)
