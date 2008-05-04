@@ -6,7 +6,6 @@ import re
 import exceptions
 import warnings
 import weakref
-from cStringIO import StringIO
 
 class NotOverriddenWarning(exceptions.UserWarning):
 	pass
@@ -37,8 +36,11 @@ def not_overridden(f):
 		return f(self, *args, **kwargs)
 	return new_f
 
-def wref(obj):
+def wref(o):
 	r'''
+	Return a weak reference to object. This is almost the same as
+	`weakref.ref()`, but accepts `None` too.
+
 	>>> class O(object):
 	...   pass
 	>>> x = O()
