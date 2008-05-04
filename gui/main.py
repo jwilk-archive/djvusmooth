@@ -395,19 +395,17 @@ class MainWindow(wx.Frame):
 			self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO)
 		menu.AppendMenu(wx.ID_ANY, '&Image', submenu)
 		submenu = wx.Menu()
-		_checked = False
+		_tmp_items = []
 		for caption, help, method in \
 		[
 			('&None',              u'Don\'t display non-raster data',  self.on_display_no_nonraster),
 			('&Hyperlinks\tAlt+H', u'Display overprinted annotations', self.on_display_maparea),
 			('&Text\tAlt+T',       u'Display the text layer',          self.on_display_text),
 		]:
-			if not _checked:
-				item.Check()
-				_checked = True
-			item = self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO)
-		del _checked
-
+			_tmp_items += self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO),
+		self._menu_item_display_no_nonraster, self._menu_item_display_maparea, self._menu_item_display_text = _tmp_items
+		del _tmp_items
+		self._menu_item_display_no_nonraster.Check()
 		menu.AppendMenu(wx.ID_ANY, '&Non-raster data', submenu)
 		self.new_menu_item(menu, '&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh)
 		menu_bar.Append(menu, '&View')
@@ -581,12 +579,15 @@ class MainWindow(wx.Frame):
 	
 	def on_display_text(self, event):
 		self.page_widget.render_nonraster = RENDER_NONRASTER_TEXT
+		self._menu_item_display_text.Check()
 	
 	def on_display_maparea(self, event):
 		self.page_widget.render_nonraster = RENDER_NONRASTER_MAPAREA
+		self._menu_item_display_maparea.Check()
 	
 	def on_display_no_nonraster(self, event):
 		self.page_widget.render_nonraster = None
+		self._menu_item_display_no_nonraster.Check()
 
 	def on_refresh(self, event):
 		self.Refresh()
