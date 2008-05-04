@@ -892,11 +892,11 @@ License: %(LICENSE)s''' % globals()
 
 	def handle_message(self, event):
 		message = event.message
-		# TODO: remove debug prints
 		if isinstance(message, djvu.decode.ErrorMessage):
 			self.error_box(message = str(message))
 		elif message.document is not self.document:
-			print 'IGNORED', message
+			# Bogus, non-error message are ignored.
+			pass
 		self.update_title()
 		if isinstance(message, (djvu.decode.RedisplayMessage, djvu.decode.RelayoutMessage)):
 			if self.page_job is message.page_job:
