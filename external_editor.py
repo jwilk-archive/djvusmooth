@@ -24,7 +24,7 @@ class RunMailcapEditor(object):
 
 class CustomEditor(object):
 
-	def __init__(self, command, extra_args = ()):
+	def __init__(self, command, *extra_args):
 		self._command = [command]
 		self._command += extra_args
 	

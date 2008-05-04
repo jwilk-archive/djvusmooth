@@ -265,14 +265,30 @@ class MainWindow(wx.Frame):
 			self._config.WriteBool('main_window_sidebar_shown', value)
 		return property(get, set)
 	
+	@apply
+	def default_editor_path():
+		def get(self):
+			return self._config.Read('external_editor', '') or None
+		def set(self, value):
+			return self._config.Write('external_editor', value or '')
+		return property(get, set)
+	
 	def save_defaults(self):
 		self._config.Flush()
+	
+	def setup_external_editor(self):
+		editor_path = self.default_editor_path
+		if editor_path is None:
+			self.external_editor = external_editor.RunMailcapEditor()
+		else:
+			self.external_editor = external_editor.CustomEditor(*editor_path.split())
+
 	
 	def __init__(self):
 		self._config = wx.GetApp().config
 		x, y, w, h = self.default_xywh
 		wx.Frame.__init__(self, None, pos=(x, y), size=(w, h))
-		self.external_editor = external_editor.RunMailcapEditor()
+		self.setup_external_editor()
 		self.Bind(wx.EVT_DJVU_MESSAGE, self.handle_message)
 		self.context = Context(self)
 		self._page_text_callback = PageTextCallback(self)
@@ -670,7 +686,7 @@ class MainWindow(wx.Frame):
 		def job():
 			new_repr = None
 			try:
-				tmp_file = tempfile.NamedTemporaryFile()
+				tmp_file = tempfile.NamedTemporaryFile(suffix='.txt')
 				try:
 					model.export_as_plaintext(tmp_file)
 					tmp_file.flush()
@@ -705,7 +721,7 @@ class MainWindow(wx.Frame):
 		def job():
 			new_sexpr = None
 			try:
-				tmp_file = tempfile.NamedTemporaryFile()
+				tmp_file = tempfile.NamedTemporaryFile(suffix='.txt')
 				try:
 					text_mangle.export(sexpr, tmp_file)
 					tmp_file.flush()
