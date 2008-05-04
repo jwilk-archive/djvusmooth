@@ -53,7 +53,7 @@ class TextModel(models.text.Text):
 	def __init__(self, document):
 		models.text.Text.__init__(self)
 		self._document = document
-	
+
 	def acquire_data(self, n):
 		text = self._document.pages[n].text
 		text.wait()
@@ -64,7 +64,7 @@ class OutlineModel(models.outline.Outline):
 	def __init__(self, document):
 		self._document = document
 		models.outline.Outline.__init__(self)
-	
+
 	def acquire_data(self):
 		outline = self._document.outline
 		outline.wait()
@@ -75,15 +75,15 @@ class PageProxy(object):
 		self._page = page
 		self._text = text_model
 		self._annotations = annotations_model
-	
+
 	@property
 	def page_job(self):
 		return self._page.decode(wait = False)
-	
+
 	@property
 	def text(self):
 		return self._text
-	
+
 	@property
 	def annotations(self):
 		return self._annotations
@@ -99,7 +99,7 @@ class DocumentProxy(object):
 	def __init__(self, document, outline):
 		self._document = document
 		self._outline = outline
-	
+
 	@property
 	def outline(self):
 		return self._outline
@@ -112,7 +112,7 @@ class AnnotationsModel(models.annotations.Annotations):
 	def __init__(self, document_path):
 		models.annotations.Annotations.__init__(self)
 		self.__djvused = StreamEditor(document_path)
-	
+
 	def acquire_data(self, n):
 		djvused = self.__djvused
 		if n == models.SHARED_ANNOTATIONS_PAGENO:
@@ -159,10 +159,10 @@ class PageTextCallback(models.text.PageTextCallback):
 
 	def notify_node_change(self, node):
 		self._owner.dirty = True
-	
+
 	def notify_node_children_change(self, node):
 		self._owner.dirty = True
-	
+
 	def notify_node_select(self, node):
 		text = '[Text layer] %s' % node.type
 		if node.is_leaf():
@@ -171,7 +171,7 @@ class PageTextCallback(models.text.PageTextCallback):
 
 	def notify_node_deselect(self, node):
 		self._owner.SetStatusText('')
-		
+
 	def notify_tree_change(self, node):
 		self._owner.dirty = True
 
@@ -199,7 +199,7 @@ class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 
 	def __init__(self, owner):
 		self._owner = owner
-	
+
 	def notify_node_change(self, node):
 		self._owner.dirty = True
 	def notify_node_add(self, node):
@@ -226,7 +226,7 @@ class ScrolledPanel(wx.lib.scrolledpanel.ScrolledPanel):
 		event.Skip()
 
 class MainWindow(wx.Frame):
-	
+
 	def _menu_item(self, menu, caption, help, method, style = wx.ITEM_NORMAL, icon = None, id = wx.ID_ANY):
 		item = wx.MenuItem(menu, id, caption, help, style)
 		if icon is not None:
@@ -248,7 +248,7 @@ class MainWindow(wx.Frame):
 			for key, value in dict(x=x, y=y, width=w, height=h).iteritems():
 				self._config.WriteInt('main_window_%s' % key, value)
 		return property(get, set)
-	
+
 	@apply
 	def default_splitter_sash():
 		def get(self):
@@ -264,7 +264,7 @@ class MainWindow(wx.Frame):
 		def set(self, value):
 			self._config.WriteBool('main_window_sidebar_shown', value)
 		return property(get, set)
-	
+
 	@apply
 	def default_editor_path():
 		def get(self):
@@ -272,10 +272,10 @@ class MainWindow(wx.Frame):
 		def set(self, value):
 			return self._config.Write('external_editor', value or '')
 		return property(get, set)
-	
+
 	def save_defaults(self):
 		self._config.Flush()
-	
+
 	def setup_external_editor(self):
 		editor_path = self.default_editor_path
 		if editor_path is None:
@@ -283,7 +283,6 @@ class MainWindow(wx.Frame):
 		else:
 			self.external_editor = external_editor.CustomEditor(*editor_path.split())
 
-	
 	def __init__(self):
 		self._config = wx.GetApp().config
 		x, y, w, h = self.default_xywh
@@ -332,7 +331,7 @@ class MainWindow(wx.Frame):
 		self.dirty = False
 		self.do_open(None)
 		self.Bind(wx.EVT_CLOSE, self.on_exit)
-	
+
 	def _setup_menu(self):
 		menu_bar = wx.MenuBar()
 		menu_bar.Append(self._create_file_menu(), '&File')
@@ -342,7 +341,7 @@ class MainWindow(wx.Frame):
 		menu_bar.Append(self._create_settings_menu(), '&Settings');
 		menu_bar.Append(self._create_help_menu(), '&Help');
 		self.SetMenuBar(menu_bar)
-	
+
 	def _create_file_menu(self):
 		menu = wx.Menu()
 		self._menu_item(menu, '&Open\tCtrl+O', 'Open a DjVu document', self.on_open, icon=wx.ART_FILE_OPEN)
@@ -426,7 +425,7 @@ class MainWindow(wx.Frame):
 		menu.AppendMenu(wx.ID_ANY, '&Non-raster data', submenu)
 		self._menu_item(menu, '&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh)
 		return menu
-	
+
 	def _create_go_menu(self):
 		menu = wx.Menu()
 		for caption, help, method, icon in \
@@ -440,7 +439,6 @@ class MainWindow(wx.Frame):
 			self._menu_item(menu, caption, 'Jump to ' + help, method, icon = icon)
 		return menu
 
-	
 	def _create_settings_menu(self):
 		menu = wx.Menu()
 		sidebar_menu_item = self._menu_item(menu, 'Show &sidebar\tF9', 'Show/side the sidebar', self.on_show_sidebar, style=wx.ITEM_CHECK)
@@ -454,13 +452,12 @@ class MainWindow(wx.Frame):
 		self._menu_item(menu, '&About\tF1', 'More information about this program', self.on_about, id=wx.ID_ABOUT)
 		return menu
 
-	
 	def on_setup_external_editor(self, event):
 		raise NotImplementedError
-	
+
 	def on_splitter_sash_changed(self, event):
 		self.default_splitter_sash = event.GetSashPosition()
-	
+
 	def _on_sidebar_page_changed(self, *methods):
 		def event_handler(event):
 			methods[event.GetSelection()](event)
@@ -504,7 +501,7 @@ class MainWindow(wx.Frame):
 			self.default_xywh = x, y, w, h
 			self.save_defaults()
 			self.Destroy()
-	
+
 	def on_open(self, event):
 		dialog = OpenDialog(self)
 		try:
@@ -574,38 +571,38 @@ class MainWindow(wx.Frame):
 			self.do_show_sidebar()
 		else:
 			self.do_hide_sidebar()
-	
+
 	def do_show_sidebar(self):
 		self.splitter.SplitVertically(self.sidebar, self.scrolled_panel, self.default_splitter_sash)
 		self.default_sidebar_shown = True
-	
+
 	def do_hide_sidebar(self):
 		self.splitter.Unsplit(self.sidebar)
 		self.default_sidebar_shown = False
 
 	def on_display_everything(self, event):
 		self.page_widget.render_mode = djvu.decode.RENDER_COLOR
-	
+
 	def on_display_foreground(self, event):
 		self.page_widget.render_mode = djvu.decode.RENDER_FOREGROUND
 
 	def on_display_background(self, event):
 		self.page_widget.render_mode = djvu.decode.RENDER_BACKGROUND
-	
+
 	def on_display_stencil(self, event):
 		self.page_widget.render_mode = djvu.decode.RENDER_BLACK
-	
+
 	def on_display_none(self, event):
 		self.page_widget.render_mode = None
-	
+
 	def on_display_text(self, event):
 		self.page_widget.render_nonraster = RENDER_NONRASTER_TEXT
 		self._menu_item_display_text.Check()
-	
+
 	def on_display_maparea(self, event):
 		self.page_widget.render_nonraster = RENDER_NONRASTER_MAPAREA
 		self._menu_item_display_maparea.Check()
-	
+
 	def on_display_no_nonraster(self, event):
 		self.page_widget.render_nonraster = None
 		self._menu_item_display_no_nonraster.Check()
@@ -649,7 +646,7 @@ class MainWindow(wx.Frame):
 
 	def on_previous_page(self, event):
 		self.page_no -= 1
-	
+
 	def on_goto_page(self, event):
 		dialog = gui.dialogs.NumberEntryDialog(
 			parent = self,
@@ -767,7 +764,7 @@ class MainWindow(wx.Frame):
 		disabler = wx.WindowDisabler()
 		thread = threading.Thread(target = job)
 		thread.start()
-	
+
 	def after_external_edit_text(self, sexpr, disabler, exception):
 		if exception is not None:
 			try:
@@ -813,7 +810,7 @@ class MainWindow(wx.Frame):
 		def event_handler(event):
 			self.page_widget.zoom = zoom
 		return event_handler
-	
+
 	def do_open(self, path):
 		if self.dirty:
 			dialog = wx.MessageDialog(self, 'Do you want to save your changes?', '', wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
@@ -854,7 +851,7 @@ class MainWindow(wx.Frame):
 		self.update_page_widget(new_document = True, new_page = True)
 		self.dirty = False
 		return True
-	
+
 	def update_page_widget(self, new_document = False, new_page = False):
 		if self.document is None:
 			self.page_widget.Hide()
@@ -892,7 +889,7 @@ class MainWindow(wx.Frame):
 Author: %(__author__)s
 License: %(LICENSE)s''' % globals()
 		wx.MessageBox(message = message, caption = u'About…')
-	
+
 	def handle_message(self, event):
 		message = event.message
 		# TODO: remove debug prints
@@ -923,17 +920,17 @@ class Application(wx.App):
 		self._argv = argv
 		sys.excepthook = self.except_hook
 		wx.App.__init__(self)
-	
+
 	@apply
 	def config():
 		def get(self):
 			return self._config
 		return property(get)
-	
+
 	def except_hook(self, *args):
 		sys.__excepthook__(*args)
 		wx.CallAfter(self.except_hook_after, *args)
-	
+
 	def except_hook_after(self, type_, value, traceback):
 		from traceback import format_exception
 		message = 'An unhandled exception occured. Ideally, this should not happen. Please report the bug to the author.\n\n'
