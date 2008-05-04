@@ -237,7 +237,10 @@ class MainWindow(wx.Frame):
 		return item
 
 	def __init__(self):
-		wx.Frame.__init__(self, None, size=wx.Size(640, 480))
+		config = wx.GetApp().config
+		x, y = (config.ReadInt('main_window_%s' % key, -1) for key in ('x', 'y'))
+		w, h = (config.ReadInt('main_window_%s' % key, value) for key, value in dict(width=640, height=480).iteritems())
+		wx.Frame.__init__(self, None, pos=(x, y), size=(w, h))
 		self.external_editor = external_editor.RunMailcapEditor()
 		self.Bind(wx.EVT_DJVU_MESSAGE, self.handle_message)
 		self.context = Context(self)
@@ -418,6 +421,12 @@ class MainWindow(wx.Frame):
 
 	def on_exit(self, event):
 		if self.do_open(None):
+			config = wx.GetApp().config
+			x, y = self.GetPosition()
+			w, h = self.GetSize()
+			for key, value in dict(x=x, y=y, width=w, height=h).iteritems():
+				config.WriteInt('main_window_%s' % key, value)
+			wx.GetApp().config.Flush()
 			self.Destroy()
 	
 	def on_open(self, event):
@@ -833,8 +842,6 @@ class Application(wx.App):
 		self._argv = argv
 		sys.excepthook = self.except_hook
 		wx.App.__init__(self)
-		self.SetAppName(APPLICATION_NAME)
-		self._config = wx.Config.Get()
 	
 	@apply
 	def config():
@@ -855,13 +862,15 @@ class Application(wx.App):
 
 	def OnInit(self):
 		wx.lib.ogl.OGLInitialize()
+		self.SetAppName(APPLICATION_NAME)
+		self._config = wx.Config.Get()
+		return True
+
+	def start(self):
 		window = MainWindow()
 		window.Show(True)
 		if self._argv:
 			window.do_open(self._argv.pop(0))
-		return True
-
-	def start(self):
 		return self.MainLoop()
 
 # vim:ts=4 sw=4
