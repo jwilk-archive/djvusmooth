@@ -236,10 +236,25 @@ class MainWindow(wx.Frame):
 		menu.AppendItem(item)
 		return item
 
+	@apply
+	def default_xywh():
+		def get(self):
+			return tuple(
+				self._config.ReadInt('main_window_%s' % key, value)
+				for key, value
+				in (('x', -1), ('y', -1), ('width', 640), ('height', 480))
+			)
+		def set(self, (x, y, w, h)):
+			for key, value in dict(x=x, y=y, width=w, height=h).iteritems():
+				self._config.WriteInt('main_window_%s' % key, value)
+		return property(get, set)
+	
+	def save_defaults(self):
+		self._config.Flush()
+	
 	def __init__(self):
-		config = wx.GetApp().config
-		x, y = (config.ReadInt('main_window_%s' % key, -1) for key in ('x', 'y'))
-		w, h = (config.ReadInt('main_window_%s' % key, value) for key, value in dict(width=640, height=480).iteritems())
+		self._config = wx.GetApp().config
+		x, y, w, h = self.default_xywh
 		wx.Frame.__init__(self, None, pos=(x, y), size=(w, h))
 		self.external_editor = external_editor.RunMailcapEditor()
 		self.Bind(wx.EVT_DJVU_MESSAGE, self.handle_message)
@@ -421,12 +436,10 @@ class MainWindow(wx.Frame):
 
 	def on_exit(self, event):
 		if self.do_open(None):
-			config = wx.GetApp().config
 			x, y = self.GetPosition()
 			w, h = self.GetSize()
-			for key, value in dict(x=x, y=y, width=w, height=h).iteritems():
-				config.WriteInt('main_window_%s' % key, value)
-			wx.GetApp().config.Flush()
+			self.default_xywh = x, y, w, h
+			self.save_defaults()
 			self.Destroy()
 	
 	def on_open(self, event):
