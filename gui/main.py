@@ -227,7 +227,7 @@ class ScrolledPanel(wx.lib.scrolledpanel.ScrolledPanel):
 
 class MainWindow(wx.Frame):
 	
-	def new_menu_item(self, menu, caption, help, method, style = wx.ITEM_NORMAL, icon = None, id = wx.ID_ANY):
+	def _menu_item(self, menu, caption, help, method, style = wx.ITEM_NORMAL, icon = None, id = wx.ID_ANY):
 		item = wx.MenuItem(menu, id, caption, help, style)
 		if icon is not None:
 			bitmap = wx.ArtProvider_GetBitmap(icon, wx.ART_MENU, MENU_ICON_SIZE)
