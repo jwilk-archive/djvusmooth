@@ -420,12 +420,13 @@ class MainWindow(wx.Frame):
 			('&Last page\tCtrl-End',   u'last document page',     self.on_last_page,     None),
 			(u'&Go to page…',          u'page…',                  self.on_goto_page,     None)
 		]:
-			self.new_menu_item(menu, 'Jump to ' + caption, help, method, icon = icon)
+			self.new_menu_item(menu, caption, 'Jump to ' + help, method, icon = icon)
 		menu_bar.Append(menu, '&Go');
 		menu = wx.Menu()
 		sidebar_menu_item = self.new_menu_item(menu, 'Show &sidebar\tF9', 'Show/side the sidebar', self.on_show_sidebar, style=wx.ITEM_CHECK)
 		if sidebar_shown:
 			sidebar_menu_item.Check()
+		self.new_menu_item(menu, u'External editor…', 'Setup an external editor', self.on_setup_external_editor)
 		menu_bar.Append(menu, '&Settings');
 		menu = wx.Menu()
 		self.new_menu_item(menu, '&About\tF1', 'More information about this program', self.on_about, id=wx.ID_ABOUT)
@@ -434,6 +435,9 @@ class MainWindow(wx.Frame):
 		self.dirty = False
 		self.do_open(None)
 		self.Bind(wx.EVT_CLOSE, self.on_exit)
+	
+	def on_setup_external_editor(self, event):
+		raise NotImplementedError
 	
 	def on_splitter_sash_changed(self, event):
 		self.default_splitter_sash = event.GetSashPosition()
