@@ -55,11 +55,11 @@ def wref(o):
 	>>> xref() is None
 	True
 	'''
-	if obj is None:
+	if o is None:
 		ref = weakref.ref(set())
 		assert ref() is None
 	else:
-		ref = weakref.ref(obj)
+		ref = weakref.ref(o)
 	return ref
 
 def indents_to_tree(lines):
