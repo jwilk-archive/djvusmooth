@@ -453,7 +453,17 @@ class MainWindow(wx.Frame):
 		return menu
 
 	def on_setup_external_editor(self, event):
-		raise NotImplementedError
+		dialog = wx.TextEntryDialog(self,
+			caption='Setup an external editor',
+			message='Enter path to your favourite text editor.'
+		)
+		try:
+			dialog.SetValue(self.default_editor_path or '')
+			if dialog.ShowModal() == wx.ID_OK:
+				self.default_editor_path = dialog.GetValue()
+				self.setup_external_editor()
+		finally:
+			dialog.Destroy()
 
 	def on_splitter_sash_changed(self, event):
 		self.default_splitter_sash = event.GetSashPosition()
