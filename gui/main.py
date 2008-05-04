@@ -916,11 +916,6 @@ class Context(djvu.decode.Context):
 
 class Application(wx.App):
 
-	def __init__(self, argv):
-		self._argv = argv
-		sys.excepthook = self.except_hook
-		wx.App.__init__(self)
-
 	@apply
 	def config():
 		def get(self):
@@ -942,13 +937,14 @@ class Application(wx.App):
 		wx.lib.ogl.OGLInitialize()
 		self.SetAppName(APPLICATION_NAME)
 		self._config = wx.Config.Get()
+		sys.excepthook = self.except_hook
 		return True
 
-	def start(self):
+	def start(self, argv):
 		window = MainWindow()
 		window.Show(True)
-		if self._argv:
-			window.do_open(self._argv.pop(0))
+		if argv:
+			window.do_open(argv[0])
 		return self.MainLoop()
 
 # vim:ts=4 sw=4
