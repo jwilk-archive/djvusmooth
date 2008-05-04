@@ -11,7 +11,6 @@ See ``djvuchanges.txt``:
 - 5. Document Annotations and Metadata.
 '''
 
-from cStringIO import StringIO
 from models import MultiPageModel, SHARED_ANNOTATIONS_PAGENO
 
 class Metadata(MultiPageModel):
