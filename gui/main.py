@@ -420,7 +420,6 @@ class MainWindow(wx.Frame):
 		self.Bind(wx.EVT_CLOSE, self.on_exit)
 	
 	def on_splitter_sash_changed(self, event):
-		print event, event.GetSashPosition()
 		self.default_splitter_sash = event.GetSashPosition()
 	
 	def _on_sidebar_page_changed(self, *methods):
