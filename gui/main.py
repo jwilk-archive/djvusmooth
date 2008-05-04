@@ -382,7 +382,7 @@ class MainWindow(wx.Frame):
 			('Fit &width',  'Set magnification to fit page width',  FitWidthZoom(), None),
 			('Fit &page',   'Set magnification to fit page',        FitPageZoom(),  wx.ID_ZOOM_FIT),
 			('&Stretch',    'Stretch the image to the window size', StretchZoom(),  None),
-			('One &to one', 'Set full resolution magnification.',  OneToOneZoom(),  wx.ID_ZOOM_100),
+			('One &to one', 'Set full resolution magnification.',   OneToOneZoom(), wx.ID_ZOOM_100),
 		]:
 			self._menu_item(submenu, caption, help, self.on_zoom(zoom), style=wx.ITEM_RADIO, id = id or wx.ID_ANY)
 		submenu.AppendSeparator()
