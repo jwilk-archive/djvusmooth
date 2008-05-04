@@ -546,12 +546,21 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 				real_page_size = (page_job.width, page_job.height)
 				viewport_size = tuple(self.GetParent().GetSize())
 				screen_page_size = self._zoom.get_page_screen_size(page_job, viewport_size)
-				xform_real_to_screen = decode.AffineTransform((0, 0) + real_page_size, (0, 0) + screen_page_size)
+				screen_page_rect = (0, 0) + screen_page_size
+				rotation = page_job.initial_rotation
+				real_page_rect = (0, 0) + real_page_size
+				xform_real_to_screen = decode.AffineTransform(real_page_rect, screen_page_rect)
 				xform_real_to_screen.mirror_y()
+				xform_rotate = decode.AffineTransform((0, 0, 1, 1), (0, 0, 1, 1))
+				xform_rotate.rotate(rotation)
+				text_page_rect = (0, 0) + xform_rotate(real_page_rect)[2:]
+				xform_text_to_screen = decode.AffineTransform(text_page_rect, screen_page_rect)
+				xform_text_to_screen.mirror_y()
+				xform_text_to_screen.rotate(rotation)
 				self.set_size(screen_page_size)
 			except decode.NotAvailable:
 				screen_page_size = -1, -1
-				xform_real_to_screen = decode.AffineTransform((0, 0, 1, 1), (0, 0, 1, 1))
+				xform_real_to_screen = xform_text_to_screen = decode.AffineTransform((0, 0, 1, 1), (0, 0, 1, 1))
 				page_job = None
 				page_text = None
 				page_annotations = None
@@ -559,6 +568,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 				callbacks = ()
 			self._screen_page_size = screen_page_size
 			self._xform_real_to_screen = xform_real_to_screen
+			self._xform_text_to_screen = xform_text_to_screen
 			self._page_job = page_job
 			self._page_text = page_text
 			self._page_annotations = page_annotations
@@ -639,12 +649,12 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			pass
 
 	def setup_text_shapes(self, have_text = False):
-		xform_real_to_screen = self._xform_real_to_screen
+		xform_text_to_screen = self._xform_text_to_screen
 		try:
 			page_type = sexpr.Symbol('page')
 			items = \
 			[
-				(node, TextShape(node, have_text, xform_real_to_screen))
+				(node, TextShape(node, have_text, xform_text_to_screen))
 				for node in self._page_text.get_preorder_nodes()
 				if node.type < djvu.const.TEXT_ZONE_PAGE
 			]
