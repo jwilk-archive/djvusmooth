@@ -315,10 +315,9 @@ class MainWindow(wx.Frame):
 		self.sidebar.SetSizer(sidebar_sizer)
 		sidebar_sizer.Add(self.text_browser, 1, wx.ALL | wx.EXPAND)
 		self.scrolled_panel = ScrolledPanel(self.splitter)
-		sidebar_shown = self.default_sidebar_shown
 		self.splitter.SetSashGravity(0.1)
 		self.do_show_sidebar()
-		if not sidebar_shown:
+		if not self.default_sidebar_shown:
 			self.do_hide_sidebar()
 		sizer = wx.BoxSizer(wx.VERTICAL)
 		self.scrolled_panel.SetSizer(sizer)
@@ -329,28 +328,47 @@ class MainWindow(wx.Frame):
 		sizer.Add(self.page_widget, 0, wx.ALL, 0)
 		self.editable_menu_items = []
 		self.saveable_menu_items = []
+		self._setup_menu()
+		self.dirty = False
+		self.do_open(None)
+		self.Bind(wx.EVT_CLOSE, self.on_exit)
+	
+	def _setup_menu(self):
 		menu_bar = wx.MenuBar()
+		menu_bar.Append(self._create_file_menu(), '&File')
+		menu_bar.Append(self._create_edit_menu(), '&Edit')
+		menu_bar.Append(self._create_view_menu(), '&View')
+		menu_bar.Append(self._create_go_menu(), '&Go');
+		menu_bar.Append(self._create_settings_menu(), '&Settings');
+		menu_bar.Append(self._create_help_menu(), '&Help');
+		self.SetMenuBar(menu_bar)
+	
+	def _create_file_menu(self):
 		menu = wx.Menu()
-		self.new_menu_item(menu, '&Open\tCtrl+O', 'Open a DjVu document', self.on_open, icon=wx.ART_FILE_OPEN)
-		save_menu_item = self.new_menu_item(menu, '&Save\tCtrl+S', 'Save the document', self.on_save, icon=wx.ART_FILE_SAVE)
-		close_menu_item = self.new_menu_item(menu, '&Close\tCtrl+W', 'Close the document', self.on_close, id=wx.ID_CLOSE)
+		self._menu_item(menu, '&Open\tCtrl+O', 'Open a DjVu document', self.on_open, icon=wx.ART_FILE_OPEN)
+		save_menu_item = self._menu_item(menu, '&Save\tCtrl+S', 'Save the document', self.on_save, icon=wx.ART_FILE_SAVE)
+		close_menu_item = self._menu_item(menu, '&Close\tCtrl+W', 'Close the document', self.on_close, id=wx.ID_CLOSE)
 		self.editable_menu_items += close_menu_item,
 		self.saveable_menu_items += save_menu_item,
 		menu.AppendSeparator()
-		self.new_menu_item(menu, '&Quit\tCtrl+Q', 'Quit the application', self.on_exit, icon=wx.ART_QUIT)
-		menu_bar.Append(menu, '&File');
+		self._menu_item(menu, '&Quit\tCtrl+Q', 'Quit the application', self.on_exit, icon=wx.ART_QUIT)
+		return menu
+
+	def _create_edit_menu(self):
 		menu = wx.Menu()
-		self.new_menu_item(menu, '&Metadata\tCtrl+M', 'Edit the document or page metadata', self.on_edit_metadata)
+		self._menu_item(menu, '&Metadata\tCtrl+M', 'Edit the document or page metadata', self.on_edit_metadata)
 		submenu = wx.Menu()
-		self.new_menu_item(submenu, '&External editor\tCtrl+T', 'Edit page text in an external editor', self.on_external_edit_text)
-		self.new_menu_item(submenu, '&Flatten', 'Remove details from page text', self.on_flatten_text)
+		self._menu_item(submenu, '&External editor\tCtrl+T', 'Edit page text in an external editor', self.on_external_edit_text)
+		self._menu_item(submenu, '&Flatten', 'Remove details from page text', self.on_flatten_text)
 		menu.AppendMenu(wx.ID_ANY, '&Text', submenu)
 		submenu = wx.Menu()
-		self.new_menu_item(submenu, '&Bookmark this page\tCtrl+B', 'Add the current to document outline', self.on_bookmark_current_page)
-		self.new_menu_item(submenu, '&External editor', 'Edit document outline in an external editor', self.on_external_edit_outline)
-		self.new_menu_item(submenu, '&Remove', 'Remove document outline', self.on_remove_outline)
+		self._menu_item(submenu, '&Bookmark this page\tCtrl+B', 'Add the current to document outline', self.on_bookmark_current_page)
+		self._menu_item(submenu, '&External editor', 'Edit document outline in an external editor', self.on_external_edit_outline)
+		self._menu_item(submenu, '&Remove', 'Remove document outline', self.on_remove_outline)
 		menu.AppendMenu(wx.ID_ANY, '&Outline', submenu)
-		menu_bar.Append(menu, '&Edit');
+		return menu
+
+	def _create_view_menu(self):
 		menu = wx.Menu()
 		submenu = wx.Menu()
 		for caption, help, method, id in \
@@ -358,7 +376,7 @@ class MainWindow(wx.Frame):
 			('Zoom &in',  'Increase the magnification', self.on_zoom_in, wx.ID_ZOOM_IN),
 			('Zoom &out', 'Decrease the magnification', self.on_zoom_out, wx.ID_ZOOM_OUT),
 		]:
-			self.new_menu_item(submenu, caption, help, method, id = id or wx.ID_ANY)
+			self._menu_item(submenu, caption, help, method, id = id or wx.ID_ANY)
 		submenu.AppendSeparator()
 		for caption, help, zoom, id in \
 		[
@@ -367,11 +385,11 @@ class MainWindow(wx.Frame):
 			('&Stretch',    'Stretch the image to the window size', StretchZoom(),  None),
 			('One &to one', 'Set full resolution magnification.',  OneToOneZoom(),  wx.ID_ZOOM_100),
 		]:
-			self.new_menu_item(submenu, caption, help, self.on_zoom(zoom), style=wx.ITEM_RADIO, id = id or wx.ID_ANY)
+			self._menu_item(submenu, caption, help, self.on_zoom(zoom), style=wx.ITEM_RADIO, id = id or wx.ID_ANY)
 		submenu.AppendSeparator()
 		self.zoom_menu_items = {}
 		for percent in 300, 200, 150, 100, 75, 50, 25:
-			item = self.new_menu_item(
+			item = self._menu_item(
 				submenu,
 				'%d%%' % percent,
 				'Magnify %d%%' % percent,
@@ -382,7 +400,6 @@ class MainWindow(wx.Frame):
 				item.Check()
 			self.zoom_menu_items[percent] = item
 		menu.AppendMenu(wx.ID_ANY, '&Zoom', submenu)
-
 		submenu = wx.Menu()
 		for caption, help, method in \
 		[
@@ -392,7 +409,7 @@ class MainWindow(wx.Frame):
 			('&Background',   'Display only the foreground layer',                             self.on_display_background),
 			('&None\tAlt+N',  'Neither display the foreground layer nor the background layer', self.on_display_none)
 		]:
-			self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO)
+			self._menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO)
 		menu.AppendMenu(wx.ID_ANY, '&Image', submenu)
 		submenu = wx.Menu()
 		_tmp_items = []
@@ -402,13 +419,15 @@ class MainWindow(wx.Frame):
 			('&Hyperlinks\tAlt+H', u'Display overprinted annotations', self.on_display_maparea),
 			('&Text\tAlt+T',       u'Display the text layer',          self.on_display_text),
 		]:
-			_tmp_items += self.new_menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO),
+			_tmp_items += self._menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO),
 		self._menu_item_display_no_nonraster, self._menu_item_display_maparea, self._menu_item_display_text = _tmp_items
 		del _tmp_items
 		self._menu_item_display_no_nonraster.Check()
 		menu.AppendMenu(wx.ID_ANY, '&Non-raster data', submenu)
-		self.new_menu_item(menu, '&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh)
-		menu_bar.Append(menu, '&View')
+		self._menu_item(menu, '&Refresh\tCtrl+L', 'Refresh the window', self.on_refresh)
+		return menu
+	
+	def _create_go_menu(self):
 		menu = wx.Menu()
 		for caption, help, method, icon in \
 		[
@@ -418,21 +437,23 @@ class MainWindow(wx.Frame):
 			('&Last page\tCtrl-End',   u'last document page',     self.on_last_page,     None),
 			(u'&Go to page…',          u'page…',                  self.on_goto_page,     None)
 		]:
-			self.new_menu_item(menu, caption, 'Jump to ' + help, method, icon = icon)
-		menu_bar.Append(menu, '&Go');
+			self._menu_item(menu, caption, 'Jump to ' + help, method, icon = icon)
+		return menu
+
+	
+	def _create_settings_menu(self):
 		menu = wx.Menu()
-		sidebar_menu_item = self.new_menu_item(menu, 'Show &sidebar\tF9', 'Show/side the sidebar', self.on_show_sidebar, style=wx.ITEM_CHECK)
-		if sidebar_shown:
+		sidebar_menu_item = self._menu_item(menu, 'Show &sidebar\tF9', 'Show/side the sidebar', self.on_show_sidebar, style=wx.ITEM_CHECK)
+		if self.default_sidebar_shown:
 			sidebar_menu_item.Check()
-		self.new_menu_item(menu, u'External editor…', 'Setup an external editor', self.on_setup_external_editor)
-		menu_bar.Append(menu, '&Settings');
+		self._menu_item(menu, u'External editor…', 'Setup an external editor', self.on_setup_external_editor)
+		return menu
+
+	def _create_help_menu(self):
 		menu = wx.Menu()
-		self.new_menu_item(menu, '&About\tF1', 'More information about this program', self.on_about, id=wx.ID_ABOUT)
-		menu_bar.Append(menu, '&Help');
-		self.SetMenuBar(menu_bar)
-		self.dirty = False
-		self.do_open(None)
-		self.Bind(wx.EVT_CLOSE, self.on_exit)
+		self._menu_item(menu, '&About\tF1', 'More information about this program', self.on_about, id=wx.ID_ABOUT)
+		return menu
+
 	
 	def on_setup_external_editor(self, event):
 		raise NotImplementedError
