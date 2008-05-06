@@ -24,8 +24,7 @@ class OutlineCallback(models.outline.OutlineCallback):
 		wx.CallAfter(lambda: self._browser.on_node_select(node))
 
 	def notify_node_children_change(self, node):
-		# FIXME: consider something lighter here
-		wx.CallAfter(lambda: self._browser.on_tree_change(node))
+		wx.CallAfter(lambda: self._browser.on_node_children_change(node))
 
 	def notify_tree_change(self, node):
 		wx.CallAfter(lambda: self._browser.on_tree_change(node))
@@ -35,6 +34,7 @@ class OutlineBrowser(wx.TreeCtrl):
 	def __init__(self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.DefaultSize, style = wx.TR_HAS_BUTTONS | wx.TR_EDIT_LABELS):
 		wx.TreeCtrl.__init__(self, parent, id, pos, size, style)
 		self._have_root = False
+		self._items = {}
 		self._document = None
 		self.Bind(wx.EVT_TREE_BEGIN_LABEL_EDIT, self.on_begin_edit, self)
 		self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.on_end_edit, self)
@@ -130,6 +130,17 @@ class OutlineBrowser(wx.TreeCtrl):
 
 	def on_tree_change(self, model_node):
 		self.document = True
+	
+	def on_node_children_change(self, node):
+		try:
+			item = self._items[node]
+		except KeyError:
+			if isinstance(node, models.outline.RootNode):
+				item = self.GetRootItem()
+			else:
+				return
+		self.DeleteChildren(item)
+		self._add_children(item, node)
 
 	@apply
 	def document():
@@ -186,6 +197,23 @@ class OutlineBrowser(wx.TreeCtrl):
 		node.text = text
 		return True
 
+	def DeleteChildren(self, item):
+		child = self.GetFirstChild(item)[0]
+		while child:
+			next_child = self.GetNextSibling(child)
+			self.Delete(child)
+			child = next_child
+
+	def Delete(self, item):
+		self.DeleteChildren(item)
+		node = self.GetPyData(item)
+		self._items.pop(node, None)
+		wx.TreeCtrl.Delete(self, item)
+	
+	def DeleteAllItems(self):
+		wx.TreeCtrl.DeleteAllItems(self)
+		self._items.clear()
+
 	def _add_children(self, item, nodes):
 		for node in nodes:
 			symbol = node.type
@@ -194,12 +222,10 @@ class OutlineBrowser(wx.TreeCtrl):
 			self._add_children(child_item, node)
 			self._items[node] = child_item
 			self.SetPyData(child_item, node)
-
+	
 	def _recreate_children(self):
-		self._items = {}
-		root = self.GetRootItem()
-		if root.IsOk():
-			self.Delete(root)
+		self.DeleteAllItems()
+		assert not self._items
 		if self.document is None:
 			return
 		node = self.document.outline.root

@@ -710,6 +710,7 @@ class MainWindow(wx.Frame):
 		uri = self.get_page_uri()
 		node = models.outline.InnerNode(djvu.sexpr.Expression(('(no title)', uri)), self.outline_model)
 		self.outline_model.root.add_child(node)
+		node.notify_select()
 
 	def on_remove_outline(self, event):
 		self.outline_model.remove()
