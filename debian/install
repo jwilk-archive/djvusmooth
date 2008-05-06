@@ -1,0 +1,5 @@
+*.py		usr/share/djvusmooth/
+gui/*.py	usr/share/djvusmooth/gui/
+text/*.py	usr/share/djvusmooth/text/
+models/*.py	usr/share/djvusmooth/models/
+djvusmooth	usr/bin
