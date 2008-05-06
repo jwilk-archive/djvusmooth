@@ -733,6 +733,7 @@ class MainWindow(wx.Frame):
 			else:
 				exception = None
 			wx.CallAfter(lambda: self.after_external_edit_outline(new_repr, disabler, exception))
+			disabler = None
 		disabler = wx.WindowDisabler()
 		thread = threading.Thread(target = job)
 		thread.start()
@@ -771,6 +772,7 @@ class MainWindow(wx.Frame):
 			else:
 				exception = None
 			wx.CallAfter(lambda: self.after_external_edit_text(new_sexpr, disabler, exception))
+			disabler = None
 		disabler = wx.WindowDisabler()
 		thread = threading.Thread(target = job)
 		thread.start()
