@@ -20,7 +20,7 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 	dh_install
-	sed -i -e '/^$$/ {s||import sys; sys.path.insert(0, "/usr/share/djvusmooth/")|; b}' $(CURDIR)/debian/djvusmooth/usr/bin/djvusmooth
+	sed -i -e '1,/^$$/ {s|^$$|\nimport sys; sys.path.insert(0, "/usr/share/ocrodjvu/")|;}' $(CURDIR)/debian/djvusmooth/usr/bin/*
 
 binary-indep: build install
 	dh_testdir
