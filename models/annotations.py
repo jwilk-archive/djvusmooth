@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # encoding=UTF-8
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
