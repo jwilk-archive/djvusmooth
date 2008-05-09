@@ -21,7 +21,6 @@ def _check_djvu():
 
 def _check_wx():
 	import wxversion
-	WX_VERSION
 	if not wxversion.checkInstalled(WX_VERSION):
 		raise ImportError('wxPython 2.6 with unicode support is required')
 	wxversion.select(WX_VERSION)
