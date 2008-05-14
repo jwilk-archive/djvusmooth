@@ -655,7 +655,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
 			[
 				(node, TextShape(node, have_text, xform_text_to_screen))
 				for node in self._page_text.get_preorder_nodes()
-				if node.type < djvu.const.TEXT_ZONE_PAGE
+				if node is not None and node.type < djvu.const.TEXT_ZONE_PAGE
 			]
 			self._nonraster_shapes = tuple(shape for node, shape in items)
 			self._nonraster_shapes_map = dict(items)
