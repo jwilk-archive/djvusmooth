@@ -78,7 +78,10 @@ class StreamEditor(object):
 		self._add('remove-meta')
 	
 	def set_text(self, text):
-		self._add('set-txt', str(text), '.')
+		if text is None:
+			self.remove_text()
+		else:
+			self._add('set-txt', str(text), '.')
 
 	def remove_text(self):
 		self._add('remove-txt')
