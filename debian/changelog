@@ -1,8 +1,8 @@
-djvusmooth (0.1.1) UNRELEASED; urgency=low
+djvusmooth (0.1.1) unstable; urgency=low
 
   * Don't require pkg-config nor develoment files of DjVuLibre.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Fri, 09 May 2008 12:32:41 +0200
+ -- Jakub Wilk <ubanus@users.sf.net>  Wed, 14 May 2008 11:22:49 +0200
 
 djvusmooth (0.1) unstable; urgency=low
 
