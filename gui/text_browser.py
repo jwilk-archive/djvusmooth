@@ -38,7 +38,7 @@ class PageTextCallback(models.text.PageTextCallback):
 
 class TextBrowser(wx.TreeCtrl):
 
-	def __init__(self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.DefaultSize, style = wx.TR_HAS_BUTTONS | wx.TR_EDIT_LABELS | wx.TR_HIDE_ROOT):
+	def __init__(self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.DefaultSize, style = wx.TR_HAS_BUTTONS | wx.TR_EDIT_LABELS):
 		wx.TreeCtrl.__init__(self, parent, id, pos, size, style)
 		self._have_root = False
 		self.page = None
@@ -120,15 +120,14 @@ class TextBrowser(wx.TreeCtrl):
 		node.text = text
 		return True
 
-	def _add_children(self, item, nodes):
-		for node in nodes:
+	def _add_children(self, item, parent_node):
+		if not parent_node.is_inner():
+			return
+		for node in parent_node:
 			symbol = node.type
 			label = get_label_for_node(node)
-			if node.is_inner():
-				child_item = self.AppendItem(item, label)
-				self._add_children(child_item, node)
-			else:
-				child_item = self.AppendItem(item, label)
+			child_item = self.AppendItem(item, label)
+			self._add_children(child_item, node)
 			self._items[node] = child_item
 			self.SetPyData(child_item, node)
 
@@ -140,9 +139,12 @@ class TextBrowser(wx.TreeCtrl):
 		if self.page is None:
 			return
 		node = self.page.text.root
-		if node:
-			root = self.AddRoot(str(node.type))
-			self._have_root= True
+		if node is not None:
+			label = get_label_for_node(node)
+			root_item = self.AddRoot(label)
+			self._items[node] = root_item
+			self.SetPyData(root_item, node)
+			self._have_root = True
 			self._add_children(root, node)
 
 __all__ = 'TextBrowser',
