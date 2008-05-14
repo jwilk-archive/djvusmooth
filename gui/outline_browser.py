@@ -33,8 +33,8 @@ class OutlineBrowser(wx.TreeCtrl):
 
 	def __init__(self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.DefaultSize, style = wx.TR_HAS_BUTTONS | wx.TR_EDIT_LABELS):
 		wx.TreeCtrl.__init__(self, parent, id, pos, size, style)
-		self._have_root = False
 		self._items = {}
+		self._root_item = None
 		self._document = None
 		self.Bind(wx.EVT_TREE_BEGIN_LABEL_EDIT, self.on_begin_edit, self)
 		self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.on_end_edit, self)
@@ -132,6 +132,8 @@ class OutlineBrowser(wx.TreeCtrl):
 		self.document = True
 	
 	def on_node_children_change(self, node):
+		if self._root_item is None:
+			self._create_root_item()
 		try:
 			item = self._items[node]
 		except KeyError:
@@ -222,18 +224,25 @@ class OutlineBrowser(wx.TreeCtrl):
 			self._add_children(child_item, node)
 			self._items[node] = child_item
 			self.SetPyData(child_item, node)
-	
-	def _recreate_children(self):
-		self.DeleteAllItems()
-		assert not self._items
-		if self.document is None:
-			return
+
+	def _create_root_item(self):
 		node = self.document.outline.root
 		if node:
 			self._root_item = self.AddRoot(str(node.type))
 			self.SetPyData(self._root_item, node)
-			self._have_root = True
-			self._add_children(self._root_item, node)
+			return True
+		else:
+			self._root_item = None
+			return False
+
+	def _recreate_children(self):
+		self.DeleteAllItems()
+		assert not self._items
+		self._root_item = None
+		if self.document is None:
+			return
+		if self._create_root_item():
+			self._add_children(self._root_item, self.document.outline.root)
 
 __all__ = 'OutlineBrowser',
 
