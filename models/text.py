@@ -356,7 +356,10 @@ class PageText(object):
 		zone_type = djvu.const.get_text_zone_type(zone_type) # ensure it's not a plain Symbol
 		if self._root is None:
 			return
-		self._root = self._root.strip(zone_type)
+		stripped_root = self._root.strip(zone_type)
+		if not isinstance(stripped_root, Node):
+			stripped_root = None
+		self._root = stripped_root
 		self.notify_tree_change()
 
 	def clone(self):
