@@ -1,3 +1,9 @@
+djvusmooth (0.1.2) UNRELEASED; urgency=low
+
+  * Fix bookmarking current page when there are no bookmarks.
+
+ -- Jakub Wilk <ubanus@users.sf.net>  Wed, 14 May 2008 20:25:21 +0200
+
 djvusmooth (0.1.1) unstable; urgency=low
 
   * Don't require pkg-config nor develoment files of DjVuLibre.
