@@ -1,9 +1,9 @@
-djvusmooth (0.1.2) UNRELEASED; urgency=low
+djvusmooth (0.1.2) unstable; urgency=low
 
   * Fix bookmarking current page when there are no bookmarks.
   * Fix flattening text.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Wed, 14 May 2008 21:07:34 +0200
+ -- Jakub Wilk <ubanus@users.sf.net>  Tue, 20 May 2008 12:49:30 +0200
 
 djvusmooth (0.1.1) unstable; urgency=low
 
