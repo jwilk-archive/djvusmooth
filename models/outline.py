@@ -143,7 +143,7 @@ class InnerNode(Node):
 	def __init__(self, sexpr, owner):
 		Node.__init__(self, sexpr, owner)
 		sexpr = iter(sexpr)
-		self._text = sexpr.next().value
+		self._text = sexpr.next().value.decode('UTF-8', 'replace')
 		self._uri = fix_uri(sexpr.next().value)
 		self._set_children(InnerNode(subexpr, owner) for subexpr in sexpr)
 

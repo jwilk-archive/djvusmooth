@@ -229,9 +229,11 @@ class MapArea(Annotation):
 				symbol, uri, target = uri
 				if symbol is not djvu.const.MAPAREA_URI:
 					raise MapAreaSyntaxError
+				target = target.decode('UTF-8', 'replace')
 			else:
 				target = None
-			comment = sexpr.next().value
+			uri = uri.decode('UTF-8')
+			comment = sexpr.next().value.decode('UTF-8', 'replace')
 			shape = sexpr.next()
 			shape_iter = iter(shape)
 			cls = MAPAREA_SHAPE_TO_CLASS[shape_iter.next().value]

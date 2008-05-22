@@ -173,7 +173,7 @@ class LeafNode(Node):
 
 	def __init__(self, sexpr, owner):
 		Node.__init__(self, sexpr, owner)
-		self._text = sexpr[5].value.decode('UTF-8')
+		self._text = sexpr[5].value.decode('UTF-8', 'replace')
 
 	def _construct_sexpr(self):
 		x, y, w, h = self.x, self.y, self.w, self.h

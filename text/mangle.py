@@ -9,8 +9,8 @@ import djvu.const
 from text.levenshtein import distance
 
 def mangle(s, t, input):
-	s = s.decode('UTF-8')
-	t = t.decode('UTF-8')
+	s = s.decode('UTF-8', 'replace')
+	t = t.decode('UTF-8', 'replace')
 	if len(input) == 1 and isinstance(input[0], djvu.sexpr.StringExpression):
 		yield t
 		return
@@ -18,7 +18,7 @@ def mangle(s, t, input):
 	j = 0
 	current_word = ''
 	for item in input:
-		item[5] = item[5].decode('UTF-8')
+		item[5] = item[5].decode('UTF-8', 'replace')
 	for item in input:
 		item[5] = len(item[5])
 	input_iter = iter(input)
