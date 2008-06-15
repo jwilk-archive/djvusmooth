@@ -5,6 +5,8 @@ import wx
 import wx.grid
 import wx.lib.mixins.grid
 
+import djvu.sexpr
+
 LABELS = 'key value'.split()
 
 class MetadataTable(wx.grid.PyGridTableBase):
@@ -23,7 +25,7 @@ class MetadataTable(wx.grid.PyGridTableBase):
 
 	def GetAttr(self, y, x, kind):
 		key = self._keys[y]
-		attr = self._attrs[x == 0 and key in self._known_keys]
+		attr = self._attrs[x == 0 and djvu.sexpr.Symbol(key) in self._known_keys]
 		attr.IncRef()
 		return attr
 
