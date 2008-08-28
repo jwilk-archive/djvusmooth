@@ -744,7 +744,8 @@ class MainWindow(wx.Frame):
 
 	def after_external_edit_outline(self, new_repr, disabler, exception):
 		if exception is not None:
-			self.external_edit_failed(exception)
+			self.on_external_edit_failed(exception)
+			return
 		# TODO: how to check if actually something changed?
 		self.outline_model.import_plaintext(new_repr)
 
@@ -790,6 +791,7 @@ class MainWindow(wx.Frame):
 				return
 			except:
 				self.on_external_edit_failed(exception)
+				return
 		if sexpr is None:
 			# nothing changed
 			return
