@@ -1,3 +1,9 @@
+djvusmooth (0.1.4) UNRELEASED; urgency=low
+
+  * Fix some issues with external editing.
+
+ -- Jakub Wilk <ubanus@users.sf.net>  Thu, 28 Aug 2008 20:20:32 +0200
+
 djvusmooth (0.1.3) unstable; urgency=low
 
   * Don't assume UTF-8 locale and UTF-8-encoded text in DjVu files.
