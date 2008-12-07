@@ -3,11 +3,11 @@
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 
 if __name__ == '__main__':
-	import sys
-	from gui.main import Application
-	application = Application()
-	application.start(sys.argv[1:])
+    import sys
+    from gui.main import Application
+    application = Application()
+    application.start(sys.argv[1:])
 else:
-	raise ImportError('This module is not intended for import')
+    raise ImportError('This module is not intended for import')
 
-# vim:ts=4 sw=4
+# vim:ts=4 sw=4 et
