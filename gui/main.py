@@ -12,7 +12,7 @@
 
 APPLICATION_NAME = 'DjVuSmooth'
 LICENSE = 'GPL-2'
-__version__ = '0.1'
+__version__ = '0.1.4'
 __author__ = 'Jakub Wilk <ubanus@users.sf.net>'
 
 import sys
