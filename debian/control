@@ -10,4 +10,5 @@ Package: djvusmooth
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, python-djvulibre (>= 0.1.4), python-wxgtk2.6, djvulibre-bin
 Conflicts: djvulibre-bin (= 3.5.20-4)
-Description: DjVu editor
+Description: graphical editor for DjVu
+ DjVuSmooth is a graphical editor for DjVu documents
