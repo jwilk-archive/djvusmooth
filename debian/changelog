@@ -1,3 +1,10 @@
+djvusmooth (0.1.5) UNRELEASED; urgency=low
+
+  * Remember last visited directory.
+    Thanks to Mateusz Turcza for providing a patch.
+
+ -- Jakub Wilk <ubanus@users.sf.net>  Fri, 29 May 2009 16:16:16 +0200
+
 djvusmooth (0.1.4) unstable; urgency=low
 
   * Fix some issues with external editing.

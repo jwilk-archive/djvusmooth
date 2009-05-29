@@ -523,8 +523,10 @@ class MainWindow(wx.Frame):
 
     def on_open(self, event):
         dialog = OpenDialog(self)
+        dialog.SetDirectory(self._config.Read('open_dir', '') or '')
         try:
             if dialog.ShowModal() == wx.ID_OK:
+                self._config.Write('open_dir', os.path.dirname(dialog.GetPath()) or '')
                 self.do_open(dialog.GetPath())
         finally:
             dialog.Destroy()
