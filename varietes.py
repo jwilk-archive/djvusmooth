@@ -102,7 +102,7 @@ def indents_to_tree(lines):
 URI_SPECIAL_CHARACTERS = \
 (
     ':/?#[]@' +    # RFC 3986, `gen-delims`
-    "!$&()*+,;=" + # RFC 3986, `sub-delims`
+    '!$&()*+,;=' + # RFC 3986, `sub-delims`
     '%'            # RFC 3986, `pct-encoded`
 )
 
