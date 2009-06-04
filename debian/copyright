@@ -1,7 +1,7 @@
 Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?rev=48
 Name: djvusmooth
 Maintainer: Jakub Wilk <ubanus@users.sf.net>
-Source: http://jwilk.nfshost.com/djvusmooth.html
+Source: http://jwilk.nfshost.com/software/djvusmooth.html
 
 Files: *
 Copyright: 2008, 2009, Jakub Wilk <ubanus@users.sf.net>
