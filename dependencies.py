@@ -39,6 +39,12 @@ def _check_wx():
         raise ImportError('wxPython 2.6 with unicode support is required')
     wxversion.select(WX_VERSION)
 
+def _check_xdg():
+    try:
+        from xdg import BaseDirectory
+    except ImportError, ex:
+        raise ImportError('%s; perhaps pyxdg is not installed' % (ex,))
+
 try:
     _check_djvu()
 finally:
@@ -47,5 +53,9 @@ try:
     _check_wx()
 finally:
     del _check_wx
+try:
+    _check_xdg()
+finally:
+    del _check_xdg
 
 # vim:ts=4 sw=4 et

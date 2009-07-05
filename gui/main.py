@@ -47,6 +47,7 @@ import models.metadata
 import models.annotations
 import models.text
 import external_editor
+import config
 
 MENU_ICON_SIZE = (16, 16)
 DJVU_WILDCARD = 'DjVu files (*.djvu, *.djv)|*.djvu;*.djv|All files|*'
@@ -249,41 +250,41 @@ class MainWindow(wx.Frame):
     def default_xywh():
         def get(self):
             return tuple(
-                self._config.ReadInt('main_window_%s' % key, value)
+                self._config.read_int('main_window_%s' % key, value)
                 for key, value
                 in (('x', -1), ('y', -1), ('width', 640), ('height', 480))
             )
         def set(self, (x, y, w, h)):
             for key, value in dict(x=x, y=y, width=w, height=h).iteritems():
-                self._config.WriteInt('main_window_%s' % key, value)
+                self._config['main_window_%s' % key] = value
         return property(get, set)
 
     @apply
     def default_splitter_sash():
         def get(self):
-            return self._config.ReadInt('main_window_splitter_sash', 160)
+            return self._config.read_int('main_window_splitter_sash', 160)
         def set(self, value):
-            self._config.WriteInt('main_window_splitter_sash', value)
+            self._config['main_window_splitter_sash'] = value
         return property(get, set)
 
     @apply
     def default_sidebar_shown():
         def get(self):
-            return self._config.ReadBool('main_window_sidebar_shown', True)
+            return self._config.read_bool('main_window_sidebar_shown', True)
         def set(self, value):
-            self._config.WriteBool('main_window_sidebar_shown', value)
+            self._config['main_window_sidebar_shown'] = value
         return property(get, set)
 
     @apply
     def default_editor_path():
         def get(self):
-            return self._config.Read('external_editor', '') or None
+            return self._config.read('external_editor', '') or None
         def set(self, value):
-            return self._config.Write('external_editor', value or '')
+            self._config['external_editor'] = value or ''
         return property(get, set)
 
     def save_defaults(self):
-        self._config.Flush()
+        self._config.flush()
 
     def setup_external_editor(self):
         editor_path = self.default_editor_path
@@ -523,10 +524,10 @@ class MainWindow(wx.Frame):
 
     def on_open(self, event):
         dialog = OpenDialog(self)
-        dialog.SetDirectory(self._config.Read('open_dir', '') or '')
+        dialog.SetDirectory(self._config.read('open_dir', ''))
         try:
             if dialog.ShowModal() == wx.ID_OK:
-                self._config.Write('open_dir', os.path.dirname(dialog.GetPath()) or '')
+                self._config['open_dir'] = os.path.dirname(dialog.GetPath()) or ''
                 self.do_open(dialog.GetPath())
         finally:
             dialog.Destroy()
@@ -962,7 +963,7 @@ class Application(wx.App):
     def OnInit(self):
         wx.lib.ogl.OGLInitialize()
         self.SetAppName(APPLICATION_NAME)
-        self._config = wx.Config.Get()
+        self._config = config.Config('DjVuSmooth', os.path.expanduser('~/.DjVuSmooth'))
         sys.excepthook = self.except_hook
         return True
 
