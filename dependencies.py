@@ -19,17 +19,22 @@ DDJVU_API_MIN_VERSION = 26
 PYTHON_DJVULIBRE_MIN_VERSION = (0, 1, 4)
 
 def _check_djvu():
-    from djvu.decode import __version__ as djvu_decode_version
-    
+    try:
+        from djvu.decode import __version__ as djvu_decode_version
+    except ImportError, ex:
+        raise ImportError('%s; perhaps python-djvulibre is not installed' % (ex,))
     python_djvu_decode_version, ddjvu_api_version = djvu_decode_version.split('/')
     if int(ddjvu_api_version) < DDJVU_API_MIN_VERSION:
-        raise ImportError('python-djvulibre with DDJVU API >= %d is required' % DDJVU_API_MIN_VERSION)
+        raise ImportError('DjVuLibre with DDJVU API >= %d is required' % DDJVU_API_MIN_VERSION)
     python_djvu_decode_version = map(int, python_djvu_decode_version.split('.'))
     if tuple(python_djvu_decode_version) < PYTHON_DJVULIBRE_MIN_VERSION:
         raise ImportError('python-djvulibre >= %s is required' % ('.'.join(map(str, PYTHON_DJVULIBRE_MIN_VERSION))))
 
 def _check_wx():
-    import wxversion
+    try:
+        import wxversion
+    except ImportError, ex:
+        raise ImportError('%s; perhaps wxPython 2.6 is not installed' % (ex,))
     if not wxversion.checkInstalled(WX_VERSION):
         raise ImportError('wxPython 2.6 with unicode support is required')
     wxversion.select(WX_VERSION)
