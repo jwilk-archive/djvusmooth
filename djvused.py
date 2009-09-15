@@ -19,7 +19,7 @@ from djvu.sexpr import Expression, Symbol
 
 try:
     DJVULIBRE_BIN_PATH = os.path.join(pkgconfig.Package('ddjvuapi').variable('exec_prefix'), 'bin')
-except IOError:
+except (IOError, OSError):
     DJVULIBRE_BIN_PATH = None
     DJVUSED_PATH = 'djvused'
 else:
