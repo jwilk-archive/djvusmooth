@@ -1,0 +1,7 @@
+include COPYING
+include doc/changelog
+include po/*po
+include *.py
+recursive-include lib/ *.py
+include djvusmooth edit-text
+include update-i18n
