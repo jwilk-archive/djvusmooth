@@ -17,6 +17,8 @@ import models.annotations
 
 import gui.maparea_menu
 
+from i18n import _
+
 class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 
     def __init__(self, owner):
@@ -54,8 +56,8 @@ class MapAreaBrowser(
 
     def __init__(self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.DefaultSize, style = wx.LC_REPORT):
         wx.ListCtrl.__init__(self, parent, id, pos, size, style)
-        self.InsertColumn(0, 'URI')
-        self.InsertColumn(1, 'Comment')
+        self.InsertColumn(0, _('URI'))
+        self.InsertColumn(1, _('Comment'))
         self._have_items = False
         self._data = {}
         self._data_map = {}

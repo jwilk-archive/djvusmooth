@@ -16,14 +16,14 @@ import djvu.sexpr
 
 import models.text
 from varietes import replace_control_characters
+from i18n import _
 
 def get_label_for_node(node):
-    zone_type = node.type
+    zone_type = str(node.type)
     if node.is_inner():
-        return str(zone_type)
+        return _(zone_type)
     else:
-        text = replace_control_characters(' ', node.text)
-        return '%s: %s' % (zone_type, text)
+        return _(zone_type) + ': ' + replace_control_characters(' ', node.text)
 
 class PageTextCallback(models.text.PageTextCallback):
 

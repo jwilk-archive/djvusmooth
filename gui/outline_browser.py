@@ -17,6 +17,7 @@ import djvu.sexpr
 
 import models.outline
 from varietes import replace_control_characters
+from i18n import _
 
 def get_label_for_node(node):
     return replace_control_characters(' ', node.text)
@@ -237,7 +238,8 @@ class OutlineBrowser(wx.TreeCtrl):
     def _create_root_item(self):
         node = self.document.outline.root
         if node:
-            self._root_item = self.AddRoot(str(node.type))
+            type = str(node.type)
+            self._root_item = self.AddRoot(_(type))
             self.SetPyData(self._root_item, node)
             return True
         else:

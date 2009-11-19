@@ -15,29 +15,31 @@ import wx
 import djvu.sexpr
 import djvu.const
 
+from i18n import _
+
 ZONES_MAP = \
 (
-    ('all',        djvu.const.TEXT_ZONE_PAGE),
-    ('columns',    djvu.const.TEXT_ZONE_COLUMN),
-    ('regions',    djvu.const.TEXT_ZONE_REGION),
-    ('paragraphs', djvu.const.TEXT_ZONE_PARAGRAPH),
-    ('lines',      djvu.const.TEXT_ZONE_LINE),
-    ('words',      djvu.const.TEXT_ZONE_WORD),
-    ('characters', djvu.const.TEXT_ZONE_CHARACTER)
+    (_('all'),        djvu.const.TEXT_ZONE_PAGE),
+    (_('columns'),    djvu.const.TEXT_ZONE_COLUMN),
+    (_('regions'),    djvu.const.TEXT_ZONE_REGION),
+    (_('paragraphs'), djvu.const.TEXT_ZONE_PARAGRAPH),
+    (_('lines'),      djvu.const.TEXT_ZONE_LINE),
+    (_('words'),      djvu.const.TEXT_ZONE_WORD),
+    (_('characters'), djvu.const.TEXT_ZONE_CHARACTER)
 )
 
 class FlattenTextDialog(wx.Dialog):
 
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, title = 'Flatten text')
+        wx.Dialog.__init__(self, parent, title = _('Flatten text'))
         sizer = wx.BoxSizer(wx.VERTICAL)
         self._scope_box = wx.RadioBox(self,
-            label = 'Scope:',
-            choices = ('current page', 'all pages'),
+            label = _('Scope') + ':',
+            choices = (_('current page'), _('all pages')),
             style = wx.RA_HORIZONTAL
         )
         self._zone_box = wx.RadioBox(self,
-            label = 'Remove details:',
+            label = _('Remove details') + ':',
             choices = [label for label, type in ZONES_MAP],
             style = wx.RA_SPECIFY_COLS, majorDimension = 2
         )

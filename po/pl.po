@@ -1,0 +1,660 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: djvusmooth 0.1.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-11-19 21:08+0100\n"
+"PO-Revision-Date: 2009-05-31 14:45+CEST\n"
+"Last-Translator: Mateusz Turcza <mturcza@mimuw.edu.pl>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: i18n.py:26
+msgid "page"
+msgstr "strona"
+
+#: i18n.py:27
+msgid "column"
+msgstr "łam"
+
+#: i18n.py:28
+msgid "region"
+msgstr "region"
+
+#: i18n.py:29
+msgid "para"
+msgstr "akapit"
+
+#: i18n.py:30
+msgid "line"
+msgstr "linia"
+
+#: i18n.py:31
+msgid "word"
+msgstr "słowo"
+
+#: i18n.py:32
+msgid "char"
+msgstr "znak"
+
+#: i18n.py:33
+msgid "bookmarks"
+msgstr "zakładki"
+
+#: gui/maparea_menu.py:21
+msgid "&New hyperlink…"
+msgstr "&Nowe hiperłącze…"
+
+#: gui/maparea_menu.py:24
+msgid "&Properties…"
+msgstr "&Właściwości…"
+
+#: gui/maparea_menu.py:26 gui/main.py:379
+msgid "&Remove"
+msgstr "&Usuń"
+
+#: gui/flatten_text.py:22
+msgid "all"
+msgstr "wszystko"
+
+#: gui/flatten_text.py:23
+msgid "columns"
+msgstr "łamy"
+
+#: gui/flatten_text.py:24
+msgid "regions"
+msgstr "regiony"
+
+#: gui/flatten_text.py:25
+msgid "paragraphs"
+msgstr "akapity"
+
+#: gui/flatten_text.py:26
+msgid "lines"
+msgstr "linie"
+
+#: gui/flatten_text.py:27
+msgid "words"
+msgstr "słowa"
+
+#: gui/flatten_text.py:28
+msgid "characters"
+msgstr "znaki"
+
+#: gui/flatten_text.py:34
+msgid "Flatten text"
+msgstr "Spłaszcz strukturę tekstu"
+
+#: gui/flatten_text.py:37
+msgid "Scope"
+msgstr "Zakres"
+
+#: gui/flatten_text.py:38
+msgid "current page"
+msgstr "bieżąca strona"
+
+#: gui/flatten_text.py:38
+msgid "all pages"
+msgstr "wszystkie strony"
+
+#: gui/flatten_text.py:42
+msgid "Remove details"
+msgstr "Usuń szczegóły"
+
+#: gui/maparea_browser.py:59
+msgid "URI"
+msgstr "URI"
+
+#: gui/maparea_browser.py:60 gui/maparea_properties.py:77
+msgid "Comment"
+msgstr "Komentarz"
+
+#: gui/main.py:55
+msgid "DjVu files (*.djvu, *.djv)|*.djvu;*.djv|All files|*"
+msgstr "Pliki DjVu (*.djvu, *.djv)|*.djvu;*.djv|Wszystkie pliki|*"
+
+#: gui/main.py:62 gui/main.py:360
+msgid "Open a DjVu document"
+msgstr "Otwórz dokument DjVu"
+
+#: gui/main.py:180
+msgid "[Text layer]"
+msgstr "[Warstwa tekstowa]"
+
+#: gui/main.py:207 gui/main.py:227
+#, python-format
+msgid "Link: %s"
+msgstr "Łącze: %s"
+
+#: gui/main.py:316
+msgid "Outline"
+msgstr "Konspekt"
+
+#: gui/main.py:317
+msgid "Hyperlinks"
+msgstr "Hiperłącza"
+
+#: gui/main.py:318 gui/maparea_properties.py:34
+msgid "Text"
+msgstr "Tekst"
+
+#: gui/main.py:350
+msgid "&File"
+msgstr "&Plik"
+
+#: gui/main.py:351
+msgid "&Edit"
+msgstr "&Edycja"
+
+#: gui/main.py:352
+msgid "&View"
+msgstr "&Widok"
+
+#: gui/main.py:353
+msgid "&Go"
+msgstr "&Idź"
+
+#: gui/main.py:354
+msgid "&Settings"
+msgstr "&Ustawienia"
+
+#: gui/main.py:355
+msgid "&Help"
+msgstr "Pomo&c"
+
+#: gui/main.py:360
+msgid "&Open"
+msgstr "&Otwórz"
+
+#: gui/main.py:361
+msgid "&Save"
+msgstr "Za&pisz"
+
+#: gui/main.py:361
+msgid "Save the document"
+msgstr "Zapisz dokument"
+
+#: gui/main.py:362
+msgid "&Close"
+msgstr "&Zamknij"
+
+#: gui/main.py:362
+msgid "Close the document"
+msgstr "Zamknij dokument"
+
+#: gui/main.py:366
+msgid "&Quit"
+msgstr "Za&kończ"
+
+#: gui/main.py:366
+msgid "Quit the application"
+msgstr "Zamknij aplikację"
+
+#: gui/main.py:371
+msgid "&Metadata"
+msgstr "&Metadane"
+
+#: gui/main.py:371
+msgid "Edit the document or page metadata"
+msgstr "Edytuj metadane dokumentu lub strony"
+
+#: gui/main.py:373 gui/main.py:378
+msgid "&External editor"
+msgstr "&Zewnętrzny edytor"
+
+#: gui/main.py:373
+msgid "Edit page text in an external editor"
+msgstr "Edytuj tekst strony w zewnętrznym edytorze"
+
+#: gui/main.py:374
+msgid "&Flatten"
+msgstr "&Spłaszcz strukturę tekstu"
+
+#: gui/main.py:374
+msgid "Remove details from page text"
+msgstr "Usuń szczegóły z tekstu"
+
+#: gui/main.py:375 gui/main.py:432
+msgid "&Text"
+msgstr "&Tekst"
+
+#: gui/main.py:377
+msgid "&Bookmark this page"
+msgstr "Dodaj stronę do z&akładek"
+
+#: gui/main.py:377
+msgid "Add the current to document outline"
+msgstr "Dodaj do konspektu dokumentu"
+
+#: gui/main.py:378
+msgid "Edit document outline in an external editor"
+msgstr "Edytuj konspekt dokumentu w zewnętrznym edytorze"
+
+#: gui/main.py:379
+msgid "Remove document outline"
+msgstr "Usuń konspekt dokumentu"
+
+#: gui/main.py:380
+msgid "&Outline"
+msgstr "&Konspekt"
+
+#: gui/main.py:388
+msgid "Zoom &in"
+msgstr "Pow&iększ"
+
+#: gui/main.py:388
+msgid "Increase the magnification"
+msgstr "Zwiększ powiększenie"
+
+#: gui/main.py:389
+msgid "Zoom &out"
+msgstr "P&omniejsz"
+
+#: gui/main.py:389
+msgid "Decrease the magnification"
+msgstr "Zmniejsz powiększenie"
+
+#: gui/main.py:395
+msgid "Fit &width"
+msgstr "Dopasuj &szerokość"
+
+#: gui/main.py:395
+msgid "Set magnification to fit page width"
+msgstr "Dopasuj powiększenie do całej szerokości strony"
+
+#: gui/main.py:396
+msgid "Fit &page"
+msgstr "D&opasuj do okna"
+
+#: gui/main.py:396
+msgid "Set magnification to fit page"
+msgstr "Dopasuj powiększenie do całej strony"
+
+#: gui/main.py:397
+msgid "&Stretch"
+msgstr "&Rozciągnij"
+
+#: gui/main.py:397
+msgid "Stretch the image to the window size"
+msgstr "Rozciągnij obraz do rozmiarów okna"
+
+#: gui/main.py:398
+msgid "One &to one"
+msgstr "&Jeden do jednego"
+
+#: gui/main.py:398
+msgid "Set full resolution magnification."
+msgstr "Dopasuj powiększenie do pełnej rozdzielczości."
+
+#: gui/main.py:407
+#, python-format
+msgid "Magnify %d%%"
+msgstr "Powiększ do %d%%"
+
+#: gui/main.py:414
+msgid "&Zoom"
+msgstr "&Powiększenie"
+
+#: gui/main.py:418
+msgid "&Color"
+msgstr "&Kolor"
+
+#: gui/main.py:418
+msgid "Display everything"
+msgstr "Pokaż wszystko"
+
+#: gui/main.py:419
+msgid "&Stencil"
+msgstr "&Szablon"
+
+#: gui/main.py:419
+msgid "Display only the document bitonal stencil"
+msgstr "Pokaż tylko dwubarwny szablon dokumentu"
+
+#: gui/main.py:420
+msgid "&Foreground"
+msgstr "&Pierwszy plan"
+
+#: gui/main.py:420
+msgid "Display only the foreground layer"
+msgstr "Pokaż tylko pierwszy plan"
+
+#: gui/main.py:421
+msgid "&Background"
+msgstr "&Tło"
+
+#: gui/main.py:421
+msgid "Display only the background layer"
+msgstr "Pokaż tylko tło"
+
+#: gui/main.py:422 gui/main.py:430
+msgid "&None"
+msgstr "&Brak"
+
+#: gui/main.py:422
+msgid "Neither display the foreground layer nor the background layer"
+msgstr "Nie pokazuj pierwszego planu ani tła"
+
+#: gui/main.py:425
+msgid "&Image"
+msgstr "O&braz"
+
+#: gui/main.py:430
+msgid "Don't display non-raster data"
+msgstr "Nie pokazuj danych nierastrowych"
+
+#: gui/main.py:431
+msgid "&Hyperlinks"
+msgstr "&Hiperłącza"
+
+#: gui/main.py:431
+msgid "Display overprinted annotations"
+msgstr "Pokazuj obwódki wokół hiperłącz"
+
+#: gui/main.py:432
+msgid "Display the text layer"
+msgstr "Pokaż warstwę tekstową"
+
+#: gui/main.py:438
+msgid "&Non-raster data"
+msgstr "Dane &nierastrowe"
+
+#: gui/main.py:439
+msgid "&Refresh"
+msgstr "&Odśwież"
+
+#: gui/main.py:439
+msgid "Refresh the window"
+msgstr "Odśwież okno"
+
+#: gui/main.py:446
+msgid "&First page"
+msgstr "Pi&erwsza strona"
+
+#: gui/main.py:446
+msgid "Jump to first document page"
+msgstr "Przejdź do pierwszej strony dokumentu"
+
+#: gui/main.py:447
+msgid "&Previous page"
+msgstr "&Poprzednia strona"
+
+#: gui/main.py:447
+msgid "Jump to previous document page"
+msgstr "Przejdź do poprzedniej strony dokumentu"
+
+#: gui/main.py:448
+msgid "&Next page"
+msgstr "&Następna strona"
+
+#: gui/main.py:448
+msgid "Jump to next document page"
+msgstr "Przejdź do następnej strony dokumentu"
+
+#: gui/main.py:449
+msgid "&Last page"
+msgstr "&Ostatnia strona"
+
+#: gui/main.py:449
+msgid "Jump to last document page"
+msgstr "Przejdź do ostatniej strony dokumentu"
+
+#: gui/main.py:450
+msgid "&Go to page…"
+msgstr "I&dź do strony…"
+
+#: gui/main.py:450
+msgid "Jump to page…"
+msgstr "Przejdź do strony…"
+
+#: gui/main.py:457
+msgid "Show &sidebar"
+msgstr "Pokaż panel &boczny"
+
+#: gui/main.py:457
+msgid "Show/hide the sidebar"
+msgstr "Pokaż/ukryj panel boczny"
+
+#: gui/main.py:460
+msgid "External editor…"
+msgstr "Zewnętrzny edytor…"
+
+#: gui/main.py:460 gui/main.py:470
+msgid "Setup an external editor"
+msgstr "Ustawienia zewnętrznego edytora"
+
+#: gui/main.py:465
+msgid "&About"
+msgstr "&O programie"
+
+#: gui/main.py:465
+msgid "More information about this program"
+msgstr "Więcej informacji o tym programie"
+
+#: gui/main.py:471
+msgid "Enter path to your favourite text editor."
+msgstr "Podaj ścieżkę do edytora tekstowego."
+
+#: gui/main.py:517
+msgid "Error"
+msgstr "Błąd"
+
+#: gui/main.py:545
+#, python-format
+msgid ""
+"Saving document failed:\n"
+"%s"
+msgstr ""
+"Zapisanie dokumentu nie powiodło się:\n"
+"%s"
+
+#: gui/main.py:573
+msgid "Saving document"
+msgstr "Zapisywanie dokumentu"
+
+#: gui/main.py:574
+msgid "Saving the document, please wait…"
+msgstr "Zapisywanie dokumentu, proszę czekać…"
+
+#: gui/main.py:659
+#, python-format
+msgid "Page %(pageno)d of %(npages)d"
+msgstr "Strona %(pageno)d z %(npages)d"
+
+#: gui/main.py:678 gui/main.py:680
+msgid "Go to page"
+msgstr "Idź do strony"
+
+#: gui/main.py:694
+msgid "Document metadata"
+msgstr "Metadane dokumentu"
+
+#: gui/main.py:696
+#, python-format
+msgid "Page %d metadata"
+msgstr "Metadane strony %d"
+
+#: gui/main.py:726
+msgid "(no title)"
+msgstr "(brak tytułu)"
+
+#: gui/main.py:758
+#, python-format
+msgid ""
+"External edit failed:\n"
+"%s"
+msgstr ""
+"Zewnętrzna edycja nie powiodła się:\n"
+"%s"
+
+#: gui/main.py:770
+msgid "No text layer to edit."
+msgstr "Brak warstwy tekstowej do edycji."
+
+#: gui/main.py:802
+msgid "Cannot edit text with character zones."
+msgstr "Nie można edytować tekstu ze strefami znakowymi."
+
+#: gui/main.py:805
+msgid "Number of lines changed."
+msgstr "Liczba linii uległa zmianie."
+
+#: gui/main.py:846
+msgid "Do you want to save your changes?"
+msgstr "Czy chcesz zapisać zmiany?"
+
+#: gui/main.py:917
+msgid "Author"
+msgstr "Autor"
+
+#: gui/main.py:917
+msgid "License"
+msgstr "Licencja"
+
+#: gui/main.py:919
+msgid "About…"
+msgstr "O programie…"
+
+#: gui/main.py:959
+msgid ""
+"An unhandled exception occurred. Ideally, this should not happen. Please "
+"report the bug to the author.\n"
+"\n"
+msgstr ""
+"Wystąpił nieoczekiwany błąd. Jeśli ta sytuacja się powtórzy, powiadom autora "
+"programu.\n"
+"\n"
+
+#: gui/main.py:961
+#, python-format
+msgid "Unhandled exception: %s"
+msgstr "Nieobsłużony wyjątek: %s"
+
+#: gui/maparea_properties.py:35
+msgid "Line"
+msgstr "Linia"
+
+#: gui/maparea_properties.py:36
+msgid "Rectangle"
+msgstr "Prostokąt"
+
+#: gui/maparea_properties.py:39
+msgid "Oval"
+msgstr "Elipsa"
+
+#: gui/maparea_properties.py:40
+msgid "Polygon"
+msgstr "Wielokąt"
+
+#: gui/maparea_properties.py:46
+msgid "Shadow in"
+msgstr "Cień wewnątrz"
+
+#: gui/maparea_properties.py:47
+msgid "Shadow out"
+msgstr "Cień na zewnątrz"
+
+#: gui/maparea_properties.py:48
+msgid "Etched in"
+msgstr "Wklęsły"
+
+#: gui/maparea_properties.py:49
+msgid "Etched out"
+msgstr "Wypukły"
+
+#: gui/maparea_properties.py:62
+msgid "Main properties"
+msgstr "Właściwości"
+
+#: gui/maparea_properties.py:69
+msgid "Target frame"
+msgstr "Ramka docelowa"
+
+#: gui/maparea_properties.py:91
+msgid "Shape"
+msgstr "Kształt"
+
+#: gui/maparea_properties.py:146
+msgid "Border"
+msgstr "Obramowanie"
+
+#: gui/maparea_properties.py:150
+msgid "Thickness"
+msgstr "Grubość"
+
+#: gui/maparea_properties.py:156
+msgid "None"
+msgstr "Brak"
+
+#: gui/maparea_properties.py:157
+msgid "XOR"
+msgstr "XOR"
+
+#: gui/maparea_properties.py:160
+msgid "Solid color"
+msgstr "Jednolity kolor"
+
+#: gui/maparea_properties.py:190
+msgid "Always visible"
+msgstr "Zawsze widoczny"
+
+#: gui/maparea_properties.py:211
+msgid "Highlight color and opacity"
+msgstr "Kolor i przezroczystość podświetlenia"
+
+#: gui/maparea_properties.py:211
+msgid "Line-specific properties"
+msgstr "Właściwości linii"
+
+#: gui/maparea_properties.py:211
+msgid "Text-specific properties"
+msgstr "Właściwości tekstu"
+
+#: gui/maparea_properties.py:224
+msgid "Highlight color"
+msgstr "Kolor podświetlenia"
+
+#: gui/maparea_properties.py:231
+msgid "Opacity"
+msgstr "Przezroczystość"
+
+#: gui/maparea_properties.py:248
+msgid "Line width"
+msgstr "Szerokość linii"
+
+#: gui/maparea_properties.py:252
+msgid "Line color"
+msgstr "Kolor linii"
+
+#: gui/maparea_properties.py:254
+msgid "Arrow"
+msgstr "Strzałka"
+
+#: gui/maparea_properties.py:264
+msgid "Background color"
+msgstr "Kolor tła"
+
+#: gui/maparea_properties.py:271
+msgid "Text color"
+msgstr "Kolor tekstu"
+
+#: gui/maparea_properties.py:273
+msgid "Pushpin"
+msgstr "Pinezka"
+
+#: gui/maparea_properties.py:301
+msgid "Overprinted annotation (hyperlink) properties"
+msgstr "Właściwości adnotacji (hiperłącza)"
+
+#: gui/metadata.py:21
+msgid "key"
+msgstr "klucz"
+
+#: gui/metadata.py:21
+msgid "value"
+msgstr "wartość"
+
+#: gui/metadata.py:116
+msgid "Edit metadata"
+msgstr "Edytuj metadane"

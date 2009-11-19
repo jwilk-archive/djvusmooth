@@ -1,0 +1,36 @@
+#!/usr/bin/make -f
+
+# Copyright © 2009 Jakub Wilk
+#
+# This package is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; version 2 dated June, 1991.
+
+PROJECT_NAME = $(shell head -n1 doc/changelog | cut -d' ' -f1)
+PROJECT_VERSION = $(shell head -n1 doc/changelog | sed -n -e 's/.*(\([0-9.]\+\)).*/\1/ p')
+
+PO_FILES = $(wildcard po/*.po)
+MO_FILES = $(patsubst po/%.po,locale/%/LC_MESSAGES/$(PROJECT_NAME).mo,$(PO_FILES))
+SOURCE_FILES = $(shell find -name '*.py')
+
+XGETTEXT_OPTIONS = \
+	--language=python \
+	--keyword=_ --keyword=N_ \
+	--package-name=$(PROJECT_NAME) \
+	--package-version=$(PROJECT_VERSION)
+
+.PHONY: all
+
+all: po/$(PROJECT_NAME).pot $(PO_FILES) $(MO_FILES)
+
+po/$(PROJECT_NAME).pot: $(SOURCE_FILES)
+	xgettext $(XGETTEXT_OPTIONS) $(SOURCE_FILES) -o $(@)
+
+%.po: po/$(PROJECT_NAME).pot
+	msgmerge -o $(@) $(@) $(<)
+
+locale/%/LC_MESSAGES/$(PROJECT_NAME).mo: po/%.po
+	mkdir -p $(dir $(@))
+	msgfmt -o $(@) -c $(<)
+
+# vim:ts=4 sw=4 noet

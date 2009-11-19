@@ -17,6 +17,7 @@ import djvu.const
 
 import models.annotations
 from varietes import idict
+from i18n import _
 
 # See:
 # <http://www.w3.org/TR/html4/present/frames.html#target-info>,
@@ -30,22 +31,22 @@ class Shape(idict):
         kwargs.setdefault('enabled', True)
         idict.__init__(self, **kwargs)
 
-SHAPE_TEXT = Shape(label = 'Text', model_class = models.annotations.TextMapArea)
-SHAPE_LINE = Shape(label = 'Line', model_class = models.annotations.LineMapArea, enabled=False)
-SHAPE_RECTANGLE = Shape(label = 'Rectangle', model_class = models.annotations.RectangleMapArea)
+SHAPE_TEXT = Shape(label = _('Text'), model_class = models.annotations.TextMapArea)
+SHAPE_LINE = Shape(label = _('Line'), model_class = models.annotations.LineMapArea, enabled=False)
+SHAPE_RECTANGLE = Shape(label = _('Rectangle'), model_class = models.annotations.RectangleMapArea)
 SHAPES = (
     SHAPE_RECTANGLE,
-    Shape(label = 'Oval', model_class = models.annotations.OvalMapArea),
-    Shape(label = 'Polygon', model_class = models.annotations.PolygonMapArea, enabled=False),
+    Shape(label = _('Oval'), model_class = models.annotations.OvalMapArea),
+    Shape(label = _('Polygon'), model_class = models.annotations.PolygonMapArea, enabled=False),
     SHAPE_LINE,
     SHAPE_TEXT,
 )
 
 SHADOW_BORDERS = (
-    idict(model_class = models.annotations.BorderShadowIn,  label = 'Shadow in'),
-    idict(model_class = models.annotations.BorderShadowOut, label = 'Shadow out'),
-    idict(model_class = models.annotations.BorderEtchedIn,  label = 'Etched in'),
-    idict(model_class = models.annotations.BorderEtchedOut, label = 'Etched out')
+    idict(model_class = models.annotations.BorderShadowIn,  label = _('Shadow in')),
+    idict(model_class = models.annotations.BorderShadowOut, label = _('Shadow out')),
+    idict(model_class = models.annotations.BorderEtchedIn,  label = _('Etched in')),
+    idict(model_class = models.annotations.BorderEtchedOut, label = _('Etched out'))
 )
 
 def color_as_html(color):
@@ -58,14 +59,14 @@ class MapareaPropertiesDialog(wx.Dialog):
 
     def _setup_main_properties_box(self):
         node = self._node
-        box = wx.StaticBox(self, label = 'Main properties')
+        box = wx.StaticBox(self, label = _('Main properties'))
         box_sizer = wx.StaticBoxSizer(box)
         grid_sizer = wx.FlexGridSizer(0, 2, 5, 5)
         uri_label = wx.StaticText(self, label = 'URI: ')
         uri_edit = wx.TextCtrl(self, size = (self.DEFAULT_TEXT_WIDTH, -1))
         if node is not None:
             uri_edit.SetValue(self._node.uri)
-        target_label = wx.StaticText(self, label = 'Target frame: ')
+        target_label = wx.StaticText(self, label = _('Target frame') + ': ')
         target_edit = wx.ComboBox(self,
             size = (self.DEFAULT_TEXT_WIDTH, -1),
             style = wx.CB_DROPDOWN,
@@ -73,7 +74,7 @@ class MapareaPropertiesDialog(wx.Dialog):
         )
         if node is not None:
             target_edit.SetValue(self._node.target or '')
-        comment_label = wx.StaticText(self, label = 'Comment: ')
+        comment_label = wx.StaticText(self, label = _('Comment') + ': ')
         comment_edit = wx.TextCtrl(self, size = (self.DEFAULT_TEXT_WIDTH, -1))
         if node is not None:
             comment_edit.SetValue(self._node.comment)
@@ -87,7 +88,7 @@ class MapareaPropertiesDialog(wx.Dialog):
 
     def _setup_shape_box(self):
         box = wx.RadioBox(self,
-            label = 'Shape',
+            label = _('Shape'),
             choices = [shape.label for shape in SHAPES]
         )
         for i, shape in enumerate(SHAPES):
@@ -142,21 +143,21 @@ class MapareaPropertiesDialog(wx.Dialog):
             border = node.border
         except AttributeError:
             border = None
-        box = wx.StaticBox(self, label = 'Border')
+        box = wx.StaticBox(self, label = _('Border'))
         box_sizer = wx.StaticBoxSizer(box, orient = wx.VERTICAL)
         box_grid_sizer = wx.FlexGridSizer(0, 3, 5, 10)
         border_thickness_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        border_thickness_label = wx.StaticText(self, label = 'Thickness: ')
+        border_thickness_label = wx.StaticText(self, label = _('Thickness') + ': ')
         border_thickness_edit = wx.SpinCtrl(self, size = (self.DEFAULT_SPIN_WIDTH, -1))
         border_thickness_edit.SetRange(djvu.const.MAPAREA_SHADOW_BORDER_MIN_WIDTH, djvu.const.MAPAREA_SHADOW_BORDER_MAX_WIDTH)
         border_thickness_edit.SetValue(djvu.const.MAPAREA_SHADOW_BORDER_MIN_WIDTH)
         border_thickness_sizer.Add(border_thickness_label, 0, wx.ALIGN_CENTER_VERTICAL)
         border_thickness_sizer.Add(border_thickness_edit, 0, wx.ALIGN_CENTER_VERTICAL)
-        radio_none = wx.RadioButton(self, label = 'None')
-        radio_xor = wx.RadioButton(self, label = 'XOR')
+        radio_none = wx.RadioButton(self, label = _('None'))
+        radio_xor = wx.RadioButton(self, label = _('XOR'))
         if isinstance(border, models.annotations.XorBorder):
             radio_xor.SetValue(True)
-        radio_solid = wx.RadioButton(self, label = 'Solid color: ')
+        radio_solid = wx.RadioButton(self, label = _('Solid color') + ': ')
         solid_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY)
         if isinstance(border, models.annotations.SolidBorder):
             radio_solid.SetValue(True)
@@ -186,7 +187,7 @@ class MapareaPropertiesDialog(wx.Dialog):
         for widget in radio_none, radio_xor:
             self.Bind(wx.EVT_RADIOBUTTON, self.on_select_nonshadow_border, widget)
         self.Bind(wx.EVT_RADIOBUTTON, self.on_select_solid_border, radio_solid)
-        avis_checkbox = wx.CheckBox(self, label = 'Always visible') # TODO: hide it for irrelevant shapes, i.e. `line` and maybe `text`
+        avis_checkbox = wx.CheckBox(self, label = _('Always visible')) # TODO: hide it for irrelevant shapes, i.e. `line` and maybe `text`
         if node is not None and node.border_always_visible is True:
             avis_checkbox.SetValue(True)
         box_sizer.Add(box_grid_sizer, 0, wx.EXPAND | wx.ALL, 5)
@@ -207,7 +208,7 @@ class MapareaPropertiesDialog(wx.Dialog):
         extra_boxes = \
         [
             wx.StaticBox(self, label = label)
-            for label in ('Highlight color and opacity', 'Line-specific properties', 'Text-specific properties')
+            for label in (_('Highlight color and opacity'), _('Line-specific properties'), _('Text-specific properties'))
         ]
         extra_sizers = map(wx.StaticBoxSizer, extra_boxes)
         highlight_specific_sizer, line_specific_sizer, text_specific_sizer = extra_sizers
@@ -220,14 +221,14 @@ class MapareaPropertiesDialog(wx.Dialog):
         for extra_sizer, extra_grid_sizer in zip(extra_sizers, extra_grid_sizers):
             extra_sizer.Add(extra_grid_sizer, 0, wx.EXPAND | wx.ALL, 5)
         highlight_specific_sizer, line_specific_sizer, text_specific_sizer = extra_grid_sizers
-        highlight_color_label = wx.CheckBox(self, label = 'Highlight color: ')
+        highlight_color_label = wx.CheckBox(self, label = _('Highlight color') + ': ')
         highlight_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY)
         highlight_color_selector.SetColour(wx.BLUE)
         highlight_color_selector.Enable(False)
         def on_switch_highlight_color(event):
             highlight_color_selector.Enable(event.IsChecked())
         self.Bind(wx.EVT_CHECKBOX, on_switch_highlight_color, highlight_color_label)
-        opacity_label = wx.StaticText(self, label = 'Opacity: ')
+        opacity_label = wx.StaticText(self, label = _('Opacity') + ': ')
         opacity_slider = wx.Slider(self,
             value = djvu.const.MAPAREA_OPACITY_DEFAULT,
             size = (self.DEFAULT_TEXT_WIDTH, -1),
@@ -244,13 +245,13 @@ class MapareaPropertiesDialog(wx.Dialog):
                 highlight_color_selector.Enable(True)
                 highlight_color_selector.SetColour(node.highlight_color)
             opacity_slider.SetValue(node.opacity)
-        line_width_label = wx.StaticText(self, label = 'Line width: ')
+        line_width_label = wx.StaticText(self, label = _('Line width') + ': ')
         line_width_edit = wx.SpinCtrl(self, size = (self.DEFAULT_SPIN_WIDTH, -1))
         line_width_edit.SetRange(djvu.const.MAPAREA_LINE_MIN_WIDTH, 99)
         line_width_edit.SetValue(djvu.const.MAPAREA_LINE_MIN_WIDTH)
-        line_color_label = wx.StaticText(self, label = 'Line color: ')
+        line_color_label = wx.StaticText(self, label = _('Line color') + ': ')
         line_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY)
-        line_arrow_checkbox = wx.CheckBox(self, label = 'Arrow')
+        line_arrow_checkbox = wx.CheckBox(self, label = _('Arrow'))
         dummy = (0, 0)
         for widget in line_arrow_checkbox, dummy, line_width_label, line_width_edit, line_color_label, line_color_selector:
             line_specific_sizer.Add(widget, 0, wx.ALIGN_CENTER_VERTICAL)
@@ -260,16 +261,16 @@ class MapareaPropertiesDialog(wx.Dialog):
             line_arrow_checkbox.SetValue(node.line_arrow)
         else:
             line_color_selector.SetColour(djvu.const.MAPAREA_LINE_COLOR_DEFAULT)
-        text_background_color_label = wx.CheckBox(self, label = 'Background color: ')
+        text_background_color_label = wx.CheckBox(self, label = _('Background color') + ': ')
         text_background_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY)
         text_background_color_selector.SetColour(wx.WHITE)
         text_background_color_selector.Enable(False)
         def on_switch_text_background_color(event):
             text_background_color_selector.Enable(event.IsChecked())
         self.Bind(wx.EVT_CHECKBOX, on_switch_text_background_color, text_background_color_label)
-        text_color_label = wx.StaticText(self, label = 'Text color: ')
+        text_color_label = wx.StaticText(self, label = _('Text color') + ': ')
         text_color_selector = wx.lib.colourselect.ColourSelect(self, wx.ID_ANY)
-        text_pushpin = wx.CheckBox(self, label = 'Pushpin')
+        text_pushpin = wx.CheckBox(self, label = _('Pushpin'))
         for widget in text_background_color_label, text_background_color_selector, text_color_label, text_color_selector, text_pushpin:
             text_specific_sizer.Add(widget, 0, wx.ALIGN_CENTER_VERTICAL)
         if isinstance(node, models.annotations.TextMapArea):
@@ -297,7 +298,7 @@ class MapareaPropertiesDialog(wx.Dialog):
         return extra_sizers
 
     def __init__(self, parent, node=None, origin=None):
-        wx.Dialog.__init__(self, parent, title = 'Overprinted annotation (hyperlink) properties')
+        wx.Dialog.__init__(self, parent, title = _('Overprinted annotation (hyperlink) properties'))
         self._node = node
         if origin is None:
             self._origin = None

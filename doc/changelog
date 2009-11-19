@@ -3,8 +3,10 @@ djvusmooth (0.1.5) UNRELEASED; urgency=low
   * Remember last visited directory.
     Thanks to Mateusz Turcza for providing a patch.
   * Follow the XDG Base Directory Specification.
+  * Add Polish translation of the manual page.
+    Thanks to Mateusz Turcza for providing a patch.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Sun, 05 Jul 2009 15:50:51 +0200
+ -- Jakub Wilk <ubanus@users.sf.net>  Thu, 19 Nov 2009 21:09:45 +0100
 
 djvusmooth (0.1.4) unstable; urgency=low
 

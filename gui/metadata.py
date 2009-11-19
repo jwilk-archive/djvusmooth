@@ -16,7 +16,9 @@ import wx.lib.mixins.grid
 
 import djvu.sexpr
 
-LABELS = 'key value'.split()
+from i18n import _
+
+LABELS = [_('key'), _('value')]
 
 class MetadataTable(wx.grid.PyGridTableBase):
     def __init__(self, model, known_keys):
@@ -111,7 +113,7 @@ class MetadataGrid(wx.grid.Grid, wx.lib.mixins.grid.GridAutoEditMixin):
 class MetadataDialog(wx.Dialog):
 
     def __init__(self, parent, models, known_keys):
-        wx.Dialog.__init__(self, parent, title='Edit metadata', style = wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
+        wx.Dialog.__init__(self, parent, title=_('Edit metadata'), style = wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
         sizer = wx.BoxSizer(wx.VERTICAL)
         tabs = wx.Notebook(self, -1)
         for model in models:
