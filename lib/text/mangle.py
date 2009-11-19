@@ -15,7 +15,7 @@ import itertools
 import djvu.sexpr
 import djvu.const
 
-from text.levenshtein import distance
+from djvusmooth.text.levenshtein import distance
 
 def mangle(s, t, input):
     s = s.decode('UTF-8', 'replace')

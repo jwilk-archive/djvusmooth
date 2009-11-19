@@ -13,11 +13,11 @@
 import wx
 import wx.lib.mixins.listctrl
 
-import models.annotations
-
-import gui.maparea_menu
-
-from i18n import _
+import djvusmooth.models.annotations
+from djvusmooth import models
+import djvusmooth.gui.maparea_menu
+from djvusmooth import gui
+from djvusmooth.i18n import _
 
 class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 

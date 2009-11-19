@@ -19,7 +19,7 @@ See ``djvuchanges.txt``:
 - 5. Document Annotations and Metadata.
 '''
 
-from models import MultiPageModel, SHARED_ANNOTATIONS_PAGENO
+from djvusmooth.models import MultiPageModel, SHARED_ANNOTATIONS_PAGENO
 
 class Metadata(MultiPageModel):
 

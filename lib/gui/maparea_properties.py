@@ -15,9 +15,10 @@ import wx.lib.colourselect
 
 import djvu.const
 
-import models.annotations
-from varietes import idict
-from i18n import _
+import djvusmooth.models.annotations
+from djvusmooth import models
+from djvusmooth.varietes import idict
+from djvusmooth.i18n import _
 
 # See:
 # <http://www.w3.org/TR/html4/present/frames.html#target-info>,

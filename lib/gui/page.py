@@ -18,12 +18,12 @@ from math import floor
 from djvu import decode, sexpr
 import djvu.const
 
-import gui.maparea_menu
-
-import models.text
-import models.annotations
-
-from varietes import not_overridden
+import djvusmooth.gui.maparea_menu
+from djvusmooth import gui
+import djvusmooth.models.text
+import djvusmooth.models.annotations
+from djvusmooth import models
+from djvusmooth.varietes import not_overridden
 
 PIXEL_FORMAT = decode.PixelFormatRgb()
 PIXEL_FORMAT.rows_top_to_bottom = 1

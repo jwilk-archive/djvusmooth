@@ -14,9 +14,10 @@ import wx
 
 import djvu.sexpr
 
-import models.text
-from varietes import replace_control_characters
-from i18n import _
+import djvusmooth.models.text
+from djvusmooth import models
+from djvusmooth.varietes import replace_control_characters
+from djvusmooth.i18n import _
 
 def get_label_for_node(node):
     zone_type = str(node.type)

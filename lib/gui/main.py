@@ -22,7 +22,7 @@ import threading
 import tempfile
 from Queue import Queue, Empty as QueueEmpty
 
-import dependencies as __dependencies
+import djvusmooth.dependencies as __dependencies
 
 import wx
 import wx.lib.ogl
@@ -32,24 +32,24 @@ import wx.lib.scrolledpanel
 import djvu.decode
 import djvu.const
 
-from djvused import StreamEditor
-from gui.page import PageWidget, PercentZoom, OneToOneZoom, StretchZoom, FitWidthZoom, FitPageZoom
-from gui.page import RENDER_NONRASTER_TEXT, RENDER_NONRASTER_MAPAREA
-from gui.metadata import MetadataDialog
-from gui.flatten_text import FlattenTextDialog
-from gui.text_browser import TextBrowser
-from gui.outline_browser import OutlineBrowser
-from gui.maparea_browser import MapAreaBrowser
-import text.mangle as text_mangle
-import gui.dialogs
-import models
-import models.metadata
-import models.annotations
-import models.text
-import external_editor
-import config
+from djvusmooth.djvused import StreamEditor
+from djvusmooth.gui.page import PageWidget, PercentZoom, OneToOneZoom, StretchZoom, FitWidthZoom, FitPageZoom
+from djvusmooth.gui.page import RENDER_NONRASTER_TEXT, RENDER_NONRASTER_MAPAREA
+from djvusmooth.gui.metadata import MetadataDialog
+from djvusmooth.gui.flatten_text import FlattenTextDialog
+from djvusmooth.gui.text_browser import TextBrowser
+from djvusmooth.gui.outline_browser import OutlineBrowser
+from djvusmooth.gui.maparea_browser import MapAreaBrowser
+from djvusmooth.gui import dialogs
+from djvusmooth.text import mangle as text_mangle
+import djvusmooth.models.metadata
+import djvusmooth.models.annotations
+import djvusmooth.models.text
+from djvusmooth import models
+from djvusmooth import external_editor
+from djvusmooth import config
 
-from i18n import _
+from djvusmooth.i18n import _
 
 MENU_ICON_SIZE = (16, 16)
 DJVU_WILDCARD = _('DjVu files (*.djvu, *.djv)|*.djvu;*.djv|All files|*')

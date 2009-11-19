@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # encoding=UTF-8
 # Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
 #
@@ -11,18 +10,25 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 # General Public License for more details.
 
-if __name__ != '__main__':
-    raise ImportError('This module is not intended for import')
-
 import sys
+import imp
 
-try:
-    import djvusmooth_importer
-except ImportError:
-    pass
+class Loader(object):
 
-from djvusmooth.gui.main import Application
-application = Application()
-application.start(sys.argv[1:])
+    def __init__(self, *args):
+        self.args = args
+
+    def load_module(self, fullname):
+        return imp.load_module(fullname, *self.args)
+
+class Importer(object):
+
+    def find_module(self, fullname, path=None):
+        if fullname != 'djvusmooth':
+            return
+        args = imp.find_module('lib', path)
+        return Loader(*args)
+
+sys.meta_path = [Importer()]
 
 # vim:ts=4 sw=4 et

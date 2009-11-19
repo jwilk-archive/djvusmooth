@@ -15,7 +15,7 @@ import wx
 import djvu.sexpr
 import djvu.const
 
-from i18n import _
+from djvusmooth.i18n import _
 
 ZONES_MAP = \
 (

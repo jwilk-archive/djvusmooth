@@ -11,12 +11,20 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 # General Public License for more details.
 
+if __name__ != '__main__':
+    raise ImportError('This module is not intended for import')
+
 import sys
 
 import djvu.decode
 import djvu.sexpr
 
-from text.mangle import import_, export
+try:
+    import djvusmooth_importer
+except ImportError:
+    pass
+
+from djvusmooth.text.mangle import import_, export
 
 def do_export(djvu_file_name, page_no):
     context = djvu.decode.Context()
@@ -44,6 +52,7 @@ def main():
     if options.page_no is None:
         oparser.error('No page specified')
     options.action(djvu_file_name, options.page_no - 1)
+
 
 if __name__ == '__main__':
     main()

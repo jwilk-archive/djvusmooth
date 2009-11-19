@@ -25,8 +25,8 @@ import itertools
 import djvu.decode
 import djvu.sexpr
 
-from varietes import not_overridden, wref
-from models import MultiPageModel
+from djvusmooth.varietes import not_overridden, wref
+from djvusmooth.models import MultiPageModel
 
 class Node(object):
 

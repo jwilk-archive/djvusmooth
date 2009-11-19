@@ -25,8 +25,8 @@ import djvu.const
 import djvu.sexpr
 import djvu.decode
 
-from models import MultiPageModel, SHARED_ANNOTATIONS_PAGENO
-from varietes import not_overridden, is_html_color
+from djvusmooth.models import MultiPageModel, SHARED_ANNOTATIONS_PAGENO
+from djvusmooth.varietes import not_overridden, is_html_color
 
 class AnnotationSyntaxError(ValueError):
     pass
