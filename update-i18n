@@ -11,7 +11,7 @@ PROJECT_VERSION = $(shell head -n1 doc/changelog | sed -n -e 's/.*(\([0-9.]\+\))
 
 PO_FILES = $(wildcard po/*.po)
 MO_FILES = $(patsubst po/%.po,locale/%/LC_MESSAGES/$(PROJECT_NAME).mo,$(PO_FILES))
-SOURCE_FILES = $(shell find -name '*.py')
+SOURCE_FILES = $(shell find -name '*.py' -o -name 'build' -prune -a -false)
 
 XGETTEXT_OPTIONS = \
 	--language=python \

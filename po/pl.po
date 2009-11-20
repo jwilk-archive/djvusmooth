@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: djvusmooth 0.1.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-19 23:25+0100\n"
+"POT-Creation-Date: 2009-11-20 21:43+0100\n"
 "PO-Revision-Date: 2009-05-31 14:45+CEST\n"
 "Last-Translator: Mateusz Turcza <mturcza@mimuw.edu.pl>\n"
 "Language-Team: none\n"
@@ -10,35 +10,35 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/i18n.py:26 build/lib/djvusmooth/i18n.py:26
+#: lib/i18n.py:26
 msgid "page"
 msgstr "strona"
 
-#: lib/i18n.py:27 build/lib/djvusmooth/i18n.py:27
+#: lib/i18n.py:27
 msgid "column"
 msgstr "łam"
 
-#: lib/i18n.py:28 build/lib/djvusmooth/i18n.py:28
+#: lib/i18n.py:28
 msgid "region"
 msgstr "region"
 
-#: lib/i18n.py:29 build/lib/djvusmooth/i18n.py:29
+#: lib/i18n.py:29
 msgid "para"
 msgstr "akapit"
 
-#: lib/i18n.py:30 build/lib/djvusmooth/i18n.py:30
+#: lib/i18n.py:30
 msgid "line"
 msgstr "linia"
 
-#: lib/i18n.py:31 build/lib/djvusmooth/i18n.py:31
+#: lib/i18n.py:31
 msgid "word"
 msgstr "słowo"
 
-#: lib/i18n.py:32 build/lib/djvusmooth/i18n.py:32
+#: lib/i18n.py:32
 msgid "char"
 msgstr "znak"
 
-#: lib/i18n.py:33 build/lib/djvusmooth/i18n.py:33
+#: lib/i18n.py:33
 msgid "bookmarks"
 msgstr "zakładki"
 
