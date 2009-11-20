@@ -965,7 +965,7 @@ class Application(wx.App):
     def OnInit(self):
         wx.lib.ogl.OGLInitialize()
         self.SetAppName(APPLICATION_NAME)
-        self._config = config.Config('DjVuSmooth', os.path.expanduser('~/.DjVuSmooth'))
+        self._config = config.Config('djvusmooth', os.path.expanduser('~/.DjVuSmooth'))
         sys.excepthook = self.except_hook
         return True
 
