@@ -1,3 +1,7 @@
+# Polish translation of djvusmooth messages
+# Copyright © 2009 Mateusz Turcza
+# This file is distributed under the same license as the djvusmooth package.
+
 msgid ""
 msgstr ""
 "Project-Id-Version: djvusmooth 0.1.5\n"
