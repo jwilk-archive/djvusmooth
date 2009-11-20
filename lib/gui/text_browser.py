@@ -151,9 +151,9 @@ class TextBrowser(wx.TreeCtrl):
         node = self.page.text.root
         if node is not None:
             label = get_label_for_node(node)
-            root_item = self.AddRoot(label)
-            self._items[node] = root_item
-            self.SetPyData(root_item, node)
+            root = self.AddRoot(label)
+            self._items[node] = root
+            self.SetPyData(root, node)
             self._have_root = True
             self._add_children(root, node)
 

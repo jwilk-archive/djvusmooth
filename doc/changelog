@@ -5,8 +5,9 @@ djvusmooth (0.1.5) UNRELEASED; urgency=low
   * Follow the XDG Base Directory Specification.
   * Add Polish translation of the manual page.
     Thanks to Mateusz Turcza for providing a patch.
+  * Fix a typo in variable name that was causing random crashes.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Thu, 19 Nov 2009 21:09:45 +0100
+ -- Jakub Wilk <ubanus@users.sf.net>  Fri, 20 Nov 2009 18:48:07 +0100
 
 djvusmooth (0.1.4) unstable; urgency=low
 
