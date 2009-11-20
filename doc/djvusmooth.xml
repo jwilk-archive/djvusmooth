@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE refentry PUBLIC '-//OASIS//DTD DocBook XML V4.5//EN' 'http://www.docbook.org/xml/4.5/docbookx.dtd' 
+[
+    <!ENTITY p 'djvusmooth'>
+    <!ENTITY version '0.2.0'>
+]>
+
+<refentry>
+
+<refentryinfo>
+    <title>&p; manual</title>
+    <productname>&p;</productname>
+    <author>
+        <firstname>Jakub</firstname> <surname>Wilk</surname>
+        <affiliation>
+            <address>
+                <email>ubanus@users.sf.net</email>
+            </address>
+        </affiliation>
+    </author>
+    <copyright>
+        <year>2009</year>
+        <holder>Jakub Wilk</holder>
+    </copyright>
+</refentryinfo>
+
+<refmeta>
+    <refentrytitle>&p;</refentrytitle>
+    <manvolnum>1</manvolnum>
+    <refmiscinfo class='version'>&version;</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+    <refname>&p;</refname>
+    <refpurpose>graphical editor for DjVu</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+    <cmdsynopsis>
+        <command>&p;</command>
+        <arg choice='opt'><replaceable>djvu-file</replaceable></arg>
+    </cmdsynopsis>
+</refsynopsisdiv>
+
+<refsection>
+    <title>Description</title>
+    <para>
+        &p; is a graphical editor for DjVu files, which allows to:
+        <itemizedlist>
+            <listitem><para>edit document metadata,</para></listitem>
+            <listitem><para>edit document outline (bookmarks),</para></listitem>
+            <listitem><para>correct occasional errors in the hidden text layer.</para></listitem>
+        </itemizedlist>
+    </para>
+</refsection>
+
+<refsection>
+    <title>Environment variables</title>
+    <variablelist>
+    <varlistentry>
+        <term><filename><varname>XDG_DATA_HOME</varname></filename></term>
+        <listitem>
+            <para>
+                Base directory for configuration files. The default is <filename>$HOME/.config</filename>.
+            </para>
+            <para>
+                See <ulink
+                url='http://standards.freedesktop.org/basedir-spec/latest/'>XDG Base Directory
+                Specification</ulink> for details.
+            </para>
+        </listitem>
+    </varlistentry>
+    </variablelist>
+</refsection>
+
+<refsection>
+    <title>Files</title>
+    <variablelist>
+    <varlistentry>
+        <term><filename><varname>$XDG_DATA_HOME</varname>/djvusmooth/djvusmooth.conf</filename></term>
+        <listitem>
+            <para>&p; configuration file</para>
+        </listitem>
+    </varlistentry>
+    </variablelist>
+</refsection>
+
+<refsection>
+    <title>See also</title>
+    <para>
+        <citerefentry>
+            <refentrytitle>djvu</refentrytitle>
+            <manvolnum>1</manvolnum>
+        </citerefentry>
+    </para>
+</refsection>
+
+</refentry>
+
+<!-- vim:set ts=4 sw=4 tw=120 et: -->
