@@ -1,4 +1,4 @@
-djvusmooth (0.1.5) UNRELEASED; urgency=low
+djvusmooth (0.2.0) UNRELEASED; urgency=low
 
   * Remember last visited directory.
     Thanks to Mateusz Turcza for providing a patch.
@@ -7,7 +7,7 @@ djvusmooth (0.1.5) UNRELEASED; urgency=low
     Thanks to Mateusz Turcza for providing a patch.
   * Fix a typo in variable name that was causing random crashes.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Fri, 20 Nov 2009 18:48:07 +0100
+ -- Jakub Wilk <ubanus@users.sf.net>  Fri, 20 Nov 2009 21:56:06 +0100
 
 djvusmooth (0.1.4) unstable; urgency=low
 
