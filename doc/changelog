@@ -1,4 +1,4 @@
-djvusmooth (0.2.0) UNRELEASED; urgency=low
+djvusmooth (0.2.0) unstable; urgency=low
 
   * Remember last visited directory.
     Thanks to Mateusz Turcza for providing a patch.
@@ -6,8 +6,9 @@ djvusmooth (0.2.0) UNRELEASED; urgency=low
   * Add Polish translation of the manual page.
     Thanks to Mateusz Turcza for providing a patch.
   * Fix a typo in variable name that was causing random crashes.
+  * Provide a manual page.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Fri, 20 Nov 2009 21:56:06 +0100
+ -- Jakub Wilk <ubanus@users.sf.net>  Fri, 20 Nov 2009 22:45:08 +0100
 
 djvusmooth (0.1.4) unstable; urgency=low
 
