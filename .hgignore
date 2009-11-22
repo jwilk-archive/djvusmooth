@@ -3,3 +3,5 @@ syntax: glob
 *.pyc
 po/*.pot
 locale/*/LC_MESSAGES/*.mo
+doc/*.1
+MANIFEST
