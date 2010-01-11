@@ -34,9 +34,9 @@ def _check_wx():
     try:
         import wxversion
     except ImportError, ex:
-        raise ImportError('%s; perhaps wxPython 2.6 is not installed' % (ex,))
+        raise ImportError('%s; perhaps wxPython is not installed' % (ex,))
     if not wxversion.checkInstalled(WX_VERSION):
-        raise ImportError('wxPython 2.6 with unicode support is required')
+        raise ImportError('wxPython 2.6 with Unicode support is required')
     wxversion.select(WX_VERSION)
 
 def _check_xdg():
