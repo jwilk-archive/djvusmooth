@@ -18,6 +18,7 @@ __author__ = 'Jakub Wilk <ubanus@users.sf.net>'
 
 import sys
 import itertools
+import locale
 import os.path
 import threading
 import tempfile
@@ -56,6 +57,8 @@ MENU_ICON_SIZE = (16, 16)
 DJVU_WILDCARD = _('DjVu files (*.djvu, *.djv)|*.djvu;*.djv|All files|*')
 
 WxDjVuMessage, wx.EVT_DJVU_MESSAGE = wx.lib.newevent.NewEvent()
+
+system_encoding = locale.getpreferredencoding()
 
 class OpenDialog(wx.FileDialog):
 
@@ -843,6 +846,8 @@ class MainWindow(wx.Frame):
         return event_handler
 
     def do_open(self, path):
+        if isinstance(path, unicode):
+            path = path.encode(system_encoding)
         if self.dirty:
             dialog = wx.MessageDialog(self, _('Do you want to save your changes?'), '', wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
             try:
@@ -911,7 +916,10 @@ class MainWindow(wx.Frame):
         if self.path is None:
             title = APPLICATION_NAME
         else:
-            title = u'%s — %s' % (APPLICATION_NAME, os.path.basename(self.path))
+            base_path = os.path.basename(self.path)
+            if isinstance(base_path, str):
+                base_path = base_path.decode(system_encoding, 'replace')
+            title = u'%s — %s' % (APPLICATION_NAME, base_path)
         self.SetTitle(title)
 
     def on_about(self, event):

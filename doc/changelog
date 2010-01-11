@@ -1,3 +1,10 @@
+djvusmooth (0.2.1) UNRELEASED; urgency=low
+
+  * Don't crash on non-ASCII file names.
+    Thanks to Jean-Christophe Heger for the bug report.
+
+ -- Jakub Wilk <ubanus@users.sf.net>  Mon, 11 Jan 2010 16:36:18 +0100
+
 djvusmooth (0.2.0) unstable; urgency=low
 
   * Remember last visited directory.
