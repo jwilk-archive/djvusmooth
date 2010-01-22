@@ -60,6 +60,10 @@ WxDjVuMessage, wx.EVT_DJVU_MESSAGE = wx.lib.newevent.NewEvent()
 
 system_encoding = locale.getpreferredencoding()
 
+if wx.__version__.startswith('2.8.'):
+    # XXX wxWidgets 2.8 seems to crash with wx.Choicebook
+    wx.Choicebook = wx.Notebook
+
 class OpenDialog(wx.FileDialog):
 
     def __init__(self, parent):

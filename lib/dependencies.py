@@ -14,7 +14,7 @@
 Checks for djvusmooth dependencies.
 '''
 
-WX_VERSION = '2.6-unicode'
+WX_VERSIONS = ('2.8-unicode', '2.6-unicode')
 DDJVU_API_MIN_VERSION = 26
 PYTHON_DJVULIBRE_MIN_VERSION = (0, 1, 4)
 
@@ -35,9 +35,9 @@ def _check_wx():
         import wxversion
     except ImportError, ex:
         raise ImportError('%s; perhaps wxPython is not installed' % (ex,))
-    if not wxversion.checkInstalled(WX_VERSION):
-        raise ImportError('wxPython 2.6 with Unicode support is required')
-    wxversion.select(WX_VERSION)
+    if not wxversion.checkInstalled(WX_VERSIONS):
+        raise ImportError('wxPython 2.6 or 2.8 with Unicode support is required')
+    wxversion.select(WX_VERSIONS)
 
 def _check_xdg():
     try:
