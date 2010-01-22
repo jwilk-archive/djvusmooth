@@ -26,10 +26,14 @@ else:
     DJVUSED_PATH = os.path.join(DJVULIBRE_BIN_PATH, 'djvused')
 
 def _djvused_usability_check():
-    djvused = subprocess.Popen([DJVUSED_PATH], stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-    djvused.communicate()
-    if djvused.returncode != 10:
-        raise IOError('%r does not seem to be usable' % DJVUSED_PATH)
+    try:
+        djvused = subprocess.Popen([DJVUSED_PATH], stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        djvused.communicate()
+        if djvused.returncode == 10:
+            return
+    except (IOError, OSError):
+        pass
+    raise IOError('%r does not seem to be usable' % DJVUSED_PATH)
 
 _djvused_usability_check()
 
