@@ -11,7 +11,7 @@
 # General Public License for more details.
 
 '''
-Checks for DjVuSmooth dependencies.
+Checks for djvusmooth dependencies.
 '''
 
 WX_VERSION = '2.6-unicode'

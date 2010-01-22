@@ -11,10 +11,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 # General Public License for more details.
 
-APPLICATION_NAME = 'DjVuSmooth'
+APPLICATION_NAME = 'djvusmooth'
 LICENSE = 'GPL-2'
-__version__ = '0.2.0'
-__author__ = 'Jakub Wilk <ubanus@users.sf.net>'
 
 import sys
 import itertools
@@ -50,6 +48,8 @@ import djvusmooth.models.text
 from djvusmooth import models
 from djvusmooth import external_editor
 from djvusmooth import config
+
+from djvusmooth import __version__, __author__
 
 from djvusmooth.i18n import _
 

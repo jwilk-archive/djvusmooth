@@ -12,7 +12,7 @@
 # General Public License for more details.
 
 '''
-*DjVuSmooth* is a graphical editor for `DjVu <http://djvu.org>`_ documents.
+*djvusmooth* is a graphical editor for `DjVu <http://djvu.org>`_ documents.
 '''
 
 import os
