@@ -1,8 +1,10 @@
-djvusmooth (0.2.2) UNRELEASED; urgency=low
+djvusmooth (0.2.2) unstable; urgency=low
 
-  * 
+  * Fix crashes in the ‘Saving document’ and ‘Go to page’ dialogs.
+  * Fix compatibility with wxWidgets 2.8.
+  * Give a more helpful error messages if djvused is not available.
 
- -- Jakub Wilk <ubanus@users.sf.net>  Fri, 22 Jan 2010 18:43:02 +0100
+ -- Jakub Wilk <ubanus@users.sf.net>  Fri, 22 Jan 2010 19:36:03 +0100
 
 djvusmooth (0.2.1) unstable; urgency=low
 
