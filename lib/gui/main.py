@@ -573,7 +573,7 @@ class MainWindow(wx.Frame):
                     self.on_save_failed(exception)
                     return False
             except QueueEmpty:
-                dialog = gui.dialogs.ProgressDialog(
+                dialog = dialogs.ProgressDialog(
                     title = _('Saving document'),
                     message = _(u'Saving the document, please wait…'),
                     parent = self,
@@ -677,7 +677,7 @@ class MainWindow(wx.Frame):
         self.page_no -= 1
 
     def on_goto_page(self, event):
-        dialog = gui.dialogs.NumberEntryDialog(
+        dialog = dialogs.NumberEntryDialog(
             parent = self,
             message = _('Go to page') + ':',
             prompt = '',
