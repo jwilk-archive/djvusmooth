@@ -20,6 +20,7 @@
     </author>
     <copyright>
         <year>2009</year>
+        <year>2010</year>
         <holder>Jakub Wilk</holder>
     </copyright>
 </refentryinfo>
@@ -83,6 +84,15 @@
         </listitem>
     </varlistentry>
     </variablelist>
+</refsection>
+
+<refsection>
+    <title>Portability</title>
+    <para>
+        &p; allows to create hyperlinks with shadow borders as thin as 1 pixel, as specifed by the
+        <ulink url='http://djvu.org/docs/DjVu3Spec.djvu'>Lizardtech DjVu Reference</ulink>.
+        However, some DjVu browsers do not accept shadow borders thinner than 3 pixels.
+    </para>
 </refsection>
 
 <refsection>
