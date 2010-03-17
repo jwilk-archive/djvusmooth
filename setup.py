@@ -50,7 +50,7 @@ setup(
     description = 'graphical editor for DjVu',
     long_description = __doc__.strip(),
     classifiers = classifiers,
-    url = 'http://jwilk.net/software/djvusmooth.html',
+    url = 'http://jwilk.net/software/djvusmooth',
     author = 'Jakub Wilk',
     author_email = 'jwilk@jwilk.net',
     packages = ['djvusmooth'],
