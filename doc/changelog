@@ -1,4 +1,4 @@
-djvusmooth (0.2.3) UNRELEASED; urgency=low
+djvusmooth (0.2.3) unstable; urgency=low
 
   * Fix issues with “Overprinted annotation properties” dialog:
     + Allow to turn off the “allow visible” property.
@@ -11,7 +11,7 @@ djvusmooth (0.2.3) UNRELEASED; urgency=low
   * Document that using shadow border thinner than 3 pixels is not portable.
     http://bugs.debian.org/574361
 
- -- Jakub Wilk <jwilk@jwilk.net>  Wed, 17 Mar 2010 18:11:30 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 17 Mar 2010 21:59:58 +0100
 
 djvusmooth (0.2.2) unstable; urgency=low
 
