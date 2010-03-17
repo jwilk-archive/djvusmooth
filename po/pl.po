@@ -584,7 +584,7 @@ msgid "Border"
 msgstr "Obramowanie"
 
 #: lib/gui/maparea_properties.py:151
-msgid "Thickness"
+msgid "Width"
 msgstr "Grubość"
 
 #: lib/gui/maparea_properties.py:157
