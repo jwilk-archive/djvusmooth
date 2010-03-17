@@ -120,6 +120,10 @@ class BorderShadow(Border):
             raise ValueError
         self._width = width
 
+    @property
+    def width(self):
+        return self._width
+
     def _get_sexpr(self):
         return djvu.sexpr.Expression((self.SYMBOL, self._width))
 

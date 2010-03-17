@@ -120,8 +120,8 @@ class MapareaPropertiesDialog(wx.Dialog):
         shape = SHAPES[event.GetInt()]
         self.do_select_shape(shape)
 
-    def enable_border_thickness(self, enable):
-        for widget in self._edit_border_thickness, self._label_border_thickenss:
+    def enable_border_width(self, enable):
+        for widget in self._edit_border_width, self._label_border_thickenss:
             widget.Enable(enable)
 
     def enable_solid_border(self, enable):
@@ -132,22 +132,22 @@ class MapareaPropertiesDialog(wx.Dialog):
 
     def on_select_no_border(self, event):
         self.enable_always_visible_border(False)
-        self.enable_border_thickness(False)
+        self.enable_border_width(False)
         self.enable_solid_border(False)
 
     def on_select_solid_border(self, event):
         self.enable_always_visible_border(True)
-        self.enable_border_thickness(False)
+        self.enable_border_width(False)
         self.enable_solid_border(True)
 
     def on_select_nonshadow_border(self, event):
         self.enable_always_visible_border(True)
-        self.enable_border_thickness(False)
+        self.enable_border_width(False)
         self.enable_solid_border(False)
 
     def on_select_shadow_border(self, event):
         self.enable_always_visible_border(True)
-        self.enable_border_thickness(True)
+        self.enable_border_width(True)
         self.enable_solid_border(False)
 
     def _setup_border_box(self):
@@ -159,13 +159,13 @@ class MapareaPropertiesDialog(wx.Dialog):
         box = wx.StaticBox(self, label = _('Border'))
         box_sizer = wx.StaticBoxSizer(box, orient = wx.VERTICAL)
         box_grid_sizer = wx.FlexGridSizer(0, 3, 5, 10)
-        border_thickness_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        border_thickness_label = wx.StaticText(self, label = _('Thickness') + ': ')
-        border_thickness_edit = wx.SpinCtrl(self, size = (self.DEFAULT_SPIN_WIDTH, -1))
-        border_thickness_edit.SetRange(djvu.const.MAPAREA_SHADOW_BORDER_MIN_WIDTH, djvu.const.MAPAREA_SHADOW_BORDER_MAX_WIDTH)
-        border_thickness_edit.SetValue(djvu.const.MAPAREA_SHADOW_BORDER_MIN_WIDTH)
-        border_thickness_sizer.Add(border_thickness_label, 0, wx.ALIGN_CENTER_VERTICAL)
-        border_thickness_sizer.Add(border_thickness_edit, 0, wx.ALIGN_CENTER_VERTICAL)
+        border_width_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        border_width_label = wx.StaticText(self, label = _('Width') + ': ')
+        border_width_edit = wx.SpinCtrl(self, size = (self.DEFAULT_SPIN_WIDTH, -1))
+        border_width_edit.SetRange(djvu.const.MAPAREA_SHADOW_BORDER_MIN_WIDTH, djvu.const.MAPAREA_SHADOW_BORDER_MAX_WIDTH)
+        border_width_edit.SetValue(djvu.const.MAPAREA_SHADOW_BORDER_MIN_WIDTH)
+        border_width_sizer.Add(border_width_label, 0, wx.ALIGN_CENTER_VERTICAL)
+        border_width_sizer.Add(border_width_edit, 0, wx.ALIGN_CENTER_VERTICAL)
         radio_none = wx.RadioButton(self, label = _('None'))
         radio_xor = wx.RadioButton(self, label = _('XOR'))
         if isinstance(border, models.annotations.XorBorder):
@@ -187,7 +187,7 @@ class MapareaPropertiesDialog(wx.Dialog):
         have_shadow_border = False
         for i, shadow_border in enumerate(SHADOW_BORDERS):
             if i == 2:
-                box_grid_sizer.Add(border_thickness_sizer, 0, wx.ALIGN_CENTER_VERTICAL)
+                box_grid_sizer.Add(border_width_sizer, 0, wx.ALIGN_CENTER_VERTICAL)
             widget = wx.RadioButton(self, label = shadow_border.label)
             if isinstance(border, shadow_border.model_class):
                 widget.SetValue(True)
@@ -213,9 +213,11 @@ class MapareaPropertiesDialog(wx.Dialog):
         self._edit_border_solid_color = solid_color_selector
         self._edit_border_shadows = shadow_widgets
         self._edit_border_always_visible = avis_checkbox
-        self._edit_border_thickness = border_thickness_edit
-        self._label_border_thickenss = border_thickness_label
-        self.enable_border_thickness(have_shadow_border)
+        self._edit_border_width = border_width_edit
+        self._label_border_thickenss = border_width_label
+        self.enable_border_width(have_shadow_border)
+        if have_shadow_border:
+            border_width_edit.SetValue(border.width)
         return box_sizer
     
     def _setup_extra_boxes(self):
@@ -369,7 +371,7 @@ class MapareaPropertiesDialog(wx.Dialog):
         elif model_class.can_have_shadow_border():
             for widget in self._edit_border_shadows:
                 if widget.GetValue():
-                    node.border = widget.model_class(self._edit_border_thickness.GetValue())
+                    node.border = widget.model_class(self._edit_border_width.GetValue())
                     break
         node.border_always_visible = (
             self._edit_border_always_visible.IsEnabled() and
