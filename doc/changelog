@@ -2,6 +2,7 @@ djvusmooth (0.2.3) UNRELEASED; urgency=low
 
   * Allow to turn off the “allow visible” property of a border hyperlink.
     Thanks to Janusz S. Bień for the bug report.
+  * Disable the “allow visible” checkbox if a hyperlink has no border.
 
  -- Jakub Wilk <jwilk@jwilk.net>  Wed, 17 Mar 2010 18:11:30 +0100
 

@@ -127,15 +127,26 @@ class MapareaPropertiesDialog(wx.Dialog):
     def enable_solid_border(self, enable):
         self._edit_border_solid_color.Enable(enable)
 
+    def enable_always_visible_border(self, enable):
+        self._edit_border_always_visible.Enable(enable)
+
+    def on_select_no_border(self, event):
+        self.enable_always_visible_border(False)
+        self.enable_border_thickness(False)
+        self.enable_solid_border(False)
+
     def on_select_solid_border(self, event):
+        self.enable_always_visible_border(True)
         self.enable_border_thickness(False)
         self.enable_solid_border(True)
 
     def on_select_nonshadow_border(self, event):
+        self.enable_always_visible_border(True)
         self.enable_border_thickness(False)
         self.enable_solid_border(False)
 
     def on_select_shadow_border(self, event):
+        self.enable_always_visible_border(True)
         self.enable_border_thickness(True)
         self.enable_solid_border(False)
 
@@ -186,11 +197,13 @@ class MapareaPropertiesDialog(wx.Dialog):
             shadow_widgets += widget,
         for widget in shadow_widgets:
             self.Bind(wx.EVT_RADIOBUTTON, self.on_select_shadow_border, widget)
-        for widget in radio_none, radio_xor:
-            self.Bind(wx.EVT_RADIOBUTTON, self.on_select_nonshadow_border, widget)
+        self.Bind(wx.EVT_RADIOBUTTON, self.on_select_nonshadow_border, radio_xor)
+        self.Bind(wx.EVT_RADIOBUTTON, self.on_select_no_border, radio_none)
         self.Bind(wx.EVT_RADIOBUTTON, self.on_select_solid_border, radio_solid)
         avis_checkbox = wx.CheckBox(self, label = _('Always visible')) # TODO: hide it for irrelevant shapes, i.e. `line` and maybe `text`
-        if node is not None and node.border_always_visible is True:
+        if border is None or isinstance(border, models.annotations.NoBorder):
+            avis_checkbox.Enable(False)
+        elif node is not None and node.border_always_visible is True:
             avis_checkbox.SetValue(True)
         box_sizer.Add(box_grid_sizer, 0, wx.EXPAND | wx.ALL, 5)
         box_sizer.Add(avis_checkbox, 0, wx.ALL, 5)
@@ -358,7 +371,10 @@ class MapareaPropertiesDialog(wx.Dialog):
                 if widget.GetValue():
                     node.border = widget.model_class(self._edit_border_thickness.GetValue())
                     break
-        node.border_always_visible = self._edit_border_always_visible.GetValue()
+        node.border_always_visible = (
+            self._edit_border_always_visible.IsEnabled() and
+            self._edit_border_always_visible.GetValue()
+        )
         if isinstance(node, models.annotations.RectangleMapArea):
             if self._edit_have_highlight.GetValue():
                 node.highlight_color = color_as_html(self._edit_highlight_color.GetColour())
