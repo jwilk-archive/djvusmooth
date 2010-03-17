@@ -7,6 +7,7 @@ djvusmooth (0.2.3) UNRELEASED; urgency=low
     + Disable the “allow visible” checkbox if a hyperlink has no border.
       http://bugs.debian.org/574338
     + Display real border width for instead of hard-coded 1.
+    + Use the term “width” rather than “thickness” consistently.
 
  -- Jakub Wilk <jwilk@jwilk.net>  Wed, 17 Mar 2010 18:11:30 +0100
 
