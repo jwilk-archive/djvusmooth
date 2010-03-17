@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # encoding=UTF-8
-# Copyright © 2008 Jakub Wilk <ubanus@users.sf.net>
+# Copyright © 2008 Jakub Wilk <jwilk@jwilk.net>
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ setup(
     classifiers = classifiers,
     url = 'http://jwilk.net/software/djvusmooth.html',
     author = 'Jakub Wilk',
-    author_email = 'ubanus@users.sf.net',
+    author_email = 'jwilk@jwilk.net',
     packages = ['djvusmooth'],
     package_dir = dict(djvusmooth='lib'),
     scripts = ['djvusmooth'],
