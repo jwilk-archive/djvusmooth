@@ -358,8 +358,7 @@ class MapareaPropertiesDialog(wx.Dialog):
                 if widget.GetValue():
                     node.border = widget.model_class(self._edit_border_thickness.GetValue())
                     break
-        if self._edit_border_always_visible.GetValue():
-            node.border_always_visible = True
+        node.border_always_visible = self._edit_border_always_visible.GetValue()
         if isinstance(node, models.annotations.RectangleMapArea):
             if self._edit_have_highlight.GetValue():
                 node.highlight_color = color_as_html(self._edit_highlight_color.GetColour())
