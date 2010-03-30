@@ -61,7 +61,6 @@ WxDjVuMessage, wx.EVT_DJVU_MESSAGE = wx.lib.newevent.NewEvent()
 system_encoding = locale.getpreferredencoding()
 
 if wx.__version__.startswith('2.8.'):
-    # XXX wxWidgets 2.8 seems to crash with wx.Choicebook
     wx.Choicebook = wx.Notebook
     wx.EVT_CHOICEBOOK_PAGE_CHANGED = wx.EVT_NOTEBOOK_PAGE_CHANGED
 
@@ -332,9 +331,6 @@ class MainWindow(wx.Frame):
                 self.on_display_maparea,
                 self.on_display_text)
         )
-        sidebar_sizer = wx.BoxSizer(wx.VERTICAL)
-        self.sidebar.SetSizer(sidebar_sizer)
-        sidebar_sizer.Add(self.text_browser, 1, wx.ALL | wx.EXPAND)
         self.scrolled_panel = ScrolledPanel(self.splitter)
         self.splitter.SetSashGravity(0.1)
         self.do_show_sidebar()
