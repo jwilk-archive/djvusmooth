@@ -63,6 +63,7 @@ system_encoding = locale.getpreferredencoding()
 if wx.__version__.startswith('2.8.'):
     # XXX wxWidgets 2.8 seems to crash with wx.Choicebook
     wx.Choicebook = wx.Notebook
+    wx.EVT_CHOICEBOOK_PAGE_CHANGED = wx.EVT_NOTEBOOK_PAGE_CHANGED
 
 class OpenDialog(wx.FileDialog):
 
