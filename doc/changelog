@@ -1,9 +1,9 @@
-djvusmooth (0.2.4) UNRELEASED; urgency=low
+djvusmooth (0.2.4) unstable; urgency=low
 
   * Fix regression in handling sidebar events with wxWidgets 2.8. Thanks to
     Janusz S. Bień for the bug report.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 30 Mar 2010 19:38:49 +0200
+ -- Jakub Wilk <jwilk@debian.org>  Wed, 31 Mar 2010 12:53:04 +0200
 
 djvusmooth (0.2.3) unstable; urgency=low
 
