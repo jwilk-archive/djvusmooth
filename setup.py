@@ -53,7 +53,7 @@ setup(
     url = 'http://jwilk.net/software/djvusmooth',
     author = 'Jakub Wilk',
     author_email = 'jwilk@jwilk.net',
-    packages = ['djvusmooth'],
+    packages = ['djvusmooth'] + ['djvusmooth.%s' % x for x in 'gui models text'.split()],
     package_dir = dict(djvusmooth='lib'),
     scripts = ['djvusmooth'],
     data_files = data_files,
