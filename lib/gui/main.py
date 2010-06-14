@@ -70,8 +70,12 @@ class OpenDialog(wx.FileDialog):
         wx.FileDialog.__init__(self, parent, style = wx.OPEN, wildcard=DJVU_WILDCARD, message = _('Open a DjVu document'))
 
 class TextModel(models.text.Text):
+
     def __init__(self, document):
         models.text.Text.__init__(self)
+        self._document = document
+
+    def reset_document(self, document):
         self._document = document
 
     def acquire_data(self, n):
@@ -84,6 +88,9 @@ class OutlineModel(models.outline.Outline):
     def __init__(self, document):
         self._document = document
         models.outline.Outline.__init__(self)
+
+    def reset_document(self, document):
+        self._document = document
 
     def acquire_data(self):
         outline = self._document.outline
@@ -133,6 +140,9 @@ class AnnotationsModel(models.annotations.Annotations):
         models.annotations.Annotations.__init__(self)
         self.__djvused = StreamEditor(document_path)
 
+    def reset_document(self, document):
+        pass # Nothing to do
+
     def acquire_data(self, n):
         djvused = self.__djvused
         if n == models.SHARED_ANNOTATIONS_PAGENO:
@@ -147,8 +157,12 @@ class AnnotationsModel(models.annotations.Annotations):
             raise # FIXME
 
 class MetadataModel(models.metadata.Metadata):
+
     def __init__(self, document):
         models.metadata.Metadata.__init__(self)
+        self._document = document
+
+    def reset_document(self, document):
         self._document = document
 
     def acquire_data(self, n):
@@ -559,6 +573,9 @@ class MainWindow(wx.Frame):
         def job():
             try:
                 sed.commit()
+                self.document = self.context.new_document(djvu.decode.FileURI(self.path))
+                for model in self.models:
+                    model.reset_document(self.document)
             except Exception, exception:
                 pass
             else:
