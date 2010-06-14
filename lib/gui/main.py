@@ -452,7 +452,7 @@ class MainWindow(wx.Frame):
             (_('&Previous page') + '\tPgUp',   _('Jump to previous document page'), self.on_previous_page, wx.ART_GO_UP),
             (_('&Next page') + '\tPgDn',       _('Jump to next document page'),     self.on_next_page,     wx.ART_GO_DOWN),
             (_('&Last page') + '\tCtrl-End',   _('Jump to last document page'),     self.on_last_page,     None),
-            (_(u'&Go to page…'),               _(u'Jump to page…'),                 self.on_goto_page,     None)
+            (_(u'&Go to page…') + '\tCtrl-G',  _(u'Jump to page…'),                 self.on_goto_page,     None)
         ]:
             self._menu_item(menu, caption, help, method, icon = icon)
         return menu
