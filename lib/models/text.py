@@ -35,7 +35,7 @@ class Node(object):
             cls = LeafNode
         else:
             cls = InnerNode
-        return object.__new__(cls, sexpr, owner)
+        return object.__new__(cls)
 
     def __init__(self, sexpr, owner):
         self._owner = owner
