@@ -942,8 +942,8 @@ class MainWindow(wx.Frame):
 
 class Context(djvu.decode.Context):
 
-    def __new__(self, window):
-        return djvu.decode.Context.__new__(self)
+    def __new__(cls, window):
+        return djvu.decode.Context.__new__(cls)
 
     def __init__(self, window):
         djvu.decode.Context.__init__(self)
