@@ -1,3 +1,9 @@
+djvusmooth (0.2.7) UNRELEASED; urgency=low
+
+  * 
+
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 15 Jun 2010 21:11:31 +0200
+
 djvusmooth (0.2.6) unstable; urgency=low
 
   * Add keyboard shortcut Ctrl+G for “Go to page…”.
