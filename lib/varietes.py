@@ -29,7 +29,7 @@ def not_overridden(f):
     >>> B().f(6, 7)
     Traceback (most recent call last):
     ...
-    NotOverriddenWarning: `varietes.B.f()` is not overriden
+    NotOverriddenWarning: `lib.varietes.B.f()` is not overriden
     >>> C().f(6, 7)
     42
     '''
@@ -152,7 +152,7 @@ class idict(object):
     '''
     >>> o = idict(eggs = 'spam', ham = 'eggs')
     >>> o
-    varietes.idict(eggs='spam', ham='eggs')
+    lib.varietes.idict(eggs='spam', ham='eggs')
     >>> o.eggs
     'spam'
     >>> o.ham
