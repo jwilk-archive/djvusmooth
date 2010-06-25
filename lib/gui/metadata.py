@@ -37,7 +37,7 @@ class MetadataTable(wx.grid.PyGridTableBase):
 
     def GetAttr(self, y, x, kind):
         key = self._keys[y]
-        attr = self._attrs[x == 0 and djvu.sexpr.Symbol(key) in self._known_keys]
+        attr = self._attrs[x == 0 and key in self._known_keys]
         attr.IncRef()
         return attr
 
@@ -67,11 +67,13 @@ class MetadataTable(wx.grid.PyGridTableBase):
         self._model[key] = value
     
     def set_new_key(self, y, new_key, value):
+        assert isinstance(new_key, djvu.sexpr.Symbol)
         del self._model[self._keys[y]]
         self._model[new_key] = value
         self._keys[y] = new_key
     
     def add_new_key(self, new_key):
+        assert isinstance(new_key, djvu.sexpr.Symbol)
         self._model[new_key] = ''
         y = len(self._keys) - 1
         self._keys[y:] = new_key, None
@@ -79,6 +81,7 @@ class MetadataTable(wx.grid.PyGridTableBase):
     
     def delete_key(self, y):
         key = self._keys[y]
+        assert isinstance(key, djvu.sexpr.Symbol)
         del self._model[key]
         del self._keys[y]
         self.GetView().ProcessTableMessage(wx.grid.GridTableMessage(self, wx.grid.GRIDTABLE_NOTIFY_ROWS_DELETED, y, 1))
@@ -94,6 +97,7 @@ class MetadataTable(wx.grid.PyGridTableBase):
             elif value in self._model:
                 pass # TODO: raise an exception
             else:
+                value = djvu.sexpr.Symbol(value.encode('UTF-8'))
                 if key is None:
                     # Add a row
                     self.add_new_key(value)
