@@ -64,8 +64,7 @@ djvusmooth (0.2.0) unstable; urgency=low
   * Remember last visited directory.
     Thanks to Mateusz Turcza for providing a patch.
   * Follow the XDG Base Directory Specification.
-  * Add Polish translation of the manual page.
-    Thanks to Mateusz Turcza for providing a patch.
+  * Add Polish translation, contributed by Mateusz Turcza.
   * Fix a typo in variable name that was causing random crashes.
   * Provide a manual page.
 
