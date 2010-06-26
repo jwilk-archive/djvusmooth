@@ -1,5 +1,5 @@
 # Russian translation for djvusmooth.
-# Copyright © 2010 Kyrill Detinov
+# Copyright (c) 2010 Kyrill Detinov
 # This file is distributed under the same license as the djvusmooth package.
 # Kyrill Detinov <lazy.kent.suse@gmail.com>, 2010.
 #
@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: djvusmooth 0.2.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-25 17:41+0200\n"
-"PO-Revision-Date: 2010-06-26 12:51+0300\n"
+"POT-Creation-Date: 2010-06-26 18:54+0200\n"
+"PO-Revision-Date: 2010-06-26 18:05+0300\n"
 "Last-Translator: Kyrill Detinov <lazy.kent.suse@gmail.com>\n"
 "Language-Team: openSUSE Translation Team\n"
 "Language: ru\n"
@@ -70,7 +70,7 @@ msgstr "столбцы"
 
 #: lib/gui/flatten_text.py:25
 msgid "regions"
-msgstr "область"
+msgstr "области"
 
 #: lib/gui/flatten_text.py:26
 msgid "paragraphs"
@@ -348,7 +348,7 @@ msgstr "&Изображение"
 
 #: lib/gui/main.py:449
 msgid "Don't display non-raster data"
-msgstr "Не показывать не растровые данные"
+msgstr "Не показывать нерастровые данные"
 
 #: lib/gui/main.py:450
 msgid "&Hyperlinks"
@@ -364,7 +364,7 @@ msgstr "Показать текстовый слой"
 
 #: lib/gui/main.py:457
 msgid "&Non-raster data"
-msgstr "&Не растровые данные"
+msgstr "&Нерастровые данные"
 
 #: lib/gui/main.py:458
 msgid "&Refresh"
@@ -599,7 +599,7 @@ msgstr "XOR"
 
 #: lib/gui/maparea_properties.py:173
 msgid "Solid color"
-msgstr "Сплошной цвет"
+msgstr "Сплошная заливка"
 
 #: lib/gui/maparea_properties.py:203
 msgid "Always visible"
@@ -663,4 +663,4 @@ msgstr "значение"
 
 #: lib/gui/metadata.py:121
 msgid "Edit metadata"
-msgstr "Правка метаданных"
+msgstr "Изменить метаданные"
