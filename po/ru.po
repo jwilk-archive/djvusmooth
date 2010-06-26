@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: djvusmooth 0.2.7\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-06-25 17:41+0200\n"
-"PO-Revision-Date: 2010-06-25 17:49+0300\n"
+"PO-Revision-Date: 2010-06-26 12:51+0300\n"
 "Last-Translator: Kyrill Detinov <lazy.kent.suse@gmail.com>\n"
 "Language-Team: openSUSE Translation Team\n"
 "Language: ru\n"
@@ -110,7 +110,7 @@ msgstr "Удалить детали"
 
 #: lib/gui/maparea_browser.py:60
 msgid "URI"
-msgstr ""
+msgstr "URI"
 
 #: lib/gui/maparea_browser.py:61 lib/gui/maparea_properties.py:79
 msgid "Comment"
@@ -595,7 +595,7 @@ msgstr "Ничего"
 
 #: lib/gui/maparea_properties.py:170
 msgid "XOR"
-msgstr ""
+msgstr "XOR"
 
 #: lib/gui/maparea_properties.py:173
 msgid "Solid color"
@@ -647,7 +647,7 @@ msgstr "Цвет текста"
 
 #: lib/gui/maparea_properties.py:290
 msgid "Pushpin"
-msgstr ""
+msgstr "Канцелярская кнопка"
 
 #: lib/gui/maparea_properties.py:318
 msgid "Overprinted annotation (hyperlink) properties"
@@ -655,11 +655,11 @@ msgstr "Вид комментария (ссылки)"
 
 #: lib/gui/metadata.py:22
 msgid "key"
-msgstr ""
+msgstr "ключ"
 
 #: lib/gui/metadata.py:22
 msgid "value"
-msgstr ""
+msgstr "значение"
 
 #: lib/gui/metadata.py:121
 msgid "Edit metadata"
