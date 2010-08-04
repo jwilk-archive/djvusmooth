@@ -11,10 +11,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 # General Public License for more details.
 
-import re
 import wx
-
-import djvu.sexpr
 
 import djvusmooth.models.outline
 from djvusmooth import models
