@@ -1,5 +1,5 @@
 # encoding=UTF-8
-# Copyright © 2008, 2009 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2008, 2009, 2010 Jakub Wilk <jwilk@jwilk.net>
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -638,7 +638,7 @@ class LineMapArea(MapArea):
         result = []
         if self._line_arrow:
             result += (djvu.const.MAPAREA_ARROW,),
-        if self._line_width != MAPAREA_LINE_MIN_WIDTH:
+        if self._line_width != djvu.const.MAPAREA_LINE_MIN_WIDTH:
             result += (djvu.const.MAPAREA_LINE_WIDTH, self._line_width),
         if self._line_color != djvu.const.MAPAREA_LINE_COLOR_DEFAULT:
             result += (djvu.const.MAPAREA_LINE_COLOR, self._line_color),
