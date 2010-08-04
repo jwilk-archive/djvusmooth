@@ -13,8 +13,6 @@
 import wx
 import wx.lib.ogl
 
-from math import floor
-
 from djvu import decode, sexpr
 import djvu.const
 
