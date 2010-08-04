@@ -216,7 +216,6 @@ class NodeShape(wx.lib.ogl.RectangleShape):
 
     def _update_size(self):
         x, y, w, h = self._xform_real_to_screen(self._node.rect)
-        font = self.GetFont()
         if h <= 13:
             font_size = 8
         elif h <= 15:
