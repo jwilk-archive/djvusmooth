@@ -1,5 +1,5 @@
 # encoding=UTF-8
-# Copyright © 2008, 2009 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2008, 2009, 2010 Jakub Wilk <jwilk@jwilk.net>
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -181,7 +181,7 @@ class PageImage(wx.lib.ogl.RectangleShape):
                 image = wx.EmptyImage(w, h)
                 image.SetData(data)
                 dc.DrawBitmap(image.ConvertToBitmap(), x, y)
-        except decode.NotAvailable, ex:
+        except decode.NotAvailable:
             dc.SetBrush(wx.WHITE_BRUSH)
             dc.SetPen(wx.TRANSPARENT_PEN)
             dc.DrawRectangle(x, y, w, h)
@@ -653,7 +653,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
             ]
             self._nonraster_shapes = tuple(shape for node, shape in items)
             self._nonraster_shapes_map = dict(items)
-        except decode.NotAvailable, ex:
+        except decode.NotAvailable:
             pass
 
     def setup_text_shapes(self, have_text = False):
@@ -668,7 +668,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
             ]
             self._nonraster_shapes = tuple(shape for node, shape in items)
             self._nonraster_shapes_map = dict(items)
-        except decode.NotAvailable, ex:
+        except decode.NotAvailable:
             pass
 
 __all__ = (
