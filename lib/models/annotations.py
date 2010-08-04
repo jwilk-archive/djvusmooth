@@ -142,7 +142,6 @@ class BorderEtchedOut(BorderShadow):
 class Annotations(MultiPageModel):
 
     def get_page_model_class(self, n):
-        cls = PageAnnotations
         if n == SHARED_ANNOTATIONS_PAGENO:
             return SharedAnnotations
         else:
