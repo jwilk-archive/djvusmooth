@@ -1,5 +1,5 @@
 # encoding=UTF-8
-# Copyright © 2008, 2009 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2008, 2009, 2010 Jakub Wilk <jwilk@jwilk.net>
 # Copyright © 2009 Mateusz Turcza <mturcza@mimuw.edu.pl>
 #
 # This package is free software; you can redistribute it and/or modify
@@ -12,8 +12,6 @@
 # General Public License for more details.
 
 import wx
-
-import djvu.sexpr
 
 import djvusmooth.models.text
 from djvusmooth import models
