@@ -24,7 +24,6 @@ from djvusmooth.models import MultiPageModel, SHARED_ANNOTATIONS_PAGENO
 class Metadata(MultiPageModel):
 
     def get_page_model_class(self, n):
-        cls = PageMetadata
         if n == SHARED_ANNOTATIONS_PAGENO:
             return SharedMetadata
         else:
