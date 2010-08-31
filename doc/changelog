@@ -1,9 +1,12 @@
-djvusmooth (0.2.8) UNRELEASED; urgency=low
+djvusmooth (0.2.8) unstable; urgency=low
 
+  * Update the Russian translation, thanks to Kyrill Detinov.
   * Handle directories with non-ASCII characters.
     http://bugs.debian.org/595002
+  * Fix editing line/arrow annotations.
+    http://bugs.debian.org/595012
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 31 Aug 2010 12:40:21 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 31 Aug 2010 15:15:01 +0200
 
 djvusmooth (0.2.7) unstable; urgency=low
 
