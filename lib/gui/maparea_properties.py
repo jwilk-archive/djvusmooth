@@ -386,7 +386,7 @@ class MapareaPropertiesDialog(wx.Dialog):
         elif isinstance(node, models.annotations.LineMapArea):
             node.line_width = self._edit_line_width.GetValue()
             node.line_color = color_as_html(self._edit_line_color.GetColour())
-            node.line_arrow = self._edit_line_arrow.GetValue()
+            node.line_arrow = self._edit_arrow.GetValue()
         elif isinstance(node, models.annotations.TextMapArea):
             if self._edit_background_nontrasparent.GetValue():
                 node.background_color = color_as_html(self._edit_background_color.GetColour())
