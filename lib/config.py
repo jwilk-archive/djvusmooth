@@ -1,5 +1,5 @@
 # encoding=UTF-8
-# Copyright © 2009 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2009, 2010 Jakub Wilk <jwilk@jwilk.net>
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ class Config(object):
                     key, value = line.split('=', 1)
                 except ValueError:
                     pass
+                value = value.decode('UTF-8')
                 self._data[key] = value
         finally:
             file.close()
@@ -67,6 +68,8 @@ class Config(object):
         file = open(tmp_path, 'w')
         try:
             for key, value in self._data.iteritems():
+                if isinstance(value, unicode):
+                    value = value.encode('UTF-8')
                 file.write('%s=%s\n' % (key, value))
             file.flush()
             os.fsync(file.fileno())

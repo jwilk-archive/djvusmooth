@@ -1,3 +1,10 @@
+djvusmooth (0.2.8) UNRELEASED; urgency=low
+
+  * Handle directories with non-ASCII characters.
+    http://bugs.debian.org/595002
+
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 31 Aug 2010 12:40:21 +0200
+
 djvusmooth (0.2.7) unstable; urgency=low
 
   * Add Russian translation, contributed by Kyrill Detinov.
