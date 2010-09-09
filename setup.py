@@ -15,9 +15,6 @@
 *djvusmooth* is a graphical editor for `DjVu <http://djvu.org>`_ documents.
 '''
 
-import os
-os.putenv('TAR_OPTIONS', '--owner root --group root --mode a+rX')
-
 classifiers = '''\
 Development Status :: 4 - Beta
 Environment :: Console
@@ -30,8 +27,12 @@ Topic :: Text Processing
 Topic :: Multimedia :: Graphics\
 '''.split('\n')
 
-from distutils.core import setup
+import os
+import distutils.core
+
 from lib import __version__
+
+os.putenv('TAR_OPTIONS', '--owner root --group root --mode a+rX')
 
 data_files = []
 for root, dirs, files in os.walk('locale'):
@@ -43,7 +44,7 @@ for root, dirs, files in os.walk('locale'):
             [os.path.join(root, f)]
         ))
 
-setup(
+distutils.core.setup(
     name = 'djvusmooth',
     version = __version__,
     license = 'GNU GPL 2',
