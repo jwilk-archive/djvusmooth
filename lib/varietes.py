@@ -11,11 +11,10 @@
 # General Public License for more details.
 
 import re
-import exceptions
 import warnings
 import weakref
 
-class NotOverriddenWarning(exceptions.UserWarning):
+class NotOverriddenWarning(UserWarning):
     pass
 
 def not_overridden(f):
@@ -40,7 +39,6 @@ def not_overridden(f):
             category = NotOverriddenWarning,
             stacklevel = 2
         )
-
         return f(self, *args, **kwargs)
     return new_f
 
