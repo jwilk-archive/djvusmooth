@@ -11,6 +11,7 @@
 # General Public License for more details.
 
 import re
+import functools
 import warnings
 import weakref
 
@@ -32,6 +33,7 @@ def not_overridden(f):
     >>> C().f(6, 7)
     42
     '''
+    @functools.wraps(f)
     def new_f(self, *args, **kwargs):
         cls = type(self)
         warnings.warn(
