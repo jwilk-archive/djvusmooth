@@ -15,7 +15,7 @@
 *djvusmooth* is a graphical editor for `DjVu <http://djvu.org>`_ documents.
 '''
 
-classifiers = '''\
+classifiers = '''
 Development Status :: 4 - Beta
 Environment :: Console
 Intended Audience :: End Users/Desktop
@@ -24,8 +24,8 @@ Operating System :: OS Independent
 Programming Language :: Python
 Programming Language :: Python :: 2
 Topic :: Text Processing
-Topic :: Multimedia :: Graphics\
-'''.split('\n')
+Topic :: Multimedia :: Graphics
+'''.strip().split('\n')
 
 import os
 import distutils.core
