@@ -3,7 +3,7 @@ include COPYING
 include doc/changelog
 include doc/*.1
 include doc/*.xml
-include po/*po
+include po/*.po
 include *.py
 recursive-include lib/ *.py
 include djvusmooth edit-text
