@@ -16,11 +16,6 @@ if __name__ != '__main__':
 
 import sys
 
-try:
-    import djvusmooth_importer
-except ImportError:
-    pass
-
 from djvusmooth.gui.main import Application
 application = Application()
 application.start(sys.argv[1:])
