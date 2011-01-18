@@ -2,8 +2,11 @@ djvusmooth (0.2.9) UNRELEASED; urgency=low
 
   * Windows: guess location of DjVuLibre DLLs and tools (requires
     python-djvulibre ≥ 0.3.3).
+  * Reset the SIGCHLD signal to SIG_IGN on start. Thanks to Heinrich
+    Schwietering for the bug report.
+    http://bugs.debian.org/596232
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 18 Jan 2011 19:45:01 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 18 Jan 2011 19:49:10 +0100
 
 djvusmooth (0.2.8) unstable; urgency=low
 
