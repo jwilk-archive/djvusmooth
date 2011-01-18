@@ -1,13 +1,15 @@
 djvusmooth (0.2.9) UNRELEASED; urgency=low
 
-  * Windows: guess location of DjVuLibre DLLs and tools (requires
-    python-djvulibre ≥ 0.3.3).
-  * Windows: don't rely on atomic renames when saving configuration files.
-  * Windows: use the “Application Data” folder to store configuration files
-    (unless the XDG_CONFIG_HOME environment variable is set).
-  * Non-POSIX systems: don't read configuration from ~/.DjVuSmooth.
-  * Non-POSIX systems: provide an alternative implementation of temporary file
-    objects, that don't require POSIX file semantics.
+  * Improve support for non-POSIX systems:
+    + Windows: guess location of DjVuLibre DLLs and tools (requires
+      python-djvulibre ≥ 0.3.3).
+    + Windows: don't rely on atomic renames when saving configuration files.
+    + Windows: use the “Application Data” folder to store configuration files
+      (unless the XDG_CONFIG_HOME environment variable is set).
+    + Don't read configuration from ~/.DjVuSmooth (which is deprecated
+      location anyway).
+    + Provide an alternative implementation of temporary file objects, that
+      don't require POSIX file semantics.
   * Reset the SIGCHLD signal to SIG_IGN on start. Thanks to Heinrich
     Schwietering for the bug report.
     http://bugs.debian.org/596232
