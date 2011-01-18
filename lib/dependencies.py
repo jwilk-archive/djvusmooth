@@ -18,6 +18,8 @@ WX_VERSIONS = ('2.8-unicode', '2.6-unicode')
 DDJVU_API_MIN_VERSION = 26
 PYTHON_DJVULIBRE_MIN_VERSION = (0, 1, 4)
 
+djvulibre_path = None
+
 def _check_signals():
     # Protect from scanadf[0] and possibly other brain-dead software that set
     # SIGCHLD to SIG_IGN.
@@ -28,6 +30,14 @@ def _check_signals():
         signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 
 def _check_djvu():
+    # On Windows, special measures may be needed to find the DjVuLibre DLL.
+    global djvulibre_path
+    try:
+        from djvu.dllpath import set_dll_search_path
+    except ImportError:
+        pass
+    else:
+        djvulibre_path = set_dll_search_path()
     try:
         from djvu.decode import __version__ as djvu_decode_version
     except ImportError, ex:

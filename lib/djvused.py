@@ -17,13 +17,22 @@ import threading
 
 from djvu.sexpr import Expression, Symbol
 
-try:
-    DJVULIBRE_BIN_PATH = os.path.join(pkgconfig.Package('ddjvuapi').variable('exec_prefix'), 'bin')
-except (IOError, OSError):
-    DJVULIBRE_BIN_PATH = None
-    DJVUSED_PATH = 'djvused'
+djvused_path = None
+if os.name =='nt':
+    from . import dependencies
+    djvused_path = os.path.join(dependencies.djvulibre_path, 'djvused.exe')
 else:
-    DJVUSED_PATH = os.path.join(DJVULIBRE_BIN_PATH, 'djvused')
+    try:
+        djvulibre_bin_path = os.path.join(pkgconfig.Package('ddjvuapi').variable('exec_prefix'), 'bin')
+    except (IOError, OSError):
+        pass
+    else:
+        djvused_path = os.path.join(djvulibre_bin_path, 'djvused')
+if djvused_path is None or not os.path.isfile(djvused_path):
+    # Let's hope it's within $PATH...
+    djvused_path = 'djvused'
+
+DJVUSED_PATH = djvused_path
 
 def _djvused_usability_check():
     try:
