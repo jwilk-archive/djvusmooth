@@ -15,6 +15,12 @@ import os
 
 from xdg import BaseDirectory as xdg
 
+if os.name == 'nt':
+    # On Windows, use the “Application Data” folder if XDG_CONFIG_HOME is
+    # not set.
+    if ('XDG_CONFIG_HOME' not in os.environ) and ('APPDATA' in os.environ):
+        xdg.xdg_config_home = os.environ['APPDATA']
+
 class Config(object):
 
     def __init__(self, resource, legacy_path=None):

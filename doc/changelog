@@ -3,12 +3,14 @@ djvusmooth (0.2.9) UNRELEASED; urgency=low
   * Windows: guess location of DjVuLibre DLLs and tools (requires
     python-djvulibre ≥ 0.3.3).
   * Windows: don't rely on atomic renames when saving configuration files.
+  * Windows: use the “Application Data” folder to store configuration files
+    (unless the XDG_CONFIG_HOME environment variable is set).
   * Non-POSIX systems: don't read configuration from ~/.DjVuSmooth.
   * Reset the SIGCHLD signal to SIG_IGN on start. Thanks to Heinrich
     Schwietering for the bug report.
     http://bugs.debian.org/596232
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 18 Jan 2011 20:10:38 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 18 Jan 2011 20:45:01 +0100
 
 djvusmooth (0.2.8) unstable; urgency=low
 
