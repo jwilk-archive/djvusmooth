@@ -6,11 +6,13 @@ djvusmooth (0.2.9) UNRELEASED; urgency=low
   * Windows: use the “Application Data” folder to store configuration files
     (unless the XDG_CONFIG_HOME environment variable is set).
   * Non-POSIX systems: don't read configuration from ~/.DjVuSmooth.
+  * Non-POSIX systems: provide an alternative implementation of temporary file
+    objects, that don't require POSIX file semantics.
   * Reset the SIGCHLD signal to SIG_IGN on start. Thanks to Heinrich
     Schwietering for the bug report.
     http://bugs.debian.org/596232
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 18 Jan 2011 20:45:01 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 18 Jan 2011 23:07:06 +0100
 
 djvusmooth (0.2.8) unstable; urgency=low
 

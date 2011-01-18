@@ -757,7 +757,7 @@ class MainWindow(wx.Frame):
         def job():
             new_repr = None
             try:
-                tmp_file = tempfile.NamedTemporaryFile(suffix='.txt')
+                tmp_file = external_editor.temporary_file(suffix='.txt')
                 try:
                     model.export_as_plaintext(tmp_file)
                     tmp_file.flush()
@@ -794,7 +794,7 @@ class MainWindow(wx.Frame):
         def job():
             new_sexpr = None
             try:
-                tmp_file = tempfile.NamedTemporaryFile(suffix='.txt')
+                tmp_file = external_editor.temporary_file(suffix='.txt')
                 try:
                     text_mangle.export(sexpr, tmp_file)
                     tmp_file.flush()
