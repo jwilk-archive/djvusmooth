@@ -23,7 +23,10 @@ def _check_signals():
     # SIGCHLD to SIG_IGN.
     # [0] http://bugs.debian.org/596232
     import signal
-    signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+    try:
+        signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+    except AttributeError:
+        pass
 
 def _check_djvu():
     try:
