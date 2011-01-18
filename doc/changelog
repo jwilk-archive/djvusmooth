@@ -3,11 +3,11 @@ djvusmooth (0.2.9) UNRELEASED; urgency=low
   * Improve support for non-POSIX systems:
     + Windows: guess location of DjVuLibre DLLs and tools (requires
       python-djvulibre ≥ 0.3.3).
-    + Windows: don't rely on atomic renames when saving configuration files.
     + Windows: use the “Application Data” folder to store configuration files
       (unless the XDG_CONFIG_HOME environment variable is set).
     + Don't read configuration from ~/.DjVuSmooth (which is deprecated
       location anyway).
+    + Don't rely on atomic renames when saving configuration files.
     + Provide an alternative implementation of temporary file objects, that
       don't require POSIX file semantics.
   * Reset the SIGCHLD signal to SIG_IGN on start. Thanks to Heinrich

@@ -81,8 +81,8 @@ class Config(object):
             os.fsync(file.fileno())
         finally:
             file.close()
-        if os.name == 'nt' and os.path.exists(path):
-            # Windows doesn't support atomic renames.
+        if os.name != 'posix' and os.path.exists(path):
+            # Atomic renames might be not supported.
             backup_path = path + '.bak'
             os.rename(path, backup_path)
             os.rename(tmp_path, path)
