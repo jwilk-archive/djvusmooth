@@ -1,5 +1,5 @@
 # encoding=UTF-8
-# Copyright © 2009, 2010 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2009, 2010, 2011 Jakub Wilk <jwilk@jwilk.net>
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -75,7 +75,14 @@ class Config(object):
             os.fsync(file.fileno())
         finally:
             file.close()
-        os.rename(tmp_path, path)
+        if os.name == 'nt':
+            # Windows doesn't support atomic renames.
+            backup_path = path + '.bak'
+            os.rename(path, backup_path)
+            os.rename(tmp_path, path)
+            os.remove(backup_path)
+        else:
+            os.rename(tmp_path, path)
         if self._legacy_path is not None:
             try:
                 os.remove(self._legacy_path)
