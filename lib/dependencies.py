@@ -22,11 +22,10 @@ def _check_signals():
     # Protect from scanadf[0] and possibly other brain-dead software that set
     # SIGCHLD to SIG_IGN.
     # [0] http://bugs.debian.org/596232
+    import os
     import signal
-    try:
+    if os.name == 'posix':
         signal.signal(signal.SIGCHLD, signal.SIG_DFL)
-    except AttributeError:
-        pass
 
 def _check_djvu():
     try:
