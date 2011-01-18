@@ -991,7 +991,11 @@ class Application(wx.App):
     def OnInit(self):
         wx.lib.ogl.OGLInitialize()
         self.SetAppName(APPLICATION_NAME)
-        self._config = config.Config('djvusmooth', os.path.expanduser('~/.DjVuSmooth'))
+        if os.name == 'posix':
+            legacy_path = os.path.expanduser('~/.DjVuSmooth')
+        else:
+            legacy_path = None
+        self._config = config.Config('djvusmooth', legacy_path)
         sys.excepthook = self.except_hook
         return True
 
