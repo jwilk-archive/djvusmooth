@@ -1,3 +1,9 @@
+djvusmooth (0.2.10) UNRELEASED; urgency=low
+
+  * 
+
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 19 Jan 2011 21:26:54 +0100
+
 djvusmooth (0.2.9) unstable; urgency=low
 
   * Improve support for non-POSIX systems:
