@@ -8,13 +8,13 @@ djvusmooth (0.2.9) UNRELEASED; urgency=low
     + Don't read configuration from ~/.DjVuSmooth (which is deprecated
       location anyway).
     + Don't rely on atomic renames when saving configuration files.
-    + Provide an alternative implementation of temporary file objects, that
-      don't require POSIX file semantics.
   * Reset the SIGCHLD signal to SIG_IGN on start. Thanks to Heinrich
     Schwietering for the bug report.
     http://bugs.debian.org/596232
+  * Fix support for external editors that use the overwrite-by-rename
+    technique. Thanks to Markus Baertschi for the bug report.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 18 Jan 2011 23:07:06 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 19 Jan 2011 20:51:18 +0100
 
 djvusmooth (0.2.8) unstable; urgency=low
 

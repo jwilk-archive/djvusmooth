@@ -14,47 +14,45 @@ import os.path
 import subprocess
 import tempfile
 
-if os.name == 'posix':
-    temporary_file = tempfile.NamedTemporaryFile
-else:
+class temporary_file(object):
 
-    # Ugly work-around for systems without POSIX file semantics.
+    def __init__(self, suffix='', prefix='tmp', dir=None, text=False):
+        fd, self.name = tempfile.mkstemp(suffix=suffix, prefix=prefix, dir=dir, text=text)
+        self.mode = 'r+' + 'bt'[bool(text)]
+        self.fp = os.fdopen(fd, self.mode)
 
-    class temporary_file(object):
+    def _reopen(self):
+        if self.fp is None:
+            self.fp = open(self.name, self.mode)
 
-        def __init__(self, suffix='', prefix='tmp', dir=None, text=False):
-            fd, self.name = tempfile.mkstemp(suffix=suffix, prefix=prefix, dir=dir, text=text)
-            self.mode = 'r+' + 'bt'[bool(text)]
-            self.fp = os.fdopen(fd, self.mode)
+    def flush(self):
+        if self.fp is None:
+            return
+        self.fp.close()
+        self.fp = None
 
-        def _reopen(self):
-            if self.fp is None:
-                self.fp = open(self.name, self.mode)
+    def close(self):
+        if self.name is None:
+            return
+        self.flush()
+        os.remove(self.name)
+        self.name = None
 
-        def flush(self):
-            if self.fp is None:
-                return
-            self.fp.close()
-            self.fp = None
+    def seek(self, offset, whence=0):
+        self._reopen()
+        self.fp.seek(offset, whence)
 
-        def close(self):
-            if self.name is None:
-                return
-            self.flush()
-            os.remove(self.name)
-            self.name = None
+    def write(self, s):
+        self._reopen()
+        self.fp.write(s)
 
-        def seek(self, offset, whence=0):
-            self._reopen()
-            self.fp.seek(offset, whence)
+    def read(self, n=-1):
+        self._reopen()
+        return self.fp.read(s)
 
-        def write(self, s):
-            self._reopen()
-            self.fp.write(s)
-
-        def __iter__(self):
-            self._reopen()
-            return iter(self.fp)
+    def __iter__(self):
+        self._reopen()
+        return iter(self.fp)
 
 class Editor(object):
 
