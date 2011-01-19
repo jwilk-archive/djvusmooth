@@ -54,6 +54,12 @@ class temporary_file(object):
         self._reopen()
         return iter(self.fp)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc, value, tb):
+        self.close()
+
 class Editor(object):
 
     def __call__(self, file_name):

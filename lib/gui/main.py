@@ -11,6 +11,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 # General Public License for more details.
 
+from __future__ import with_statement
+
 APPLICATION_NAME = 'djvusmooth'
 LICENSE = 'GPL-2'
 
@@ -757,15 +759,12 @@ class MainWindow(wx.Frame):
         def job():
             new_repr = None
             try:
-                tmp_file = external_editor.temporary_file(suffix='.txt')
-                try:
+                with external_editor.temporary_file(suffix='.txt') as tmp_file:
                     model.export_as_plaintext(tmp_file)
                     tmp_file.flush()
                     self.external_editor(tmp_file.name)
                     tmp_file.seek(0)
                     new_repr = map(str.expandtabs, itertools.imap(str.rstrip, tmp_file))
-                finally:
-                    tmp_file.close()
             except Exception, exception:
                 pass
             else:
@@ -794,8 +793,7 @@ class MainWindow(wx.Frame):
         def job():
             new_sexpr = None
             try:
-                tmp_file = external_editor.temporary_file(suffix='.txt')
-                try:
+                with external_editor.temporary_file(suffix='.txt') as tmp_file:
                     text_mangle.export(sexpr, tmp_file)
                     tmp_file.flush()
                     self.external_editor(tmp_file.name)
@@ -804,8 +802,6 @@ class MainWindow(wx.Frame):
                         new_sexpr = text_mangle.import_(sexpr, tmp_file)
                     except text_mangle.NothingChanged:
                         pass
-                finally:
-                    tmp_file.close()
             except Exception, exception:
                 pass
             else:
