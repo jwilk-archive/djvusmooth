@@ -1,4 +1,4 @@
-djvusmooth (0.2.9) UNRELEASED; urgency=low
+djvusmooth (0.2.9) unstable; urgency=low
 
   * Improve support for non-POSIX systems:
     + Windows: guess location of DjVuLibre DLLs and tools (requires
@@ -14,7 +14,7 @@ djvusmooth (0.2.9) UNRELEASED; urgency=low
   * Fix support for external editors that use the overwrite-by-rename
     technique. Thanks to Markus Baertschi for the bug report.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Wed, 19 Jan 2011 20:51:18 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 19 Jan 2011 21:07:53 +0100
 
 djvusmooth (0.2.8) unstable; urgency=low
 
