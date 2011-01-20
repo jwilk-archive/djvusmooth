@@ -1,8 +1,9 @@
 djvusmooth (0.2.10) UNRELEASED; urgency=low
 
-  * 
+  * Let the setup.py script build and install manual pages. Thanks to Kyrill
+    Detinov and Markus Baertschi for bug reports.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Wed, 19 Jan 2011 21:26:54 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Thu, 20 Jan 2011 00:30:53 +0100
 
 djvusmooth (0.2.9) unstable; urgency=low
 

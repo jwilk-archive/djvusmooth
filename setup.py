@@ -27,8 +27,12 @@ Topic :: Text Processing
 Topic :: Multimedia :: Graphics
 '''.strip().split('\n')
 
+import glob
 import os
+
 import distutils.core
+from distutils.command.build import build as distutils_build
+from distutils.command.sdist import sdist as distutils_sdist
 
 from lib import __version__
 
@@ -43,6 +47,35 @@ for root, dirs, files in os.walk('locale'):
             (os.path.join('share', root),
             [os.path.join(root, f)]
         ))
+manpages = set()
+data_files = [('share/man/man1', manpages)]
+
+class build_doc(distutils_build):
+
+    description = 'build documentation'
+
+    def run(self):
+        if os.name != 'posix':
+            return
+        for xmlname in glob.glob(os.path.join('doc', '*.xml')):
+            manname = os.path.splitext(xmlname)[0] + '.1'
+            command = [
+                'xsltproc', '--nonet',
+                '--param', 'man.charmap.use.subset', '0',
+                '--output', 'doc/',
+                'http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl',
+                xmlname,
+            ]
+            self.make_file([xmlname], manname, distutils.spawn.spawn, [command])
+            manpages.add(manname)
+
+distutils_build.sub_commands[:0] = [('build_doc', None)]
+
+class sdist(distutils_sdist):
+
+    def run(self):
+        self.run_command('build_doc')
+        return distutils_sdist.run(self)
 
 distutils.core.setup(
     name = 'djvusmooth',
@@ -58,6 +91,10 @@ distutils.core.setup(
     package_dir = dict(djvusmooth='lib'),
     scripts = ['djvusmooth'],
     data_files = data_files,
+    cmdclass = dict(
+        sdist=sdist,
+        build_doc=build_doc,
+    ),
 )
 
 # vim:ts=4 sw=4 et
