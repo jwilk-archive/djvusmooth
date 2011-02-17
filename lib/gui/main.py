@@ -756,7 +756,7 @@ class MainWindow(wx.Frame):
 
     def on_external_edit_outline(self, event):
         model = self.outline_model
-        def job():
+        def job(disabler):
             new_repr = None
             try:
                 with external_editor.temporary_file(suffix='.txt') as tmp_file:
@@ -770,9 +770,8 @@ class MainWindow(wx.Frame):
             else:
                 exception = None
             wx.CallAfter(lambda: self.after_external_edit_outline(new_repr, disabler, exception))
-            disabler = None
         disabler = wx.WindowDisabler()
-        thread = threading.Thread(target = job)
+        thread = threading.Thread(target=job, args=(disabler,))
         thread.start()
 
     def on_external_edit_failed(self, exception):
@@ -790,7 +789,7 @@ class MainWindow(wx.Frame):
         if not sexpr:
             self.error_box(_('No text layer to edit.'))
             return
-        def job():
+        def job(disabler):
             new_sexpr = None
             try:
                 with external_editor.temporary_file(suffix='.txt') as tmp_file:
@@ -807,9 +806,8 @@ class MainWindow(wx.Frame):
             else:
                 exception = None
             wx.CallAfter(lambda: self.after_external_edit_text(new_sexpr, disabler, exception))
-            disabler = None
         disabler = wx.WindowDisabler()
-        thread = threading.Thread(target = job)
+        thread = threading.Thread(target=job, args=(disabler,))
         thread.start()
 
     def after_external_edit_text(self, sexpr, disabler, exception):
