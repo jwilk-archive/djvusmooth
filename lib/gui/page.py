@@ -43,7 +43,7 @@ class Zoom(object):
 
     def _get_percent(self):
         raise ValueError
-    
+
     @apply
     def percent():
         def get(self):
@@ -134,14 +134,14 @@ class PageImage(wx.lib.ogl.RectangleShape):
         if to_deselect:
             canvas.Redraw(dc)
             shape.node.notify_deselect()
-    
+
     def OnRightClick(self, x, y, keys=0, attachment=0):
         wx.CallAfter(lambda: self._widget.on_right_click((x, y), None))
 
     def OnDraw(self, dc):
         x, y, w, h = self.GetCanvas().GetUpdateRegion().GetBox()
         if w < 0 or h < 0 or x == y == w == h == 0:
-            # This is not a regular refresh. 
+            # This is not a regular refresh.
             # So just see what might have been overwritten.
             x, y, w, h = dc.GetBoundingBox()
         dc.BeginDrawing()
@@ -360,14 +360,14 @@ class MapareaCallback(models.annotations.PageAnnotationsCallback):
 
     def notify_node_deselect(self, node):
         self._widget.on_node_deselected(node)
-    
+
     def notify_node_delete(self, node):
         self._widget.page = True
         # FIXME: consider something lighter here
 
     def notify_node_add(self, node):
         self._widget.on_maparea_add(node)
-    
+
     def notify_node_replace(self, node, other_node):
         self._widget.on_maparea_replace(node, other_node)
 
@@ -386,7 +386,7 @@ class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
             shape.deselect(notify = True)
         else:
             shape.select(notify = True)
-    
+
     def OnRightClick(self, x, y, keys=0, attachment=0):
         shape = self.GetShape()
         wx.CallAfter(lambda: self._widget.on_right_click((x, y), shape.node))
@@ -419,7 +419,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
         self.page = None
         self._current_shape = None
         self.Bind(wx.EVT_CHAR, self.on_char)
-    
+
     def OnMouseEvent(self, event):
         if event.GetEventType() == wx.wxEVT_MOUSEWHEEL:
             event.Skip()
@@ -452,11 +452,11 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
             shape.deselect()
             next_shape.select()
         wx.CallAfter(reselect)
-    
+
     def on_right_click(self, point, node):
         if self.render_nonraster == RENDER_NONRASTER_MAPAREA:
             self.show_maparea_menu(node, point)
-    
+
     def show_maparea_menu(self, node, point, extra={}):
         origin = self._xform_real_to_screen.inverse(point)
         gui.maparea_menu.show_menu(self, self._page_annotations, node, point, origin)
@@ -474,7 +474,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
         except KeyError:
             return
         return self._on_shape_deselected(shape)
-    
+
     def on_maparea_add(self, node):
         self.page = True
         # TODO: something lighter

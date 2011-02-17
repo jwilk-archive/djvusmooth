@@ -14,13 +14,13 @@ class Operation(object):
 
     def __init__(self, cost):
         self.cost = cost
-    
+
     def __cmp__(self, other):
         return cmp(self.cost, other.cost)
 
     def __repr__(self):
         return '%s(cost=%r)' % (self.__class__.__name__, self.cost)
-    
+
     def __add__(self, other):
         return self.cost + other
 

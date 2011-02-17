@@ -55,7 +55,7 @@ class StreamEditor(object):
         self._file_name = file_name
         self._commands = []
         self._autosave = autosave
-    
+
     def clone(self):
         return StreamEditor(self._filename, self._autosave)
 
@@ -67,25 +67,25 @@ class StreamEditor(object):
 
     def select_all(self):
         self._add('select')
-    
+
     def select(self, page_id):
         self._add('select %s' % page_id)
-    
+
     def select_shared_annotations(self):
         self._add('select-shared-ant')
-    
+
     def create_shared_annotations(self):
         self._add('create-shared-ant')
-    
+
     def set_annotations(self, annotations):
         self._add('set-ant')
         for annotation in annotations:
             self._add(str(annotation))
         self._add('.')
-    
+
     def remove_annotations(self):
         self._add('remove-ant')
-    
+
     def print_annotations(self):
         self._add('print-ant')
 
@@ -98,7 +98,7 @@ class StreamEditor(object):
 
     def remove_metadata(self):
         self._add('remove-meta')
-    
+
     def set_text(self, text):
         if text is None:
             self.remove_text()
@@ -107,7 +107,7 @@ class StreamEditor(object):
 
     def remove_text(self):
         self._add('remove-txt')
-    
+
     def set_outline(self, outline):
         if outline is None:
             outline = ''
@@ -118,22 +118,22 @@ class StreamEditor(object):
 
     def remove_thumbnails(self):
         self._add('remove-thumbnails')
-    
+
     def set_page_title(self, title):
         self._add('set-page-title %s' % Expression(title))
-    
+
     def save_page(self, file_name, include = False):
         command = 'save-page'
         if include:
             command += '-with'
         self._add('%s %s' % command, file_name)
-    
+
     def save_as_bundled(self, file_name):
         self._add('save-bundled %s' % file_name)
 
     def save_as_indirect(self, file_name):
         self._add('save-indirect %s' % file_name)
-    
+
     def save(self):
         self._add('save')
 
@@ -159,7 +159,7 @@ class StreamEditor(object):
             raise IOError(djvused.stderr.readline().lstrip('* '))
         reader_thread.join()
         return result[0]
-        
+
     def commit(self):
         try:
             return self._execute(self._commands, save = self._autosave)

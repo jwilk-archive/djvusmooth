@@ -43,7 +43,7 @@ class MetadataTable(wx.grid.PyGridTableBase):
 
     def GetColLabelValue(self, n):
         return LABELS[n]
-    
+
     def GetNumberRows(self):
         return len(self._keys)
 
@@ -65,20 +65,20 @@ class MetadataTable(wx.grid.PyGridTableBase):
 
     def set_value(self, key, value):
         self._model[key] = value
-    
+
     def set_new_key(self, y, new_key, value):
         assert isinstance(new_key, djvu.sexpr.Symbol)
         del self._model[self._keys[y]]
         self._model[new_key] = value
         self._keys[y] = new_key
-    
+
     def add_new_key(self, new_key):
         assert isinstance(new_key, djvu.sexpr.Symbol)
         self._model[new_key] = ''
         y = len(self._keys) - 1
         self._keys[y:] = new_key, None
         self.GetView().ProcessTableMessage(wx.grid.GridTableMessage(self, wx.grid.GRIDTABLE_NOTIFY_ROWS_APPENDED, 1))
-    
+
     def delete_key(self, y):
         key = self._keys[y]
         assert isinstance(key, djvu.sexpr.Symbol)

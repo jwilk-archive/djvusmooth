@@ -55,7 +55,7 @@ class PageAnnotationsCallback(object):
     @not_overridden
     def notify_node_deselect(self, node):
         pass
-    
+
     @not_overridden
     def notify_node_add(self, node):
         pass
@@ -73,7 +73,7 @@ class Border(object):
     @not_overridden
     def __init__(self, *args, **kwargs):
         raise NotImplementedError
-    
+
     @not_overridden
     def _get_sexpr(self):
         raise NotImplementedError
@@ -104,11 +104,11 @@ class SolidBorder(Border):
 
     def __init__(self, color):
         self._color = parse_color(color)
-    
+
     @property
     def color(self):
         return self._color
-    
+
     def _get_sexpr(self):
         return djvu.sexpr.Expression((djvu.const.MAPAREA_BORDER_SOLID_COLOR, djvu.sexpr.Symbol(self._color)))
 
@@ -149,7 +149,7 @@ class Annotations(MultiPageModel):
 
 class Annotation(object):
 
-    @classmethod 
+    @classmethod
     def from_sexpr(cls, sexpr, owner):
         raise NotImplementedError
 
@@ -167,11 +167,11 @@ class OtherAnnotation(Annotation):
 
     def __init__(self, sexpr, owner=None):
         self._sexpr = sexpr
-    
+
     @classmethod
     def from_sexpr(cls, sexpr, owner):
         return cls(sexpr, owner)
-    
+
     def _get_sexpr(self):
         return self._sexpr
 
@@ -190,14 +190,14 @@ class MapArea(Annotation):
             return
         self._owner.replace_maparea(self, other)
         other._owner = self._owner
-    
+
     def delete(self):
         former_owner = self._owner
         if former_owner is None:
             return
         self._owner.remove_maparea(self)
         self._owner = None
-    
+
     def insert(self, owner):
         owner.add_maparea(self)
         self._owner = owner
@@ -229,7 +229,7 @@ class MapArea(Annotation):
         self._border_always_visible = maparea is not None and maparea.border_always_visible is True
         return self
 
-    @classmethod 
+    @classmethod
     def from_sexpr(cls, sexpr, owner):
         sexpr = iter(sexpr)
         try:
@@ -268,11 +268,11 @@ class MapArea(Annotation):
     @not_overridden
     def _get_sexpr_area(self):
         raise NotImplementedError
-    
+
     @not_overridden
     def _get_sexpr_extra(self):
         return ()
-    
+
     def _get_sexpr_border(self):
         if self._border is None:
             return
@@ -300,7 +300,7 @@ class MapArea(Annotation):
             border_part +
             self._get_sexpr_extra()
         )
-    
+
     def _parse_border_options(self, options):
         self._border = None
         try:
@@ -321,7 +321,7 @@ class MapArea(Annotation):
             pass
         except (TypeError, ValueError), ex:
             raise MapAreaSyntaxError(ex)
-    
+
     def _parse_shadow_border_options(self, options):
         for border_style in djvu.const.MAPAREA_SHADOW_BORDERS:
             try:
@@ -332,7 +332,7 @@ class MapArea(Annotation):
                 raise MapAreaSyntaxError(ex)
             cls = MAPAREA_SHADOW_BORDER_TO_CLASS[border_style]
             self._border = cls(width)
-    
+
     def _parse_border_always_visible(self, options):
         try:
             del options['s_%s' % djvu.const.MAPAREA_BORDER_ALWAYS_VISIBLE]
@@ -347,13 +347,13 @@ class MapArea(Annotation):
                 raise MapAreaSyntaxError('%r is invalid option for %r annotations' % (option[2:], self.SYMBOL))
         if options:
             raise ValueError('%r is invalid keyword argument for this function' % (iter(options).next(),))
-    
+
     def _parse_common_options(self, options):
         self._uri = options.pop('uri')
         self._target = options.pop('target')
         self._comment = options.pop('comment')
         self._owner = options.pop('owner')
-    
+
     @apply
     def uri():
         def get(self):
@@ -362,7 +362,7 @@ class MapArea(Annotation):
             self._uri = value
             self._notify_change()
         return property(get, set)
-    
+
     @apply
     def target():
         def get(self):
@@ -384,14 +384,14 @@ class MapArea(Annotation):
     @not_overridden
     def _set_rect(self, rect):
         raise NotImplementedError
-    
+
     @not_overridden
     def _get_rect(self):
         raise NotImplementedError
-    
+
     def _get_orign(self):
         return self._get_rect()[:2]
-    
+
     def _set_origin(self, (x1, y1)):
         x0, y0, w, h = self._get_rect()
         self._set_rect((x1, y1, w, h))
@@ -413,7 +413,7 @@ class MapArea(Annotation):
             self._set_rect(rect)
             self._notify_change()
         return property(get, set)
-    
+
     @apply
     def border_always_visible():
         def get(self):
@@ -422,7 +422,7 @@ class MapArea(Annotation):
             self._border_always_visible = value
             self._notify_change()
         return property(get, set)
-    
+
     @apply
     def border():
         def get(self):
@@ -479,7 +479,7 @@ class XywhMapArea(MapArea):
 
     def _get_rect(self):
         return self._x, self._y, self._w, self._h
-    
+
     def _get_sexpr_area(self):
         return (self.SYMBOL, self._x, self._y, self._w, self._h)
 
@@ -528,7 +528,7 @@ class RectangleMapArea(XywhMapArea):
         if self._highlight_color is not None:
             result += (djvu.const.MAPAREA_HIGHLIGHT_COLOR, djvu.sexpr.Symbol(self._highlight_color)),
         return tuple(result)
-    
+
     @apply
     def opacity():
         def get(self):
@@ -540,7 +540,7 @@ class RectangleMapArea(XywhMapArea):
             self._opacity = value
             self._notify_change()
         return property(get, set)
-    
+
     @apply
     def highlight_color():
         def get(self):
@@ -574,10 +574,10 @@ class PolygonMapArea(MapArea):
             (self.SYMBOL,),
             itertools.chain(*self._coords)
         ))
-    
+
     def _get_sexpr_extra(self):
         return ()
-    
+
     def _get_rect(self):
         x0 = y0 = 1e999
         x1 = y1 = -1e999
@@ -591,7 +591,7 @@ class PolygonMapArea(MapArea):
         if w <= 0: w = 1
         if h <= 0: h = 1
         return (x0, y0, w, h)
-    
+
     def _set_rect(self, rect):
         xform = djvu.decode.AffineTransform(self.rect, rect)
         self._coords = map(xform, self._coords)
@@ -632,7 +632,7 @@ class LineMapArea(MapArea):
 
     def _get_sexpr_area(self):
         return djvu.sexpr.Expression((self.SYMBOL, self._x0, self._y0, self._x1, self._y1))
-    
+
     def _get_sexpr_extra(self):
         result = []
         if self._line_arrow:
@@ -651,13 +651,13 @@ class LineMapArea(MapArea):
         xform = djvu.decode.AffineTransform(self.rect, rect)
         self._x0, self._y0 = xform((self._x0, self._y0))
         self._x1, self._y1 = xform((self._x1, self._y1))
-    
+
     @apply
     def point_from():
         def get(self):
             return self._x0, self._y0
         return property(get)
-    
+
     @apply
     def point_to():
         def get(self):
@@ -710,7 +710,7 @@ class LineMapArea(MapArea):
             self._line_width = value
             self._notify_change()
         return property(get, set)
-    
+
     @apply
     def line_color():
         def get(self):
@@ -736,7 +736,7 @@ class LineMapArea(MapArea):
         def set(self, value):
             pass # FIXME?
         return property(get, set)
-    
+
 class TextMapArea(XywhMapArea):
 
     SYMBOL = djvu.const.MAPAREA_SHAPE_TEXT
@@ -787,7 +787,7 @@ class TextMapArea(XywhMapArea):
         if self._pushpin:
             result += (djvu.const.MAPAREA_PUSHPIN,),
         return tuple(result)
-    
+
     @apply
     def background_color():
         def get(self):
@@ -837,7 +837,7 @@ class PageAnnotations(object):
         self._callbacks = weakref.WeakKeyDictionary()
         self.revert()
         self._n = n
-    
+
     def register_callback(self, callback):
         if not isinstance(callback, PageAnnotationsCallback):
             raise TypeError
@@ -854,18 +854,18 @@ class PageAnnotations(object):
                 item = OtherAnnotation(item)
             result[cls].append(item)
         return result
-    
+
     def add_maparea(self, node):
         self._data[MapArea] += node,
         self.notify_node_add(node)
-    
+
     def remove_maparea(self, node):
         try:
             self._data[MapArea].remove(node)
         except ValueError:
             return
         self.notify_node_delete(node)
-    
+
     def replace_maparea(self, node, other_node):
         mapareas = self._data[MapArea]
         try:
@@ -874,15 +874,15 @@ class PageAnnotations(object):
             return
         mapareas[i] = other_node
         self.notify_node_replace(node, other_node)
-    
+
     @property
     def mapareas(self):
         return self._data.get(MapArea, ())
-    
+
     def revert(self):
         self._data = self._classify_data(self._old_data)
         self._dirty = False
-    
+
     def export(self, djvused):
         if not self._dirty:
             return
@@ -901,7 +901,7 @@ class PageAnnotations(object):
         self._dirty = True
         for callback in self._callbacks:
             callback.notify_node_change(node)
-    
+
     def notify_node_replace(self, node, other_node):
         self._dirty = True
         for callback in self._callbacks:

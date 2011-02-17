@@ -25,10 +25,10 @@ class OutlineCallback(models.outline.OutlineCallback):
 
     def __init__(self, browser):
         self._browser = browser
-    
+
     def notify_node_change(self, node):
         wx.CallAfter(lambda: self._browser.on_node_change(node))
-    
+
     def notify_node_select(self, node):
         wx.CallAfter(lambda: self._browser.on_node_select(node))
 
@@ -37,7 +37,7 @@ class OutlineCallback(models.outline.OutlineCallback):
 
     def notify_tree_change(self, node):
         wx.CallAfter(lambda: self._browser.on_tree_change(node))
-    
+
 class OutlineBrowser(wx.TreeCtrl):
 
     def __init__(self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.DefaultSize, style = wx.TR_HAS_BUTTONS | wx.TR_EDIT_LABELS):
@@ -51,7 +51,7 @@ class OutlineBrowser(wx.TreeCtrl):
         self.Bind(wx.EVT_CHAR, self.on_char)
         self.Bind(wx.EVT_TREE_BEGIN_DRAG, self.on_begin_drag)
         self.Bind(wx.EVT_TREE_END_DRAG, self.on_end_drag)
-    
+
     def on_begin_drag(self, event):
         drag_item = event.GetItem()
         if drag_item == self._root_item:
@@ -61,7 +61,7 @@ class OutlineBrowser(wx.TreeCtrl):
         node = self.GetPyData(drag_item)
         if node is not None:
             event.Allow()
-    
+
     def on_end_drag(self, event):
         source = self._drag_item
         del self._drag_item
@@ -81,7 +81,7 @@ class OutlineBrowser(wx.TreeCtrl):
         while True:
             if target_ancestor is source_node:
                 # Cannot move a node to its child
-                return 
+                return
             try:
                 target_ancestor = target_ancestor.parent
             except StopIteration:
@@ -101,7 +101,7 @@ class OutlineBrowser(wx.TreeCtrl):
             parent.page_no = n - 1
         else:
             return # TODO: try to handle non-local URIs
-    
+
     def do_delete_node(self, node):
         node.delete()
 
@@ -139,7 +139,7 @@ class OutlineBrowser(wx.TreeCtrl):
 
     def on_tree_change(self, model_node):
         self.document = True
-    
+
     def on_node_children_change(self, node):
         if self._root_item is None:
             self._create_root_item()
@@ -180,7 +180,7 @@ class OutlineBrowser(wx.TreeCtrl):
         item = event.GetItem()
         if not self.do_begin_edit(item):
             event.Veto()
-    
+
     def do_begin_edit(self, item):
         if item == self._root_item:
             return
@@ -189,7 +189,7 @@ class OutlineBrowser(wx.TreeCtrl):
             return
         self.SetItemText(item, node.text)
         return True
-    
+
     def on_end_edit(self, event):
         item = event.GetItem()
         if event.IsEditCancelled():
@@ -198,7 +198,7 @@ class OutlineBrowser(wx.TreeCtrl):
             new_text = event.GetLabel()
         if not self.do_end_edit(item, new_text):
             event.Veto()
-    
+
     def do_end_edit(self, item, text):
         node = self.GetPyData(item)
         if node is None:
@@ -220,7 +220,7 @@ class OutlineBrowser(wx.TreeCtrl):
         node = self.GetPyData(item)
         self._items.pop(node, None)
         wx.TreeCtrl.Delete(self, item)
-    
+
     def DeleteAllItems(self):
         wx.TreeCtrl.DeleteAllItems(self)
         self._items.clear()

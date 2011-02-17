@@ -18,7 +18,7 @@ class ProgressDialog(wx.ProgressDialog):
         wx.ProgressDialog.__init__(self, title, message, maximum, parent, style)
         self.__max = maximum
         self.__n = 0
-        
+
     try:
         wx.ProgressDialog.Pulse
     except AttributeError:
@@ -36,7 +36,6 @@ except AttributeError:
 
         def GetValue(self):
             return int(wx.SingleChoiceDialog.GetStringSelection(self))
-
 
 __all__ = 'ProgressDialog', 'NumberEntryDialog'
 

@@ -46,11 +46,11 @@ class Node(object):
         self._w = x1 - x0
         self._h = y1 - y0
         self._link_left = self._link_right = self._link_parent = wref(None)
-    
+
     @property
     def sexpr(self):
         return self._construct_sexpr()
-    
+
     def _construct_sexpr(self):
         raise NotImplementedError
 
@@ -95,7 +95,7 @@ class Node(object):
             self._h = value
             self._notify_change()
         return property(get, set)
-    
+
     @apply
     def rect():
         def get(self):
@@ -110,7 +110,7 @@ class Node(object):
         def get(self):
             return self._type
         return property(get)
-    
+
     @apply
     def left_sibling():
         def get(self):
@@ -137,7 +137,7 @@ class Node(object):
                 raise StopIteration
             return link
         return property(get)
-    
+
     @apply
     def left_child():
         def get(self):
@@ -156,25 +156,25 @@ class Node(object):
 
     def strip(self, zone_type):
         raise NotImplementedError
-    
+
     def is_leaf(self):
         return False
-    
+
     def is_inner(self):
         return False
 
     def notify_select(self):
         self._owner.notify_node_select(self)
-    
+
     def notify_deselect(self):
         self._owner.notify_node_deselect(self)
-    
+
     def _notify_change(self):
         return self._owner.notify_node_change(self)
-    
+
     def _notify_children_change(self):
         return self._owner.notify_node_children_change(self)
-    
+
 class LeafNode(Node):
 
     def is_leaf(self):
@@ -204,10 +204,10 @@ class LeafNode(Node):
         if self.type <= zone_type:
             return self.text, self.separator
         return self
-    
+
     def __getitem__(self, n):
         raise TypeError
-    
+
     def __len__(self):
         raise TypeError
 
@@ -222,7 +222,7 @@ class InnerNode(Node):
     def __init__(self, sexpr, owner):
         Node.__init__(self, sexpr, owner)
         self._set_children(Node(child, self._owner) for child in sexpr[5:])
-    
+
     def _set_children(self, children):
         self._children = list(children)
         prev = None
@@ -291,10 +291,10 @@ class InnerNode(Node):
                     )), self._owner
                 )
         return self
-    
+
     def __getitem__(self, n):
         return self._children[n]
-    
+
     def __len__(self):
         return len(self._children)
 
@@ -315,7 +315,7 @@ class PageTextCallback(object):
     @not_overridden
     def notify_node_children_change(self, node):
         pass
-    
+
     @not_overridden
     def notify_node_select(self, node):
         pass
@@ -335,7 +335,7 @@ class PageText(object):
         self._original_sexpr = original_data
         self.revert()
         self._n = n
-    
+
     def register_callback(self, callback):
         if not isinstance(callback, PageTextCallback):
             raise TypeError
@@ -346,7 +346,7 @@ class PageText(object):
         def get(self):
             return self._root
         return property(get)
-    
+
     @apply
     def raw_value():
         def get(self):
@@ -373,17 +373,17 @@ class PageText(object):
 
     def clone(self):
         return copy.copy(self)
-    
+
     def export(self, djvused):
         if not self._dirty:
             return
         djvused.select(self._n + 1)
         djvused.set_text(self.raw_value)
-    
+
     def revert(self):
         self.raw_value = self._original_sexpr
         self._dirty = False
-    
+
     def notify_node_change(self, node):
         self._dirty = True
         for callback in self._callbacks:
@@ -399,12 +399,12 @@ class PageText(object):
 
     def notify_node_deselect(self, node):
         for callback in self._callbacks: callback.notify_node_deselect(node)
-    
+
     def notify_tree_change(self):
         self._dirty = True
         for callback in self._callbacks:
             callback.notify_tree_change(self._root)
-    
+
     def get_preorder_nodes(self):
         if self.root is None:
             return ()
@@ -419,7 +419,7 @@ class PageText(object):
         if self.root is None:
             return ()
         return _get_leafs(self.root)
-    
+
 def _get_preorder_nodes(node):
     yield node
     if isinstance(node, LeafNode):

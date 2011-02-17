@@ -30,7 +30,7 @@ def show_menu(parent, annotations, node, point, origin=None):
         parent.PopupMenu(menu, point)
     finally:
         menu.Destroy()
-    
+
 def on_new_annotation(event, parent, annotations, origin):
     dialog = MapareaPropertiesDialog(parent, origin=origin)
     try:

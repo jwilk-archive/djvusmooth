@@ -83,7 +83,7 @@ class CustomEditor(object):
     def __init__(self, command, *extra_args):
         self._command = [command]
         self._command += extra_args
-    
+
     def __call__(self, file_name):
         file_name = os.path.abspath(file_name)
         edit = subprocess.Popen(

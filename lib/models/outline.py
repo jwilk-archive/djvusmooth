@@ -63,7 +63,7 @@ class Node(object):
         child._link_left = child._link_right = child._link_parent = wref(None)
         del self._children[child_idx]
         self._notify_children_change()
-    
+
     uri = property()
     text = property()
 
@@ -80,7 +80,7 @@ class Node(object):
 
     def __getitem__(self, item):
         return self._children[item]
-    
+
     def __len__(self):
         return len(self._children)
 
@@ -119,16 +119,16 @@ class Node(object):
         def get(self):
             return iter(self).next()
         return property(get)
-    
+
     def delete(self):
         raise NotImplementedError
 
     def notify_select(self):
         self._owner.notify_node_select(self)
-    
+
     def _notify_children_change(self):
         return self._owner.notify_node_children_change(self)
-    
+
 class RootNode(Node):
 
     def __init__(self, sexpr, owner):
@@ -136,7 +136,7 @@ class RootNode(Node):
         sexpr = iter(sexpr)
         self._type = sexpr.next().value
         self._set_children(InnerNode(subexpr, owner) for subexpr in sexpr)
-    
+
     def _construct_sexpr(self):
         return djvu.sexpr.Expression(itertools.chain(
             (self.type,),
@@ -170,7 +170,7 @@ class InnerNode(Node):
             self._uri = value
             self._notify_change()
         return property(get, set)
-        
+
     @apply
     def text():
         def get(self):
@@ -179,7 +179,7 @@ class InnerNode(Node):
             self._text = value
             self._notify_change()
         return property(get, set)
-    
+
     def _notify_change(self):
         self._owner.notify_node_change(self)
 
@@ -212,7 +212,7 @@ class OutlineCallback(object):
     @not_overridden
     def notify_node_children_change(self, node):
         pass
-    
+
     @not_overridden
     def notify_node_select(self, node):
         pass
@@ -245,7 +245,7 @@ class Outline(object):
             self._root = RootNode(sexpr, self)
             self.notify_tree_change()
         return property(get, set)
-    
+
     def remove(self):
         self.raw_value = djvu.const.EMPTY_OUTLINE
 
@@ -274,17 +274,17 @@ class Outline(object):
     def notify_node_select(self, node):
         for callback in self._callbacks:
             callback.notify_node_select(node)
-    
+
     def export(self, djvused):
         if self.root:
             value = self.raw_value
         else:
             value = None
         djvused.set_outline(value)
-    
+
     def export_as_plaintext(self, stream):
         return self.root.export_as_plaintext(stream)
-    
+
     def import_plaintext(self, lines):
         def fix_node(node):
             it = iter(node)

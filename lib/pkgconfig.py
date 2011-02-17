@@ -19,7 +19,7 @@ class Package(object):
 
     def __init__(self, name):
         self._name = name
-    
+
     def variable(self, variable_name):
         pkgconfig = subprocess.Popen(
             ['pkg-config', '--variable=' + str(variable_name), self._name],

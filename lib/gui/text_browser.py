@@ -29,19 +29,19 @@ class PageTextCallback(models.text.PageTextCallback):
 
     def __init__(self, browser):
         self._browser = browser
-    
+
     def notify_node_change(self, node):
         wx.CallAfter(lambda: self._browser.on_node_change(node))
-    
+
     def notify_node_children_change(self, node):
         wx.CallAfter(lambda: self._browser.on_tree_change(node))
         # FIXME: consider something lighter here
 
     def notify_tree_change(self, node):
         wx.CallAfter(lambda: self._browser.on_tree_change(node))
-    
+
     def notify_node_deselect(self, node): pass
-    
+
     def notify_node_select(self, node):
         wx.CallAfter(lambda: self._browser.on_node_select(node))
 
@@ -54,7 +54,7 @@ class TextBrowser(wx.TreeCtrl):
         self.Bind(wx.EVT_TREE_BEGIN_LABEL_EDIT, self.on_begin_edit, self)
         self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.on_end_edit, self)
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_selection_changed, self)
-    
+
     def on_node_change(self, node):
         try:
             item = self._items[node]
@@ -102,7 +102,7 @@ class TextBrowser(wx.TreeCtrl):
         item = event.GetItem()
         if not self.do_begin_edit(item):
             event.Veto()
-    
+
     def do_begin_edit(self, item):
         node = self.GetPyData(item)
         if node is None:
@@ -110,7 +110,7 @@ class TextBrowser(wx.TreeCtrl):
         if node.is_leaf():
             self.SetItemText(item, node.text)
             return True
-    
+
     def on_end_edit(self, event):
         item = event.GetItem()
         if event.IsEditCancelled():
@@ -119,7 +119,7 @@ class TextBrowser(wx.TreeCtrl):
             new_text = event.GetLabel()
         if not self.do_end_edit(item, new_text):
             event.Veto()
-    
+
     def do_end_edit(self, item, text):
         node = self.GetPyData(item)
         if node is None:

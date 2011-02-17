@@ -219,7 +219,7 @@ class MapareaPropertiesDialog(wx.Dialog):
         if have_shadow_border:
             border_width_edit.SetValue(border.width)
         return box_sizer
-    
+
     def _setup_extra_boxes(self):
         node = self._node
         extra_boxes = \
@@ -353,7 +353,7 @@ class MapareaPropertiesDialog(wx.Dialog):
                 raise TypeError
         self._edit_shape.SetSelection(i)
         self.do_select_shape(shape)
-    
+
     def get_node(self):
         shape = SHAPES[self._edit_shape.GetSelection()]
         model_class = shape.model_class

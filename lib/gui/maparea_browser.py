@@ -24,22 +24,22 @@ class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 
     def __init__(self, owner):
         self._owner = owner
-    
+
     def notify_node_change(self, node):
         wx.CallAfter(lambda: self._owner.on_node_change(node))
-    
+
     def notify_node_select(self, node):
         wx.CallAfter(lambda: self._owner.on_node_select(node))
-    
+
     def notify_node_deselect(self, node):
         pass
-    
+
     def notify_node_add(self, node):
         wx.CallAfter(lambda: self._owner.on_node_add(node))
-    
+
     def notify_node_replace(self, node, other_node):
         wx.CallAfter(lambda: self._owner.on_node_replace(node, other_node))
-    
+
     def notify_node_delete(self, node):
         wx.CallAfter(lambda: self._owner.on_node_delete(node))
 
@@ -92,17 +92,17 @@ class MapAreaBrowser(
     def on_node_add(self, node):
         item = self._insert_item(node)
         self.Focus(item)
-    
+
     def on_node_replace(self, node, other_node):
         item = self._insert_item(other_node, replace_node=node)
         self.Focus(item)
 
     def on_node_change(self, node):
         self.on_node_replace(node, node)
-    
+
     def on_node_delete(self, node):
         self._remove_item(node)
-    
+
     def on_node_select(self, node):
         try:
             current_item = self._data_map[node]
@@ -112,13 +112,13 @@ class MapAreaBrowser(
         if selected_item != current_item:
             self.Select(selected_item, False)
             self.Select(current_item, True)
-    
+
     def on_item_right_click(self, event):
         item = event.m_itemIndex
         node = self.GetPyData(item)
         # Yup, we accept the fact that `node` can be `None`
         self.show_menu(node, event.GetPoint())
-    
+
     def show_menu(self, node, point):
         gui.maparea_menu.show_menu(self, self.page.annotations, node, point)
 
@@ -129,7 +129,7 @@ class MapAreaBrowser(
         if node is None:
             return
         node.notify_select()
-    
+
     @apply
     def page():
         def get(self):
@@ -159,7 +159,7 @@ class MapAreaBrowser(
     def GetPyData(self, item):
         id = item_to_id(item)
         return self._data.get(id)
-    
+
     def SetPyData(self, item, data):
         id = item_to_id(item)
         try:
@@ -168,7 +168,7 @@ class MapAreaBrowser(
             pass
         self._data[id] = data
         self._data_map[data] = id
-    
+
     def _remove_all_items(self):
         wx.ListCtrl.DeleteAllItems(self)
         self._data.clear()

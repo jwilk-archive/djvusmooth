@@ -58,10 +58,10 @@ class FlattenTextDialog(wx.Dialog):
         button_sizer.Realize()
         sizer.Add(button_sizer, 0, wx.EXPAND | wx.ALL, 5)
         self.SetSizerAndFit(sizer)
-    
+
     def get_scope(self):
         return self._scope_box.GetSelection()
-    
+
     def get_zone(self):
         label, zone = ZONES_MAP[self._zone_box.GetSelection()]
         return zone

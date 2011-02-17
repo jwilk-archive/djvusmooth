@@ -15,7 +15,7 @@
 Models for metadata.
 
 See ``djvuchanges.txt``:
-- 4. Metadata Annotations. 
+- 4. Metadata Annotations.
 - 5. Document Annotations and Metadata.
 '''
 
@@ -28,7 +28,7 @@ class Metadata(MultiPageModel):
             return SharedMetadata
         else:
             return PageMetadata
-            
+
 class PageMetadata(dict):
 
     def __init__(self, n, original_data):
@@ -49,7 +49,7 @@ class PageMetadata(dict):
         if self._old_data is not None or overwrite:
             self._old_data = dict(original_data)
             self.revert()
-    
+
     def export_select(self, djvused):
         djvused.select(self._n + 1)
 
@@ -80,7 +80,7 @@ class PageMetadata(dict):
             return True
 
 class SharedMetadata(PageMetadata):
-    
+
     def export_select(self, djvused):
         djvused.create_shared_annotations()
 
