@@ -5,7 +5,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: djvusmooth 0.2.10\n"
+"Project-Id-Version: djvusmooth 0.2.11\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-01-19 21:30+0100\n"
 "PO-Revision-Date: 2010-06-26 18:05+0300\n"
