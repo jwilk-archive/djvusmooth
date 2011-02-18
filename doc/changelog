@@ -4,8 +4,10 @@ djvusmooth (0.2.10) UNRELEASED; urgency=low
     Detinov and Markus Baertschi for bug reports.
   * Fix the code that was supposed to disable the GUI while an external editor
     is running. Thanks to Mike Thiery for the bug report.
+  * Fix the manual page: djvusmooth uses XDG_CONFIG_HOME rather than
+    XDG_DATA_HOME.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Thu, 17 Feb 2011 19:01:40 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Fri, 18 Feb 2011 12:12:26 +0100
 
 djvusmooth (0.2.9) unstable; urgency=low
 
