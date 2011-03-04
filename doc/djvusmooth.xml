@@ -47,7 +47,7 @@
 <refsection>
     <title>Description</title>
     <para>
-        &p; is a graphical editor for DjVu files, which allows to:
+        &p; is a graphical editor for DjVu files, which allows one to:
         <itemizedlist>
             <listitem><para>edit document metadata,</para></listitem>
             <listitem><para>edit document outline (bookmarks),</para></listitem>
@@ -90,7 +90,7 @@
 <refsection>
     <title>Portability</title>
     <para>
-        &p; allows to create hyperlinks with shadow borders as thin as 1 pixel, as specified by the
+        &p; allows one to create hyperlinks with shadow borders as thin as 1 pixel, as specified by the
         <ulink url='http://djvu.org/docs/DjVu3Spec.djvu'>Lizardtech DjVu Reference</ulink>.
         However, some DjVu browsers do not accept shadow borders thinner than 3 pixels.
     </para>
