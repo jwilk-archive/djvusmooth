@@ -1,8 +1,8 @@
 djvusmooth (0.2.11) UNRELEASED; urgency=low
 
-  * 
+  * Let the setup.py script build and install binary message catalogs.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Fri, 18 Feb 2011 12:18:20 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 09 Mar 2011 12:46:19 +0100
 
 djvusmooth (0.2.10) unstable; urgency=low
 

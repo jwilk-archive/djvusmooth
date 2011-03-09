@@ -32,7 +32,6 @@ po/$(PROJECT_NAME).pot: $(SOURCE_FILES)
 	msgmerge -o $(@) $(@) $(<)
 
 locale/%/LC_MESSAGES/$(PROJECT_NAME).mo: po/%.po
-	mkdir -p $(dir $(@))
-	msgfmt -o $(@) -c $(<)
+	python setup.py build_mo
 
 # vim:ts=4 sw=4 noet

@@ -39,16 +39,23 @@ from lib import __version__
 os.putenv('TAR_OPTIONS', '--owner root --group root --mode a+rX')
 
 data_files = []
-for root, dirs, files in os.walk('locale'):
-    for f in files:
-        if not f.endswith('.mo'):
-            continue
-        data_files.append(
-            (os.path.join('share', root),
-            [os.path.join(root, f)]
-        ))
-manpages = set()
-data_files = [('share/man/man1', manpages)]
+
+class build_mo(distutils_build):
+
+    description = 'build binary message catalogs'
+
+    def run(self):
+        if os.name != 'posix':
+            return
+        for poname in glob.glob(os.path.join('po', '*.po')):
+            lang, _ = os.path.splitext(os.path.basename(poname))
+            modir = os.path.join('locale', lang, 'LC_MESSAGES')
+            if not os.path.isdir(modir):
+                os.makedirs(modir)
+            moname = os.path.join(modir, 'djvusmooth.mo')
+            command = ['msgfmt', '-o', moname, '-c', poname]
+            self.make_file([poname], moname, distutils.spawn.spawn, [command])
+            data_files.append((os.path.join('share', modir), [moname]))
 
 class build_doc(distutils_build):
 
@@ -67,9 +74,12 @@ class build_doc(distutils_build):
                 xmlname,
             ]
             self.make_file([xmlname], manname, distutils.spawn.spawn, [command])
-            manpages.add(manname)
+            data_files.append(('share/man/man1', [manname]))
 
-distutils_build.sub_commands[:0] = [('build_doc', None)]
+distutils_build.sub_commands[:0] = [
+    ('build_doc', None),
+    ('build_mo', None)
+]
 
 class sdist(distutils_sdist):
 
@@ -94,6 +104,7 @@ distutils.core.setup(
     cmdclass = dict(
         sdist=sdist,
         build_doc=build_doc,
+        build_mo=build_mo,
     ),
 )
 
