@@ -1,8 +1,11 @@
 djvusmooth (0.2.11) UNRELEASED; urgency=low
 
   * Let the setup.py script build and install binary message catalogs.
+  * Don't throw exceptions when using “Fit width”, “Fit height” and “Stretch”
+    zoom factors and no page is shown. Thanks to Sherwin Singer for the bug
+    report.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Wed, 09 Mar 2011 12:46:19 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Mon, 06 Jun 2011 20:06:49 +0200
 
 djvusmooth (0.2.10) unstable; urgency=low
 

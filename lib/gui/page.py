@@ -536,6 +536,8 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
                     raise decode.NotAvailable
                 elif page is True:
                     page_job = self._page_job
+                    if page_job is None:
+                        raise decode.NotAvailable
                     page_text = self._page_text
                     page_annotations = self._page_annotations
                     callbacks = self._callbacks
