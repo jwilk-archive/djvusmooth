@@ -36,8 +36,6 @@ from distutils.command.sdist import sdist as distutils_sdist
 
 from lib import __version__
 
-os.putenv('TAR_OPTIONS', '--owner root --group root --mode a+rX')
-
 data_files = []
 
 class build_mo(distutils_build):

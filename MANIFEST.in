@@ -1,10 +1,10 @@
 include MANIFEST.in
 include COPYING
-include doc/changelog
+include djvusmooth.py
 include doc/*.1
 include doc/*.xml
+include doc/changelog
 include po/*.po
-include *.py
 recursive-include lib/ *.py
 include djvusmooth edit-text
 include update-i18n
