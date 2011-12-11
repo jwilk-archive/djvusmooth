@@ -4,8 +4,9 @@ djvusmooth (0.2.11) UNRELEASED; urgency=low
   * Don't throw exceptions when using “Fit width”, “Fit height” and “Stretch”
     zoom factors and no page is shown. Thanks to Sherwin Singer for the bug
     report.
+  * Fix a typo in the manual page.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Mon, 06 Jun 2011 20:06:49 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Sun, 11 Dec 2011 22:57:37 +0100
 
 djvusmooth (0.2.10) unstable; urgency=low
 
