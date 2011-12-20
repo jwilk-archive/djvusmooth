@@ -5,6 +5,7 @@ include djvusmooth.py
 include doc/*.1
 include doc/*.xml
 include doc/changelog
+include extra/*
 include po/*.po
 include update-i18n
 recursive-include lib/ *.py

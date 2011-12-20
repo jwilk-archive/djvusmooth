@@ -38,6 +38,11 @@ from lib import __version__
 
 data_files = []
 
+if os.name == 'posix':
+    data_files += [
+        (os.path.join('share', 'applications'), ['extra/djvusmooth.desktop'])
+    ]
+
 class build_mo(distutils_build):
 
     description = 'build binary message catalogs'
