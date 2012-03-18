@@ -1,8 +1,9 @@
 djvusmooth (0.2.12) UNRELEASED; urgency=low
 
   * Install desktop file.
+  * Update the Russian translation, thanks to Kyrill Detinov.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 20 Dec 2011 19:47:44 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Sun, 18 Mar 2012 11:27:40 +0100
 
 djvusmooth (0.2.11) unstable; urgency=low
 
