@@ -27,7 +27,7 @@ Programming Language :: Python
 Programming Language :: Python :: 2
 Topic :: Text Processing
 Topic :: Multimedia :: Graphics
-'''.strip().split('\n')
+'''.strip().splitlines()
 
 import glob
 import os
