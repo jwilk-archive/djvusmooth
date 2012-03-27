@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # encoding=UTF-8
-# Copyright © 2008, 2009, 2010, 2011 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2008, 2009, 2010, 2011, 2012 Jakub Wilk <jwilk@jwilk.net>
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ Topic :: Multimedia :: Graphics
 
 import glob
 import os
+import re
 
 import distutils.core
 from distutils.command.build import build as distutils_build
@@ -64,6 +65,33 @@ class build_doc(distutils_build):
 
     description = 'build documentation'
 
+    _url_regex = re.compile(
+        r'^(\\%http://.*)',
+        re.MULTILINE
+    )
+
+    _date_regex = re.compile(
+        '"(?P<month>[0-9]{2})/(?P<day>[0-9]{2})/(?P<year>[0-9]{4})"'
+    )
+
+    def build_man(self, manname, commandline):
+        self.spawn(commandline)
+        with open(manname, 'r+') as file:
+            contents = file.read()
+            # Format URLs:
+            contents = self._url_regex.sub(
+                lambda m: r'\m[blue]\fI%s\fR\m[]' % m.groups(),
+                contents,
+            )
+            # Use RFC 3339 date format:
+            contents = self._date_regex.sub(
+                lambda m: '%(year)s-%(month)s-%(day)s' % m.groupdict(),
+                contents
+            )
+            file.seek(0)
+            file.truncate()
+            file.write(contents)
+
     def run(self):
         if os.name != 'posix':
             return
@@ -72,11 +100,12 @@ class build_doc(distutils_build):
             command = [
                 'xsltproc', '--nonet',
                 '--param', 'man.charmap.use.subset', '0',
+                '--param', 'man.font.links', '"I"',
                 '--output', 'doc/',
                 'http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl',
                 xmlname,
             ]
-            self.make_file([xmlname], manname, distutils.spawn.spawn, [command])
+            self.make_file([xmlname], manname, self.build_man, [manname, command])
             data_files.append(('share/man/man1', [manname]))
 
 distutils_build.sub_commands[:0] = [
