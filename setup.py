@@ -119,6 +119,7 @@ class sdist(distutils_sdist):
 
     def run(self):
         self.run_command('build_doc')
+        self.run_command('build_mo')
         return distutils_sdist.run(self)
 
 distutils.core.setup(
