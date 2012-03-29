@@ -32,9 +32,12 @@ Topic :: Multimedia :: Graphics
 import glob
 import os
 import re
+import subprocess as ipc
 
 import distutils.core
+import distutils.errors
 from distutils.command.build import build as distutils_build
+from distutils.command.check import check as distutils_check
 from distutils.command.sdist import sdist as distutils_sdist
 
 from lib import __version__
@@ -62,6 +65,28 @@ class build_mo(distutils_build):
             command = ['msgfmt', '-o', moname, '--check', '--check-accelerators', poname]
             self.make_file([poname], moname, distutils.spawn.spawn, [command])
             data_files.append((os.path.join('share', modir), [moname]))
+
+class check_po(distutils_build):
+
+    description = 'perform some checks on message catalogs'
+
+    def run(self):
+        for poname in glob.glob(os.path.join('po', '*.po')):
+            checkname = poname + '.sdist-check'
+            with open(checkname, 'w'):
+                pass
+            try:
+                for feature in 'untranslated', 'fuzzy':
+                    with open(checkname, 'w'):
+                        pass
+                    command = ['msgattrib', '--' + feature, '-o', checkname, poname]
+                    distutils.spawn.spawn(command)
+                    with open(checkname) as file:
+                        entries = file.read()
+                    if entries:
+                        raise IOError(None, '%s has %s entries' % (poname, feature))
+            finally:
+                os.unlink(checkname)
 
 class build_doc(distutils_build):
 
@@ -119,6 +144,7 @@ class sdist(distutils_sdist):
 
     def run(self):
         self.run_command('build_doc')
+        self.run_command('check_po')
         self.run_command('build_mo')
         return distutils_sdist.run(self)
 
@@ -140,6 +166,7 @@ distutils.core.setup(
         sdist=sdist,
         build_doc=build_doc,
         build_mo=build_mo,
+        check_po=check_po,
     ),
 )
 
