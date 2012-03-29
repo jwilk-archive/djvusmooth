@@ -397,7 +397,7 @@ class MainWindow(wx.Frame):
         submenu = wx.Menu()
         self._menu_item(submenu, _('&Bookmark this page') + '\tCtrl+B', _('Add the current to document outline'), self.on_bookmark_current_page)
         self._menu_item(submenu, _('&External editor'), _('Edit document outline in an external editor'), self.on_external_edit_outline)
-        self._menu_item(submenu, _('&Remove'), _('Remove document outline'), self.on_remove_outline)
+        self._menu_item(submenu, _('&Remove all'), _('Remove whole document outline'), self.on_remove_outline)
         menu.AppendMenu(wx.ID_ANY, _('&Outline'), submenu)
         return menu
 
