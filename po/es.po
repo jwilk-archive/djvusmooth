@@ -1,0 +1,510 @@
+# Spanish translation of djvusmooth messages.
+# Copyright (C) 2012
+# This file is distributed under the same license as the djvusmooth package.
+msgid ""
+msgstr ""
+"Project-Id-Version: djvusmooth 0.2.12\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-05-20 16:03-0500\n"
+"PO-Revision-Date: 2012-05-21 00:20-0500\n"
+"Last-Translator: C. Daniel Sanchez R. <cdsanchezr@unal.edu.co>\n"
+"Language-Team: \n"
+"Language: Spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "&About"
+msgstr "&Acerca de"
+
+msgid "&Background"
+msgstr "&Fondo"
+
+msgid "&Bookmark this page"
+msgstr "&Marcadores de esta página"
+
+msgid "&Close"
+msgstr "&Cerrar"
+
+msgid "&Color"
+msgstr "&Color"
+
+msgid "&Edit"
+msgstr "&Editar"
+
+msgid "&External editor"
+msgstr "&Editor externo"
+
+msgid "&File"
+msgstr "&Archivo"
+
+msgid "&First page"
+msgstr "&Primer página"
+
+msgid "&Flatten"
+msgstr "&Aplanar"
+
+msgid "&Foreground"
+msgstr "&Frente"
+
+msgid "&Go"
+msgstr "&Ir"
+
+msgid "&Go to page…"
+msgstr "&Ir a página..."
+
+msgid "&Help"
+msgstr "&Ayuda"
+
+msgid "&Hyperlinks"
+msgstr "&Hipervínculos"
+
+msgid "&Image"
+msgstr "&Imagen"
+
+msgid "&Last page"
+msgstr "&Última página"
+
+msgid "&Metadata"
+msgstr "&Metadatos"
+
+msgid "&New hyperlink…"
+msgstr "&Nuevo hipervínculo..."
+
+msgid "&Next page"
+msgstr "&Página siguiente"
+
+msgid "&Non-raster data"
+msgstr "&Datos ajenos al bitmap"
+
+msgid "&None"
+msgstr "&Ninguno"
+
+msgid "&Open"
+msgstr "&Abrir"
+
+msgid "&Outline"
+msgstr "&Bosquejo"
+
+msgid "&Previous page"
+msgstr "&Página anterior"
+
+msgid "&Properties…"
+msgstr "&Propiedades..."
+
+msgid "&Quit"
+msgstr "&Salir"
+
+msgid "&Refresh"
+msgstr "&Refrescar"
+
+msgid "&Remove"
+msgstr "&Eliminar"
+
+msgid "&Remove all"
+msgstr "&Eliminar todo"
+
+msgid "&Save"
+msgstr "&Guardar"
+
+msgid "&Settings"
+msgstr "&Opciones"
+
+msgid "&Stencil"
+msgstr "&Patrón"
+
+msgid "&Stretch"
+msgstr "&Estirar"
+
+msgid "&Text"
+msgstr "&Texto"
+
+msgid "&View"
+msgstr "&Ver"
+
+msgid "&Zoom"
+msgstr "&Zoom"
+
+msgid "(no title)"
+msgstr "(sin título)"
+
+msgid "About…"
+msgstr "Acerca de..."
+
+msgid "Add the current to document outline"
+msgstr "Agregar la página actual al bosquejo del documento"
+
+msgid "Always visible"
+msgstr "Siempre visible"
+
+msgid ""
+"An unhandled exception occurred. Ideally, this should not happen. Please "
+"report the bug to the author.\n"
+"\n"
+msgstr ""
+"Ha ocurrido una excepción no controlada. Idealmente, esto no debería ocurrir. "
+"Por favor, informe el error al autor.\n"
+"\n"
+
+msgid "Arrow"
+msgstr "Flecha"
+
+msgid "Author"
+msgstr "Autor"
+
+msgid "Background color"
+msgstr "Color de fondo"
+
+msgid "Border"
+msgstr "Borde"
+
+msgid "Cannot edit text with character zones."
+msgstr "No se puede editar el texto que esté en una zona para caracteres."
+
+msgid "Close the document"
+msgstr "Cerrar el documento"
+
+msgid "Comment"
+msgstr "Comentario"
+
+msgid "Decrease the magnification"
+msgstr "Disminuir la ampliación"
+
+msgid "Display everything"
+msgstr "Mostrar todo"
+
+msgid "Display only the background layer"
+msgstr "Mostrar solo la capa del fondo"
+
+msgid "Display only the document bitonal stencil"
+msgstr "Mostrar solo el patrón bitonal del documento"
+
+msgid "Display only the foreground layer"
+msgstr "Mostrar solo la capa del frente"
+
+msgid "Display overprinted annotations"
+msgstr "Mostrar anotaciones encima"
+
+msgid "Display the text layer"
+msgstr "Mostrar la capa de texto"
+
+msgid "DjVu files (*.djvu, *.djv)|*.djvu;*.djv|All files|*"
+msgstr "Archivos DjVu (*.djvu, *.djv)|*.djvu;*.djv|Todos los archivos|*"
+
+msgid "Do you want to save your changes?"
+msgstr "¿Desea guardar los cambios?"
+
+msgid "Document metadata"
+msgstr "Metadatos del documento"
+
+msgid "Don't display non-raster data"
+msgstr "No mostrar los datos del bitmap"
+
+msgid "Edit document outline in an external editor"
+msgstr "Editar el bosquejo en un editor externo"
+
+msgid "Edit metadata"
+msgstr "Editar metadatos"
+
+msgid "Edit page text in an external editor"
+msgstr "Editar texto de la página en un editor externo"
+
+msgid "Edit the document or page metadata"
+msgstr "Editar los metadatos del documento o de la página"
+
+msgid "Enter path to your favourite text editor."
+msgstr "Ingrese la ruta hacia su editor de texto favorito."
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Etched in"
+msgstr "Grabado in"
+
+msgid "Etched out"
+msgstr "Grabado out"
+
+#, python-format
+msgid ""
+"External edit failed:\n"
+"%s"
+msgstr ""
+"Falló la edición externa:\n"
+"%s"
+
+msgid "External editor…"
+msgstr "Editor externo..."
+
+msgid "Fit &page"
+msgstr "Ajustar &página"
+
+msgid "Fit &width"
+msgstr "Ajustar &ancho"
+
+msgid "Flatten text"
+msgstr "Aplanar el texto"
+
+msgid "Go to page"
+msgstr "Ir a la página"
+
+msgid "Highlight color"
+msgstr "Realzar color"
+
+msgid "Highlight color and opacity"
+msgstr "Realzar color y opacidad"
+
+msgid "Hyperlinks"
+msgstr "Hipervínculos"
+
+msgid "Increase the magnification"
+msgstr "Incrementar la ampliación"
+
+msgid "Jump to first document page"
+msgstr "Saltar a la primer página del documento"
+
+msgid "Jump to last document page"
+msgstr "Saltar a la última página del documento"
+
+msgid "Jump to next document page"
+msgstr "Saltar a la siguiente página del documento"
+
+msgid "Jump to page…"
+msgstr "Saltar a la página..."
+
+msgid "Jump to previous document page"
+msgstr "Saltar a la página anterior del documento"
+
+msgid "License"
+msgstr "Licencia"
+
+msgid "Line"
+msgstr "Línea"
+
+msgid "Line color"
+msgstr "Color de la línea"
+
+msgid "Line width"
+msgstr "Ancho de la línea"
+
+msgid "Line-specific properties"
+msgstr "Propiedades de la linea especifica"
+
+#, python-format
+msgid "Link: %s"
+msgstr "Vínculo: %s"
+
+#, python-format
+msgid "Magnify %d%%"
+msgstr "Aumentar %d%%"
+
+msgid "Main properties"
+msgstr "Propiedades principales"
+
+msgid "More information about this program"
+msgstr "Más información acerca de este programa"
+
+msgid "Neither display the foreground layer nor the background layer"
+msgstr "No mostrar las capas del frente ni del fondo"
+
+msgid "No text layer to edit."
+msgstr "No hay capa de texto para editar."
+
+msgid "None"
+msgstr "Ninguno"
+
+msgid "Number of lines changed."
+msgstr "Número de líneas cambiadas."
+
+msgid "One &to one"
+msgstr "Uno &a uno"
+
+msgid "Opacity"
+msgstr "Opacidad"
+
+msgid "Open a DjVu document"
+msgstr "Abrir un documento DjVu"
+
+msgid "Outline"
+msgstr "Bosquejo"
+
+msgid "Oval"
+msgstr "Óvalo"
+
+msgid "Overprinted annotation (hyperlink) properties"
+msgstr "Propiedades de la anotación (hipervínculo)"
+
+#, python-format
+msgid "Page %(pageno)d of %(npages)d"
+msgstr "Página %(pageno)d de %(npages)d"
+
+#, python-format
+msgid "Page %d metadata"
+msgstr "Metadatos de la página %d"
+
+msgid "Polygon"
+msgstr "Polígono"
+
+msgid "Pushpin"
+msgstr "Push-pin"
+
+msgid "Quit the application"
+msgstr "Salir de la aplicación"
+
+msgid "Rectangle"
+msgstr "Rectángulo"
+
+msgid "Refresh the window"
+msgstr "Refresca la ventana"
+
+msgid "Remove details"
+msgstr "Eliminar detalles"
+
+msgid "Remove details from page text"
+msgstr "Eliminar detalles del texto en la página"
+
+msgid "Remove whole document outline"
+msgstr "Eliminar bosquejo de todo el documento"
+
+msgid "Save the document"
+msgstr "Guardar el documento"
+
+msgid "Saving document"
+msgstr "Guardando documento"
+
+#, python-format
+msgid ""
+"Saving document failed:\n"
+"%s"
+msgstr ""
+"Falló el guardado del documento:\n"
+"%s"
+
+msgid "Saving the document, please wait…"
+msgstr "Guardando documento, espere por favor..."
+
+msgid "Scope"
+msgstr "Alcance"
+
+msgid "Set full resolution magnification."
+msgstr "Ajustar a la máxima resolución"
+
+msgid "Set magnification to fit page"
+msgstr "Ajustar ampliación al tamaño de la página"
+
+msgid "Set magnification to fit page width"
+msgstr "Ajustar ampliación al ancho de la página"
+
+msgid "Setup an external editor"
+msgstr "Configurar un editor externo"
+
+msgid "Shadow in"
+msgstr "Sombra in"
+
+msgid "Shadow out"
+msgstr "Sombra out"
+
+msgid "Shape"
+msgstr "Silueta"
+
+msgid "Show &sidebar"
+msgstr "Mostrar &barra lateral"
+
+msgid "Show/hide the sidebar"
+msgstr "Mostrar/ocultar la barra lateral"
+
+msgid "Solid color"
+msgstr "Color sólido"
+
+msgid "Stretch the image to the window size"
+msgstr "Estirar la imagen al tamaño de la ventana"
+
+msgid "Target frame"
+msgstr "Marco objetivo"
+
+msgid "Text"
+msgstr "Texto"
+
+msgid "Text color"
+msgstr "Color del texto"
+
+msgid "Text-specific properties"
+msgstr "Propiedades para un texto específico"
+
+msgid "URI"
+msgstr "URI"
+
+#, python-format
+msgid "Unhandled exception: %s"
+msgstr "Excepción no controlada: %s"
+
+msgid "Width"
+msgstr "Ancho"
+
+msgid "XOR"
+msgstr "XOR"
+
+msgid "Zoom &in"
+msgstr "Zoom &in"
+
+msgid "Zoom &out"
+msgstr "Zoom &out"
+
+msgid "[Text layer]"
+msgstr "[Capa de texto]"
+
+msgid "all"
+msgstr "Todo"
+
+msgid "all pages"
+msgstr "Todas las páginas"
+
+msgid "bookmarks"
+msgstr "Marcadores"
+
+msgid "char"
+msgstr "carácter"
+
+msgid "characters"
+msgstr "caracteres"
+
+msgid "column"
+msgstr "columna"
+
+msgid "columns"
+msgstr "columnas"
+
+msgid "current page"
+msgstr "Página actual"
+
+msgid "key"
+msgstr "clave"
+
+msgid "line"
+msgstr "línea"
+
+msgid "lines"
+msgstr "líneas"
+
+msgid "page"
+msgstr "página"
+
+msgid "para"
+msgstr "párrafo"
+
+msgid "paragraphs"
+msgstr "párrafos"
+
+msgid "region"
+msgstr "región"
+
+msgid "regions"
+msgstr "regiones"
+
+msgid "value"
+msgstr "valor"
+
+msgid "word"
+msgstr "palabra"
+
+msgid "words"
+msgstr "palabras"
