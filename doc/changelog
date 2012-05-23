@@ -2,11 +2,12 @@ djvusmooth (0.2.12) UNRELEASED; urgency=low
 
   * Install desktop file.
   * Update the Russian translation, thanks to Kyrill Detinov.
+  * Add Spanish translation, contributed by C. Daniel Sanchez R.
   * Rename menu item “Edit → Outline → Remove” to “… → Remove all”.
     Thanks to Maxim Leyenson for the bug report.
   * Use our own minimal XDG Base Directory implementation instead of PyXDG.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Wed, 18 Apr 2012 18:02:43 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 23 May 2012 18:39:23 +0200
 
 djvusmooth (0.2.11) unstable; urgency=low
 
