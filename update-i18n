@@ -29,7 +29,7 @@ po/$(PROJECT_NAME).pot: $(SOURCE_FILES)
 	xgettext $(XGETTEXT_OPTIONS) $(SOURCE_FILES) -o $(@)
 
 %.po: po/$(PROJECT_NAME).pot
-	msgmerge -o $(@) $(@) $(<)
+	msgmerge --no-wrap -o $(@) $(@) $(<)
 
 locale/%/LC_MESSAGES/$(PROJECT_NAME).mo: po/%.po
 	python setup.py build_mo
