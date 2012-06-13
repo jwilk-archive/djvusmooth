@@ -1,4 +1,4 @@
-djvusmooth (0.2.12) UNRELEASED; urgency=low
+djvusmooth (0.2.12) unstable; urgency=low
 
   * Install desktop file.
   * Update the Russian translation, thanks to Kyrill Detinov.
@@ -7,7 +7,7 @@ djvusmooth (0.2.12) UNRELEASED; urgency=low
     Thanks to Maxim Leyenson for the bug report.
   * Use our own minimal XDG Base Directory implementation instead of PyXDG.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Wed, 23 May 2012 18:39:23 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 13 Jun 2012 20:53:49 +0200
 
 djvusmooth (0.2.11) unstable; urgency=low
 
