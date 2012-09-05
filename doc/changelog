@@ -1,8 +1,9 @@
 djvusmooth (0.2.13) UNRELEASED; urgency=low
 
-  * 
+  * Add keyboard shortcuts for “Zoom in” and “Zoom out”.
+    https://bitbucket.org/jwilk/djvusmooth/issue/8
 
- -- Jakub Wilk <jwilk@jwilk.net>  Wed, 05 Sep 2012 20:35:33 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 05 Sep 2012 20:40:05 +0200
 
 djvusmooth (0.2.12) unstable; urgency=low
 

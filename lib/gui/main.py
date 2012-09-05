@@ -406,8 +406,8 @@ class MainWindow(wx.Frame):
         submenu = wx.Menu()
         for caption, help, method, id in \
         [
-            (_('Zoom &in'),  _('Increase the magnification'), self.on_zoom_in, wx.ID_ZOOM_IN),
-            (_('Zoom &out'), _('Decrease the magnification'), self.on_zoom_out, wx.ID_ZOOM_OUT),
+            (_('Zoom &in') + '\tCtrl++', _('Increase the magnification'), self.on_zoom_in, wx.ID_ZOOM_IN),
+            (_('Zoom &out') + '\tCtrl+-', _('Decrease the magnification'), self.on_zoom_out, wx.ID_ZOOM_OUT),
         ]:
             self._menu_item(submenu, caption, help, method, id = id or wx.ID_ANY)
         submenu.AppendSeparator()
