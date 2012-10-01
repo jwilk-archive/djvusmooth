@@ -18,6 +18,7 @@ LICENSE = 'GPL-2'
 
 import sys
 import itertools
+import functools
 import locale
 import os.path
 import threading
@@ -261,6 +262,17 @@ class ScrolledPanel(wx.lib.scrolledpanel.ScrolledPanel):
         # We *don't* want to scroll to the child window which just got the focus.
         # So just skip the event:
         event.Skip()
+
+def skip_if_being_deleted(method):
+    @functools.wraps(method)
+    def method_wrapper(self, *args, **kwargs):
+        if self.IsBeingDeleted():
+            # This method could be called via an event while the window is
+            # being deleted. Do *not* fiddle with menu in such a case, as it
+            # would provoke segmentation fault.
+            return
+        return method(self, *args, **kwargs)
+    return method_wrapper
 
 class MainWindow(wx.Frame):
 
@@ -644,20 +656,18 @@ class MainWindow(wx.Frame):
     def on_display_none(self, event):
         self.page_widget.render_mode = None
 
+    @skip_if_being_deleted
     def on_display_text(self, event):
         self.page_widget.render_nonraster = RENDER_NONRASTER_TEXT
         self._menu_item_display_text.Check()
 
+    @skip_if_being_deleted
     def on_display_maparea(self, event):
         self.page_widget.render_nonraster = RENDER_NONRASTER_MAPAREA
         self._menu_item_display_maparea.Check()
 
+    @skip_if_being_deleted
     def on_display_no_nonraster(self, event):
-        if self.IsBeingDeleted():
-            # This method could be called via a sidebar event while the window
-            # is being deleted. Do *not* fiddle with menu in such a case, as it
-            # would provoke segmentation fault.
-            return
         self.page_widget.render_nonraster = None
         self._menu_item_display_no_nonraster.Check()
 
