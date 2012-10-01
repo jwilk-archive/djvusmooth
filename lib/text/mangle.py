@@ -74,21 +74,21 @@ def mangle(s, t, input):
         j += 1
     yield input_head[:5] + [current_word]
 
-def linearlize_for_export(expr):
+def linearize_for_export(expr):
     if expr[0].value == djvu.const.TEXT_ZONE_CHARACTER:
         raise CharacterZoneFound
     if len(expr) == 6 and isinstance(expr[5], djvu.sexpr.StringExpression):
         yield expr[5].value
     elif expr[0].value == djvu.const.TEXT_ZONE_LINE:
-        yield ' '.join(linearlize_for_export(expr[5:]))
+        yield ' '.join(linearize_for_export(expr[5:]))
     else:
         for subexpr in expr:
             if not isinstance(subexpr, djvu.sexpr.ListExpression):
                 continue
-            for item in linearlize_for_export(subexpr):
+            for item in linearize_for_export(subexpr):
                 yield item
 
-def linearlize_for_import(expr):
+def linearize_for_import(expr):
     if expr[0].value == djvu.const.TEXT_ZONE_CHARACTER:
         raise CharacterZoneFound
     if expr[0].value == djvu.const.TEXT_ZONE_LINE:
@@ -97,16 +97,16 @@ def linearlize_for_import(expr):
         for subexpr in expr:
             if not isinstance(subexpr, djvu.sexpr.ListExpression):
                 continue
-            for item in linearlize_for_import(subexpr):
+            for item in linearize_for_import(subexpr):
                 yield item
 
 def export(sexpr, stream):
-    for line in linearlize_for_export(sexpr):
+    for line in linearize_for_export(sexpr):
         print >>stream, line
 
 def import_(sexpr, stdin):
-    exported = tuple(linearlize_for_export(sexpr))
-    inputs = tuple(linearlize_for_import(sexpr))
+    exported = tuple(linearize_for_export(sexpr))
+    inputs = tuple(linearize_for_import(sexpr))
     stdin = tuple(line for line in stdin)
     if len(exported) != len(stdin):
         raise LengthChanged
