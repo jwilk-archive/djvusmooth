@@ -91,7 +91,9 @@ def linearize_for_export(expr):
 def linearize_for_import(expr):
     if expr[0].value == djvu.const.TEXT_ZONE_CHARACTER:
         raise CharacterZoneFound
-    if expr[0].value == djvu.const.TEXT_ZONE_LINE:
+    if len(expr) == 6 and isinstance(expr[5], djvu.sexpr.StringExpression):
+        yield expr
+    elif expr[0].value == djvu.const.TEXT_ZONE_LINE:
         yield expr
     else:
         for subexpr in expr:
@@ -110,6 +112,7 @@ def import_(sexpr, stdin):
     stdin = tuple(line for line in stdin)
     if len(exported) != len(stdin):
         raise LengthChanged
+    assert len(exported) == len(inputs) == len(stdin)
     dirty = False
     for n, line, xline, input in itertools.izip(itertools.count(1), stdin, exported, inputs):
         line = line.rstrip('\n')
