@@ -653,6 +653,11 @@ class MainWindow(wx.Frame):
         self._menu_item_display_maparea.Check()
 
     def on_display_no_nonraster(self, event):
+        if self.IsBeingDeleted():
+            # This method could be called via a sidebar event while the window
+            # is being deleted. Do *not* fiddle with menu in such a case, as it
+            # would provoke segmentation fault.
+            return
         self.page_widget.render_nonraster = None
         self._menu_item_display_no_nonraster.Check()
 

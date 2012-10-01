@@ -5,8 +5,10 @@ djvusmooth (0.2.13) UNRELEASED; urgency=low
   * Fix editing text in external editor: when a zone broader than line without
     sub-zones existed, djvusmooth incorrectly skipped it when importing text.
     Thanks to Janusz S. Bień for the bug report.
+  * Fix segmentation fault on shutdown.
+    Thanks to Janusz S. Bień for the bug report.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Mon, 01 Oct 2012 21:21:06 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Mon, 01 Oct 2012 22:09:31 +0200
 
 djvusmooth (0.2.12) unstable; urgency=low
 
