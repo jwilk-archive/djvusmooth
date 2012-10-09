@@ -58,7 +58,6 @@ from djvusmooth import __version__, __author__
 from djvusmooth.i18n import _
 
 MENU_ICON_SIZE = (16, 16)
-DJVU_WILDCARD = _('DjVu files (*.djvu, *.djv)|*.djvu;*.djv|All files|*')
 
 WxDjVuMessage, wx.EVT_DJVU_MESSAGE = wx.lib.newevent.NewEvent()
 
@@ -70,8 +69,17 @@ if wx.__version__.startswith('2.8.'):
 
 class OpenDialog(wx.FileDialog):
 
+    __wildcard = _(
+        'DjVu files (*.djvu, *.djv)|*.djvu;*.djv|'
+        'All files|*'
+    )
+
     def __init__(self, parent):
-        wx.FileDialog.__init__(self, parent, style = wx.OPEN, wildcard=DJVU_WILDCARD, message = _('Open a DjVu document'))
+        wx.FileDialog.__init__(self, parent,
+            style=wx.OPEN,
+            wildcard=self.__wildcard,
+            message=_('Open a DjVu document')
+        )
 
 class TextModel(models.text.Text):
 
