@@ -110,7 +110,7 @@ class Config(object):
         tmp_path = path + '.tmp'
         file = open(tmp_path, 'w')
         try:
-            for key, value in self._data.iteritems():
+            for key, value in sorted(self._data.iteritems()):
                 if isinstance(value, unicode):
                     value = value.encode('UTF-8')
                 file.write('%s=%s\n' % (key, value))
