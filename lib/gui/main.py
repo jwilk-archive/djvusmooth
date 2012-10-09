@@ -43,6 +43,7 @@ from djvusmooth.gui.flatten_text import FlattenTextDialog
 from djvusmooth.gui.text_browser import TextBrowser
 from djvusmooth.gui.outline_browser import OutlineBrowser
 from djvusmooth.gui.maparea_browser import MapAreaBrowser
+from djvusmooth.gui.history import FileHistory
 from djvusmooth.gui import dialogs
 from djvusmooth.text import mangle as text_mangle
 import djvusmooth.models.metadata
@@ -373,6 +374,7 @@ class MainWindow(wx.Frame):
         sizer.Add(self.page_widget, 0, wx.ALL, 0)
         self.editable_menu_items = []
         self.saveable_menu_items = []
+        self.file_history = FileHistory(self._config)
         self._setup_menu()
         self.dirty = False
         self.do_open(None)
@@ -390,7 +392,10 @@ class MainWindow(wx.Frame):
 
     def _create_file_menu(self):
         menu = wx.Menu()
+        recent_menu = wx.Menu()
         self._menu_item(menu, _('&Open') + '\tCtrl+O', _('Open a DjVu document'), self.on_open, icon=wx.ART_FILE_OPEN)
+        recent_menu_item = menu.AppendMenu(wx.ID_ANY, _('Open &recent'), recent_menu)
+        self.file_history.set_menu(self, recent_menu_item, self.do_open)
         save_menu_item = self._menu_item(menu, _('&Save') + '\tCtrl+S', _('Save the document'), self.on_save, icon=wx.ART_FILE_SAVE)
         close_menu_item = self._menu_item(menu, _('&Close') + '\tCtrl+W', _('Close the document'), self.on_close, id=wx.ID_CLOSE)
         self.editable_menu_items += close_menu_item,
@@ -897,6 +902,7 @@ class MainWindow(wx.Frame):
         if path is None:
             clear_models()
         else:
+            self.file_history.add(path)
             try:
                 self.document = self.context.new_document(djvu.decode.FileURI(path))
                 self.metadata_model = MetadataModel(self.document)

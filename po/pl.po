@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: djvusmooth 0.2.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-23 18:36+0200\n"
+"POT-Creation-Date: 2012-10-09 20:05+0200\n"
 "PO-Revision-Date: 2009-05-31 14:45+CEST\n"
 "Last-Translator: Jakub Wilk <jwilk@jwilk.net>\n"
 "Language-Team: none\n"
@@ -318,6 +318,9 @@ msgstr "&Jeden do jednego"
 
 msgid "Opacity"
 msgstr "Przezroczystość"
+
+msgid "Open &recent"
+msgstr "Ostatnio otwie&rane"
 
 msgid "Open a DjVu document"
 msgstr "Otwórz dokument DjVu"

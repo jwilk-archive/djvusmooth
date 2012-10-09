@@ -1,8 +1,9 @@
 djvusmooth (0.2.14) UNRELEASED; urgency=low
 
-  * 
+  * Add “Open recent” submenu.
+    https://bitbucket.org/jwilk/djvusmooth/issue/7
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 02 Oct 2012 12:18:17 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 09 Oct 2012 20:08:35 +0200
 
 djvusmooth (0.2.13) unstable; urgency=low
 

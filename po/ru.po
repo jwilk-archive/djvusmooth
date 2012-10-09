@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: djvusmooth 0.2.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-23 18:36+0200\n"
+"POT-Creation-Date: 2012-10-09 20:05+0200\n"
 "PO-Revision-Date: 2012-06-13 10:33+0300\n"
 "Last-Translator: Kyrill Detinov <lazy.kent@opensuse.org>\n"
 "Language-Team: openSUSE Translation Team\n"
@@ -320,6 +320,9 @@ msgstr "&Один к одному"
 
 msgid "Opacity"
 msgstr "Прозрачность"
+
+msgid "Open &recent"
+msgstr ""
 
 msgid "Open a DjVu document"
 msgstr "Открыть DjVu документ"

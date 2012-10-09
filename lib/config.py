@@ -76,6 +76,14 @@ class Config(object):
         self._data[key] = value
         self._dirty = True
 
+    def del_array(self, key):
+        keys_to_delete = frozenset(
+            k for k in self._data
+            if k.startswith(key + '[')
+        )
+        for k in keys_to_delete:
+            del self._data[k]
+
     def _load(self, path):
         try:
             file = open(path, 'r')
