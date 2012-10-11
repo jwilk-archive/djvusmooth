@@ -8,5 +8,5 @@ include doc/*.xml
 include doc/changelog
 include extra/*
 include po/*.po
-include update-i18n
+include tools/*
 recursive-include lib *.py
