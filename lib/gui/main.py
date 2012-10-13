@@ -437,7 +437,6 @@ class MainWindow(wx.Frame):
         submenu_item = functools.partial(self._create_menu_item, submenu)
         submenu_item(_('&Bookmark this page') + '\tCtrl+B', _('Add the current to document outline'), self.on_bookmark_current_page)
         submenu_item(_('&External editor'), _('Edit document outline in an external editor'), self.on_external_edit_outline)
-        submenu_item(_('&Remove all'), _('Remove whole document outline'), self.on_remove_outline)
         menu.AppendMenu(wx.ID_ANY, _('&Outline'), submenu)
         return menu
 
@@ -799,9 +798,6 @@ class MainWindow(wx.Frame):
         node = models.outline.InnerNode(djvu.sexpr.Expression((_('(no title)'), uri)), self.outline_model)
         self.outline_model.root.add_child(node)
         node.notify_select()
-
-    def on_remove_outline(self, event):
-        self.outline_model.remove()
 
     def on_external_edit_outline(self, event):
         model = self.outline_model

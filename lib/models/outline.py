@@ -120,8 +120,9 @@ class Node(object):
             return iter(self).next()
         return property(get)
 
+    @not_overridden
     def delete(self):
-        raise NotImplementedError
+        pass
 
     def notify_select(self):
         self._owner.notify_node_select(self)
@@ -146,6 +147,9 @@ class RootNode(Node):
     def export_as_plaintext(self, stream):
         for child in self:
             child.export_as_plaintext(stream, indent=0)
+
+    def delete(self):
+        self._owner.remove()
 
 class InnerNode(Node):
 
