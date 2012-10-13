@@ -576,7 +576,6 @@ class MainWindow(wx.Frame):
         dialog.SetDirectory(self._config.read('open_dir', ''))
         try:
             if dialog.ShowModal() == wx.ID_OK:
-                self._config['open_dir'] = os.path.dirname(dialog.GetPath()) or ''
                 self.do_open(dialog.GetPath())
         finally:
             dialog.Destroy()
@@ -911,6 +910,7 @@ class MainWindow(wx.Frame):
             clear_models()
         else:
             self.file_history.add(path)
+            self._config['open_dir'] = os.path.dirname(path)
             try:
                 self.document = self.context.new_document(djvu.decode.FileURI(path))
                 self.metadata_model = MetadataModel(self.document)
