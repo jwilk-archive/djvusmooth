@@ -81,6 +81,29 @@ class OpenDialog(wx.FileDialog):
             message=_('Open a DjVu document')
         )
 
+class SaveDialog(wx.FileDialog):
+
+    __wildcard = _(
+        'Bundled DjVu document (*.djvu, *.djv)|*.djvu;*.djv|'
+        'Indirect DjVu document (*.djvu, *.djv)|*.djvu;*.djv|'
+    )
+
+    def __init__(self, parent):
+        style = wx.SAVE | wx.OVERWRITE_PROMPT
+        wx.FileDialog.__init__(self, parent,
+            style=style,
+            wildcard=self.__wildcard,
+            message=_('Save as')
+        )
+
+    def get_document_type(self):
+        '''
+        Get document type selected by user:
+        0: bundled DjVu
+        1: indirect DjVu
+        '''
+        return self.GetFilterIndex()
+
 class TextModel(models.text.Text):
 
     def __init__(self, document):
@@ -417,9 +440,10 @@ class MainWindow(wx.Frame):
         recent_menu_item = menu.AppendMenu(wx.ID_ANY, _('Open &recent'), recent_menu)
         self.file_history.set_menu(self, recent_menu_item, self.do_open)
         save_menu_item = menu_item(_('&Save') + '\tCtrl+S', _('Save the document'), self.on_save, icon=wx.ART_FILE_SAVE)
+        save_as_menu_item = menu_item(_('&Save as…'), _('Save the document under a different name'), self.on_save_as, icon=wx.ART_FILE_SAVE_AS)
         close_menu_item = menu_item(_('&Close') + '\tCtrl+W', _('Close the document'), self.on_close, id=wx.ID_CLOSE)
-        self.editable_menu_items += close_menu_item,
-        self.saveable_menu_items += save_menu_item,
+        self.editable_menu_items += [close_menu_item, save_as_menu_item]
+        self.saveable_menu_items += [save_menu_item]
         menu.AppendSeparator()
         menu_item(_('&Quit') + '\tCtrl+Q', _('Quit the application'), self.on_exit, icon=wx.ART_QUIT)
         return menu
@@ -602,6 +626,18 @@ class MainWindow(wx.Frame):
         finally:
             dialog.Destroy()
 
+    def on_save_as(self, event):
+        dialog = SaveDialog(self)
+        dialog.SetDirectory(self._config.read('open_dir', ''))
+        try:
+            if dialog.ShowModal() == wx.ID_OK:
+                path = dialog.GetPath()
+                indirect = dialog.get_document_type()
+                self._config['open_dir'] = os.path.dirname(path) or ''
+                self.do_save(new_path=path, indirect=indirect)
+        finally:
+            dialog.Destroy()
+
     def on_close(self, event):
         self.do_open(None)
 
@@ -611,17 +647,33 @@ class MainWindow(wx.Frame):
     def on_save_failed(self, exception):
         self.error_box(_('Saving document failed:\n%s') % exception)
 
-    def do_save(self):
-        if not self.dirty:
-            return True
+    def do_save(self, new_path=None, indirect=None):
+        if new_path is None:
+            assert indirect is None
+            if not self.dirty:
+                return True
+            path = self.path
+        if new_path is not None:
+            assert indirect is not None
+            path = new_path
+            if isinstance(path, unicode):
+                path = path.encode(system_encoding)
         queue = Queue()
-        sed = StreamEditor(self.path, autosave=True)
+        sed = StreamEditor(path, autosave=True)
         for model in self.models:
             model.export(sed)
         def job():
             try:
+                if new_path is not None:
+                    if indirect:
+                        # TODO: Check is the directory is empty. If it's
+                        # not, display a warning.
+                        self.document.save(indirect=path)
+                    else:
+                        with open(path, 'wb') as file:
+                            self.document.save(file=file)
                 sed.commit()
-                self.document = self.context.new_document(djvu.decode.FileURI(self.path))
+                self.document = self.context.new_document(djvu.decode.FileURI(path))
                 for model in self.models:
                     model.reset_document(self.document)
             except Exception, exception:
@@ -658,6 +710,10 @@ class MainWindow(wx.Frame):
             thread.join()
             if dialog is not None:
                 dialog.Destroy()
+        if new_path is not None:
+            self.path = path
+            self.update_title()
+            self.update_history()
         self.dirty = False
         return True
 
@@ -931,8 +987,6 @@ class MainWindow(wx.Frame):
         if path is None:
             clear_models()
         else:
-            self.file_history.add(path)
-            self.default_open_dir = os.path.dirname(path)
             try:
                 self.document = self.context.new_document(djvu.decode.FileURI(path))
                 self.metadata_model = MetadataModel(self.document)
@@ -947,6 +1001,7 @@ class MainWindow(wx.Frame):
                 # Do *not* display error message here. It will be displayed by `handle_message()`.
         self.page_no = 0 # again, to set status bar text
         self.update_title()
+        self.update_history()
         self.update_page_widget(new_document = True, new_page = True)
         self.dirty = False
         return True
@@ -974,6 +1029,12 @@ class MainWindow(wx.Frame):
         self.maparea_browser.page = self.page_proxy
         if new_document:
             self.outline_browser.document = self.document_proxy
+
+    def update_history(self):
+        if self.path is None:
+            return
+        self.file_history.add(self.path)
+        self.default_open_dir = os.path.dirname(self.path)
 
     def update_title(self):
         if self.path is None:
