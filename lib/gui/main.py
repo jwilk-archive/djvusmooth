@@ -1026,7 +1026,9 @@ class Application(wx.App):
         window = MainWindow()
         window.Show(True)
         if argv:
-            window.do_open(argv[0])
+            path = argv[0]
+            path = os.path.abspath(path)
+            window.do_open(path)
         return self.MainLoop()
 
 # vim:ts=4 sw=4 et
