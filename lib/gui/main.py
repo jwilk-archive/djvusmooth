@@ -394,12 +394,12 @@ class MainWindow(wx.Frame):
         self.editable_menu_items = []
         self.saveable_menu_items = []
         self.file_history = FileHistory(self._config)
-        self._setup_menu()
+        self.create_menus()
         self.dirty = False
         self.do_open(None)
         self.Bind(wx.EVT_CLOSE, self.on_exit)
 
-    def _setup_menu(self):
+    def create_menus(self):
         menu_bar = wx.MenuBar()
         menu_bar.Append(self._create_file_menu(), _('&File'))
         menu_bar.Append(self._create_edit_menu(), _('&Edit'))
