@@ -285,15 +285,6 @@ def skip_if_being_deleted(method):
 
 class MainWindow(wx.Frame):
 
-    def _menu_item(self, menu, caption, help, method, style = wx.ITEM_NORMAL, icon = None, id = wx.ID_ANY):
-        item = wx.MenuItem(menu, id, caption, help, style)
-        if icon is not None:
-            bitmap = wx.ArtProvider_GetBitmap(icon, wx.ART_MENU, MENU_ICON_SIZE)
-            item.SetBitmap(bitmap)
-        self.Bind(wx.EVT_MENU, method, item)
-        menu.AppendItem(item)
-        return item
-
     @apply
     def default_xywh():
         def get(self):
@@ -409,43 +400,58 @@ class MainWindow(wx.Frame):
         menu_bar.Append(self._create_help_menu(), _('&Help'));
         self.SetMenuBar(menu_bar)
 
+    def _create_menu_item(self, menu, caption, help, method, style=wx.ITEM_NORMAL, icon=None, id=wx.ID_ANY):
+        item = wx.MenuItem(menu, id, caption, help, style)
+        if icon is not None:
+            bitmap = wx.ArtProvider_GetBitmap(icon, wx.ART_MENU, MENU_ICON_SIZE)
+            item.SetBitmap(bitmap)
+        self.Bind(wx.EVT_MENU, method, item)
+        menu.AppendItem(item)
+        return item
+
     def _create_file_menu(self):
         menu = wx.Menu()
+        menu_item = functools.partial(self._create_menu_item, menu)
+        menu_item(_('&Open') + '\tCtrl+O', _('Open a DjVu document'), self.on_open, icon=wx.ART_FILE_OPEN)
         recent_menu = wx.Menu()
-        self._menu_item(menu, _('&Open') + '\tCtrl+O', _('Open a DjVu document'), self.on_open, icon=wx.ART_FILE_OPEN)
         recent_menu_item = menu.AppendMenu(wx.ID_ANY, _('Open &recent'), recent_menu)
         self.file_history.set_menu(self, recent_menu_item, self.do_open)
-        save_menu_item = self._menu_item(menu, _('&Save') + '\tCtrl+S', _('Save the document'), self.on_save, icon=wx.ART_FILE_SAVE)
-        close_menu_item = self._menu_item(menu, _('&Close') + '\tCtrl+W', _('Close the document'), self.on_close, id=wx.ID_CLOSE)
+        save_menu_item = menu_item(_('&Save') + '\tCtrl+S', _('Save the document'), self.on_save, icon=wx.ART_FILE_SAVE)
+        close_menu_item = menu_item(_('&Close') + '\tCtrl+W', _('Close the document'), self.on_close, id=wx.ID_CLOSE)
         self.editable_menu_items += close_menu_item,
         self.saveable_menu_items += save_menu_item,
         menu.AppendSeparator()
-        self._menu_item(menu, _('&Quit') + '\tCtrl+Q', _('Quit the application'), self.on_exit, icon=wx.ART_QUIT)
+        menu_item(_('&Quit') + '\tCtrl+Q', _('Quit the application'), self.on_exit, icon=wx.ART_QUIT)
         return menu
 
     def _create_edit_menu(self):
         menu = wx.Menu()
-        self._menu_item(menu, _('&Metadata') + '\tCtrl+M', _('Edit the document or page metadata'), self.on_edit_metadata)
+        menu_item = functools.partial(self._create_menu_item, menu)
+        menu_item(_('&Metadata') + '\tCtrl+M', _('Edit the document or page metadata'), self.on_edit_metadata)
         submenu = wx.Menu()
-        self._menu_item(submenu, _('&External editor') + '\tCtrl+T', _('Edit page text in an external editor'), self.on_external_edit_text)
-        self._menu_item(submenu, _('&Flatten'), _('Remove details from page text'), self.on_flatten_text)
+        submenu_item = functools.partial(self._create_menu_item, submenu)
+        submenu_item(_('&External editor') + '\tCtrl+T', _('Edit page text in an external editor'), self.on_external_edit_text)
+        submenu_item(_('&Flatten'), _('Remove details from page text'), self.on_flatten_text)
         menu.AppendMenu(wx.ID_ANY, _('&Text'), submenu)
         submenu = wx.Menu()
-        self._menu_item(submenu, _('&Bookmark this page') + '\tCtrl+B', _('Add the current to document outline'), self.on_bookmark_current_page)
-        self._menu_item(submenu, _('&External editor'), _('Edit document outline in an external editor'), self.on_external_edit_outline)
-        self._menu_item(submenu, _('&Remove all'), _('Remove whole document outline'), self.on_remove_outline)
+        submenu_item = functools.partial(self._create_menu_item, submenu)
+        submenu_item(_('&Bookmark this page') + '\tCtrl+B', _('Add the current to document outline'), self.on_bookmark_current_page)
+        submenu_item(_('&External editor'), _('Edit document outline in an external editor'), self.on_external_edit_outline)
+        submenu_item(_('&Remove all'), _('Remove whole document outline'), self.on_remove_outline)
         menu.AppendMenu(wx.ID_ANY, _('&Outline'), submenu)
         return menu
 
     def _create_view_menu(self):
         menu = wx.Menu()
+        menu_item = functools.partial(self._create_menu_item, menu)
         submenu = wx.Menu()
+        submenu_item = functools.partial(self._create_menu_item, submenu)
         for caption, help, method, id in \
         [
             (_('Zoom &in') + '\tCtrl++', _('Increase the magnification'), self.on_zoom_in, wx.ID_ZOOM_IN),
             (_('Zoom &out') + '\tCtrl+-', _('Decrease the magnification'), self.on_zoom_out, wx.ID_ZOOM_OUT),
         ]:
-            self._menu_item(submenu, caption, help, method, id = id or wx.ID_ANY)
+            submenu_item(caption, help, method, id=id)
         submenu.AppendSeparator()
         for caption, help, zoom, id in \
         [
@@ -454,12 +460,12 @@ class MainWindow(wx.Frame):
             (_('&Stretch'),    _('Stretch the image to the window size'), StretchZoom(),  None),
             (_('One &to one'), _('Set full resolution magnification.'),   OneToOneZoom(), wx.ID_ZOOM_100),
         ]:
-            self._menu_item(submenu, caption, help, self.on_zoom(zoom), style=wx.ITEM_RADIO, id = id or wx.ID_ANY)
+            id = id or wx.ID_ANY
+            submenu_item(caption, help, self.on_zoom(zoom), style=wx.ITEM_RADIO, id=id)
         submenu.AppendSeparator()
         self.zoom_menu_items = {}
         for percent in 300, 200, 150, 100, 75, 50, 25:
-            item = self._menu_item(
-                submenu,
+            item = submenu_item(
                 '%d%%' % percent,
                 _('Magnify %d%%') % percent,
                 self.on_zoom(PercentZoom(percent)),
@@ -470,6 +476,7 @@ class MainWindow(wx.Frame):
             self.zoom_menu_items[percent] = item
         menu.AppendMenu(wx.ID_ANY, _('&Zoom'), submenu)
         submenu = wx.Menu()
+        submenu_item = functools.partial(self._create_menu_item, submenu)
         for caption, help, method in \
         [
             (_('&Color') + '\tAlt+C', _('Display everything'),                                            self.on_display_everything),
@@ -478,9 +485,10 @@ class MainWindow(wx.Frame):
             (_('&Background'),        _('Display only the background layer'),                             self.on_display_background),
             (_('&None') + '\tAlt+N',  _('Neither display the foreground layer nor the background layer'), self.on_display_none)
         ]:
-            self._menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO)
+            submenu_item(caption, help, method, style=wx.ITEM_RADIO)
         menu.AppendMenu(wx.ID_ANY, _('&Image'), submenu)
         submenu = wx.Menu()
+        submenu_item = functools.partial(self._create_menu_item, submenu)
         _tmp_items = []
         for caption, help, method in \
         [
@@ -488,16 +496,17 @@ class MainWindow(wx.Frame):
             (_('&Hyperlinks') + '\tAlt+H', _('Display overprinted annotations'), self.on_display_maparea),
             (_('&Text') + '\tAlt+T',       _('Display the text layer'),          self.on_display_text),
         ]:
-            _tmp_items += self._menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO),
+            _tmp_items += [submenu_item(caption, help, method, style=wx.ITEM_RADIO)]
         self.menu_item_display_no_nonraster, self.menu_item_display_maparea, self.menu_item_display_text = _tmp_items
         del _tmp_items
         self.menu_item_display_no_nonraster.Check()
         menu.AppendMenu(wx.ID_ANY, _('&Non-raster data'), submenu)
-        self._menu_item(menu, _('&Refresh') + '\tCtrl+L', _('Refresh the window'), self.on_refresh)
+        menu_item(_('&Refresh') + '\tCtrl+L', _('Refresh the window'), self.on_refresh)
         return menu
 
     def _create_go_menu(self):
         menu = wx.Menu()
+        menu_item = functools.partial(self._create_menu_item, menu)
         for caption, help, method, icon in \
         [
             (_('&First page') + '\tCtrl-Home', _('Jump to first document page'),    self.on_first_page,    None),
@@ -506,20 +515,22 @@ class MainWindow(wx.Frame):
             (_('&Last page') + '\tCtrl-End',   _('Jump to last document page'),     self.on_last_page,     None),
             (_(u'&Go to page…') + '\tCtrl-G',  _(u'Jump to page…'),                 self.on_goto_page,     None)
         ]:
-            self._menu_item(menu, caption, help, method, icon = icon)
+            menu_item(caption, help, method, icon=icon)
         return menu
 
     def _create_settings_menu(self):
         menu = wx.Menu()
-        sidebar_menu_item = self._menu_item(menu, _('Show &sidebar') + '\tF9', _('Show/hide the sidebar'), self.on_show_sidebar, style=wx.ITEM_CHECK)
+        menu_item = functools.partial(self._create_menu_item, menu)
+        sidebar_menu_item = menu_item(_('Show &sidebar') + '\tF9', _('Show/hide the sidebar'), self.on_show_sidebar, style=wx.ITEM_CHECK)
         if self.default_sidebar_shown:
             sidebar_menu_item.Check()
-        self._menu_item(menu, _(u'External editor…'), _('Setup an external editor'), self.on_setup_external_editor)
+        menu_item(_(u'External editor…'), _('Setup an external editor'), self.on_setup_external_editor)
         return menu
 
     def _create_help_menu(self):
         menu = wx.Menu()
-        self._menu_item(menu, _('&About') + '\tF1', _('More information about this program'), self.on_about, id=wx.ID_ABOUT)
+        menu_item = functools.partial(self._create_menu_item, menu)
+        menu_item(_('&About') + '\tF1', _('More information about this program'), self.on_about, id=wx.ID_ABOUT)
         return menu
 
     def on_setup_external_editor(self, event):
