@@ -331,6 +331,14 @@ class MainWindow(wx.Frame):
             self._config['external_editor'] = value or ''
         return property(get, set)
 
+    @apply
+    def default_open_dir():
+        def get(self):
+            return self._config.read('open_dir', '')
+        def set(self, value):
+            self._config['open_dir'] = value or ''
+        return property(get, set)
+
     def save_defaults(self):
         self._config.flush()
 
@@ -343,6 +351,9 @@ class MainWindow(wx.Frame):
 
     def __init__(self):
         self._config = wx.GetApp().config
+        # The ._config attribute should not be accessed directly, but only
+        # via .default_* properties.
+        # Use .save_defaults() to save the config file.
         x, y, w, h = self.default_xywh
         wx.Frame.__init__(self, None, pos=(x, y), size=(w, h))
         self.setup_external_editor()
@@ -573,7 +584,7 @@ class MainWindow(wx.Frame):
 
     def on_open(self, event):
         dialog = OpenDialog(self)
-        dialog.SetDirectory(self._config.read('open_dir', ''))
+        dialog.SetDirectory(self.default_open_dir)
         try:
             if dialog.ShowModal() == wx.ID_OK:
                 self.do_open(dialog.GetPath())
@@ -910,7 +921,7 @@ class MainWindow(wx.Frame):
             clear_models()
         else:
             self.file_history.add(path)
-            self._config['open_dir'] = os.path.dirname(path)
+            self.default_open_dir = os.path.dirname(path)
             try:
                 self.document = self.context.new_document(djvu.decode.FileURI(path))
                 self.metadata_model = MetadataModel(self.document)
