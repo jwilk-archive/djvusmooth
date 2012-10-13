@@ -914,7 +914,9 @@ class MainWindow(wx.Frame):
             try:
                 rc = dialog.ShowModal()
                 if rc == wx.ID_YES:
-                    self.do_save()
+                    if not self.do_save():
+                        return False
+                    assert not self.dirty
                 elif rc == wx.ID_NO:
                     pass
                 elif rc == wx.ID_CANCEL:
