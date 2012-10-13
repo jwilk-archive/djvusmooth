@@ -489,9 +489,9 @@ class MainWindow(wx.Frame):
             (_('&Text') + '\tAlt+T',       _('Display the text layer'),          self.on_display_text),
         ]:
             _tmp_items += self._menu_item(submenu, caption, help, method, style=wx.ITEM_RADIO),
-        self._menu_item_display_no_nonraster, self._menu_item_display_maparea, self._menu_item_display_text = _tmp_items
+        self.menu_item_display_no_nonraster, self.menu_item_display_maparea, self.menu_item_display_text = _tmp_items
         del _tmp_items
-        self._menu_item_display_no_nonraster.Check()
+        self.menu_item_display_no_nonraster.Check()
         menu.AppendMenu(wx.ID_ANY, _('&Non-raster data'), submenu)
         self._menu_item(menu, _('&Refresh') + '\tCtrl+L', _('Refresh the window'), self.on_refresh)
         return menu
@@ -682,17 +682,17 @@ class MainWindow(wx.Frame):
     @skip_if_being_deleted
     def on_display_text(self, event):
         self.page_widget.render_nonraster = RENDER_NONRASTER_TEXT
-        self._menu_item_display_text.Check()
+        self.menu_item_display_text.Check()
 
     @skip_if_being_deleted
     def on_display_maparea(self, event):
         self.page_widget.render_nonraster = RENDER_NONRASTER_MAPAREA
-        self._menu_item_display_maparea.Check()
+        self.menu_item_display_maparea.Check()
 
     @skip_if_being_deleted
     def on_display_no_nonraster(self, event):
         self.page_widget.render_nonraster = None
-        self._menu_item_display_no_nonraster.Check()
+        self.menu_item_display_no_nonraster.Check()
 
     def on_refresh(self, event):
         self.Refresh()
