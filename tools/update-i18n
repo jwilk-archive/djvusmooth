@@ -8,6 +8,7 @@
 
 project_name = $(shell head -n1 doc/changelog | cut -d' ' -f1)
 project_version = $(shell head -n1 doc/changelog | sed -n -e 's/.*(\([0-9.]\+\)).*/\1/ p')
+bugs_address = $(shell sed -n -e '/ -- \(.*\)  .*/ {s//\1/p;q}' doc/changelog)
 
 po_files = $(wildcard po/*.po)
 mo_files = $(patsubst po/%.po,locale/%/LC_MESSAGES/$(project_name).mo,$(po_files))
@@ -18,6 +19,7 @@ xgettext_options = \
 	--keyword=_ --keyword=N_ \
 	--package-name=$(project_name) \
 	--package-version=$(project_version) \
+	--msgid-bugs-address='$(bugs_address)' \
 	--no-location \
 	--sort-output
 
