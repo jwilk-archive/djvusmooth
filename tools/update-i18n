@@ -6,32 +6,32 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; version 2 dated June, 1991.
 
-PROJECT_NAME = $(shell head -n1 doc/changelog | cut -d' ' -f1)
-PROJECT_VERSION = $(shell head -n1 doc/changelog | sed -n -e 's/.*(\([0-9.]\+\)).*/\1/ p')
+project_name = $(shell head -n1 doc/changelog | cut -d' ' -f1)
+project_version = $(shell head -n1 doc/changelog | sed -n -e 's/.*(\([0-9.]\+\)).*/\1/ p')
 
-PO_FILES = $(wildcard po/*.po)
-MO_FILES = $(patsubst po/%.po,locale/%/LC_MESSAGES/$(PROJECT_NAME).mo,$(PO_FILES))
-SOURCE_FILES = $(shell find -name '*.py' -o -name 'build' -prune -a -false)
+po_files = $(wildcard po/*.po)
+mo_files = $(patsubst po/%.po,locale/%/LC_MESSAGES/$(project_name).mo,$(po_files))
+source_files = $(shell find -name '*.py' -o -name 'build' -prune -a -false)
 
-XGETTEXT_OPTIONS = \
+xgettext_options = \
 	--language=python \
 	--keyword=_ --keyword=N_ \
-	--package-name=$(PROJECT_NAME) \
-	--package-version=$(PROJECT_VERSION) \
+	--package-name=$(project_name) \
+	--package-version=$(project_version) \
 	--no-location \
 	--sort-output
 
 .PHONY: all
 
-all: po/$(PROJECT_NAME).pot $(PO_FILES) $(MO_FILES)
+all: po/$(project_name).pot $(po_files) $(mo_files)
 
-po/$(PROJECT_NAME).pot: $(SOURCE_FILES)
-	xgettext $(XGETTEXT_OPTIONS) $(SOURCE_FILES) -o $(@)
+po/$(project_name).pot: $(source_files)
+	xgettext $(xgettext_options) $(source_files) -o $(@)
 
-%.po: po/$(PROJECT_NAME).pot
+%.po: po/$(project_name).pot
 	msgmerge --no-wrap -o $(@) $(@) $(<)
 
-locale/%/LC_MESSAGES/$(PROJECT_NAME).mo: po/%.po
+locale/%/LC_MESSAGES/$(project_name).mo: po/%.po
 	python setup.py build_mo
 
 # vim:ts=4 sw=4 noet
