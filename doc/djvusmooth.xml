@@ -47,7 +47,7 @@
 </refsection>
 
 <refsection>
-    <title>Environment variables</title>
+    <title>Environment</title>
     <variablelist>
     <varlistentry>
         <term><filename><varname>XDG_CONFIG_HOME</varname></filename></term>
@@ -78,20 +78,23 @@
 </refsection>
 
 <refsection>
-    <title>Portability</title>
-    <para>
-        &p; allows one to create hyperlinks with shadow borders as thin as 1 pixel, as specified by the
-        <ulink url='http://djvu.org/docs/DjVu3Spec.djvu'>Lizardtech DjVu Reference</ulink>.
-        However, some DjVu browsers do not accept shadow borders thinner than 3 pixels.
-    </para>
-</refsection>
+    <title>Bugs</title>
+    <refsection>
+        <title>Portability issues</title>
+        <para>
+            &p; allows one to create hyperlinks with shadow borders as thin as 1 pixel, as specified by the
+            <ulink url='http://djvu.org/docs/DjVu3Spec.djvu'>Lizardtech DjVu Reference</ulink>.
+            However, some DjVu browsers do not accept shadow borders thinner than 3 pixels.
+        </para>
+    </refsection>
 
-<refsection>
-    <title>Reporting bugs</title>
-    <para>
-        Please report bugs at:
-        <ulink url='https://bitbucket.org/jwilk/djvusmooth/issues'/>
-    </para>
+    <refsection>
+        <title>Reporting bugs</title>
+        <para>
+            Please report bugs at:
+            <ulink url='https://bitbucket.org/jwilk/djvusmooth/issues'/>
+        </para>
+    </refsection>
 </refsection>
 
 <refsection>

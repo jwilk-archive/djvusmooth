@@ -6,8 +6,13 @@ djvusmooth (0.2.14) UNRELEASED; urgency=low
   * Allow removing the whole outline by selecting root element in the sidebar
     and pressing Delete.
     + Remove menu item “Edit → Outline → Remove all”; it's no longer needed.
+  * Improve the manual page, as per man-pages(7) recommendations:
+    - Remove the “AUTHOR” section.
+    - Rename the “ENVIRONMENT VARIABLES” section as “ENVIRONMENT”.
+    - Make “PORTABILITY” and “REPORTING BUGS” subsections of the “BUGS”
+      section.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Sat, 13 Oct 2012 21:40:06 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Fri, 25 Jan 2013 20:12:35 +0100
 
 djvusmooth (0.2.13) unstable; urgency=low
 
