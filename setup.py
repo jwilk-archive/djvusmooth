@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # encoding=UTF-8
-# Copyright © 2008, 2009, 2010, 2011, 2012 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2008, 2009, 2010, 2011, 2012, 2013 Jakub Wilk <jwilk@jwilk.net>
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import distutils.core
 import distutils.errors
 from distutils.command.build import build as distutils_build
 from distutils.command.check import check as distutils_check
+from distutils.command.clean import clean as distutils_clean
 from distutils.command.sdist import sdist as distutils_sdist
 
 from lib import __version__
@@ -141,13 +142,40 @@ distutils_build.sub_commands[:0] = [
     ('build_mo', None)
 ]
 
+class clean(distutils_clean):
+
+    def run(self):
+        distutils_clean.run(self)
+        if not self.all:
+            return
+        for manname in glob.glob(os.path.join('doc', '*.1')):
+            with open(manname, 'r') as file:
+                stamp = file.readline()
+            if stamp != sdist.manpage_stamp:
+                self.execute(os.unlink, [manname], 'removing %s' % manname)
+
 class sdist(distutils_sdist):
+
+    manpage_stamp = '''.\\" [created by setup.py sdist]\n'''
 
     def run(self):
         self.run_command('build_doc')
         self.run_command('check_po')
         self.run_command('build_mo')
         return distutils_sdist.run(self)
+
+    def _rewrite_manpage(self, manname):
+        with open(manname, 'r') as file:
+            contents = file.read()
+        os.unlink(manname)
+        with open(manname, 'w') as file:
+            file.write(self.manpage_stamp)
+            file.write(contents)
+
+    def make_release_tree(self, base_dir, files):
+        distutils_sdist.make_release_tree(self, base_dir, files)
+        for manname in glob.glob(os.path.join(base_dir, 'doc', '*.1')):
+            self.execute(self._rewrite_manpage, [manname], 'rewriting %s' % manname)
 
 distutils.core.setup(
     name = 'djvusmooth',
@@ -164,10 +192,11 @@ distutils.core.setup(
     scripts = ['djvusmooth'],
     data_files = data_files,
     cmdclass = dict(
-        sdist=sdist,
         build_doc=build_doc,
         build_mo=build_mo,
         check_po=check_po,
+        clean=clean,
+        sdist=sdist,
     ),
 )
 

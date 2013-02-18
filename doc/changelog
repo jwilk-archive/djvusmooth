@@ -11,8 +11,10 @@ djvusmooth (0.2.14) UNRELEASED; urgency=low
     - Rename the “ENVIRONMENT VARIABLES” section as “ENVIRONMENT”.
     - Make “PORTABILITY” and “REPORTING BUGS” subsections of the “BUGS”
       section.
+  * Make “setup.py clean -a” remove compiled manual page (unless it was built
+    by “setup.py sdist”).
 
- -- Jakub Wilk <jwilk@jwilk.net>  Fri, 25 Jan 2013 20:12:35 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Mon, 18 Feb 2013 23:26:53 +0100
 
 djvusmooth (0.2.13) unstable; urgency=low
 
