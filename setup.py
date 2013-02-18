@@ -37,7 +37,6 @@ import subprocess as ipc
 import distutils.core
 import distutils.errors
 from distutils.command.build import build as distutils_build
-from distutils.command.check import check as distutils_check
 from distutils.command.clean import clean as distutils_clean
 from distutils.command.sdist import sdist as distutils_sdist
 
