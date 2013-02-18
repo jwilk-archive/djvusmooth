@@ -6,6 +6,7 @@ djvusmooth (0.2.14) UNRELEASED; urgency=low
   * Allow removing the whole outline by selecting root element in the sidebar
     and pressing Delete.
     + Remove menu item “Edit → Outline → Remove all”; it's no longer needed.
+  * Check Python version at runtime.
   * Improve the manual page, as per man-pages(7) recommendations:
     - Remove the “AUTHOR” section.
     - Rename the “ENVIRONMENT VARIABLES” section as “ENVIRONMENT”.
@@ -16,7 +17,7 @@ djvusmooth (0.2.14) UNRELEASED; urgency=low
       by “setup.py sdist”).
     + Fix compatiblity with Python 2.5 and 2.6 (broken in 0.2.12).
 
- -- Jakub Wilk <jwilk@jwilk.net>  Mon, 18 Feb 2013 23:37:25 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Mon, 18 Feb 2013 23:41:42 +0100
 
 djvusmooth (0.2.13) unstable; urgency=low
 
