@@ -1,5 +1,5 @@
 # encoding=UTF-8
-# Copyright © 2008, 2009 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2008, 2009, 2010, 2011, 2013 Jakub Wilk <jwilk@jwilk.net>
 # Copyright © 2009 Mateusz Turcza <mturcza@mimuw.edu.pl>
 #
 # This package is free software; you can redistribute it and/or modify
