@@ -103,7 +103,10 @@ class OutlineBrowser(wx.TreeCtrl):
             return # TODO: try to handle non-local URIs
 
     def do_delete_node(self, node):
-        node.delete()
+        try:
+            node.delete()
+        except NotImplementedError:
+            return
 
     _WXK_TO_METHOD = {
         wx.WXK_RETURN: do_goto_node,
