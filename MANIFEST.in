@@ -8,5 +8,5 @@ include doc/*.xml
 include doc/changelog
 include extra/*
 include po/*.po
-include tools/*
+include private/*
 recursive-include lib *.py
