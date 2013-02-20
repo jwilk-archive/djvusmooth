@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: djvusmooth 0.2.14\n"
 "Report-Msgid-Bugs-To: Jakub Wilk <jwilk@jwilk.net>\n"
-"POT-Creation-Date: 2012-11-11 17:05+0100\n"
+"POT-Creation-Date: 2013-02-20 17:57+0100\n"
 "PO-Revision-Date: 2012-06-13 10:33+0300\n"
 "Last-Translator: Kyrill Detinov <lazy.kent@opensuse.org>\n"
 "Language-Team: openSUSE Translation Team\n"
@@ -102,6 +102,9 @@ msgstr "&Обновить"
 
 msgid "&Remove"
 msgstr "&Удалить"
+
+msgid "&Remove all"
+msgstr "&Удалить всё"
 
 msgid "&Save"
 msgstr "&Сохранить"
@@ -361,6 +364,9 @@ msgstr "Удалить детали"
 
 msgid "Remove details from page text"
 msgstr "Уменьшить детализацию текста"
+
+msgid "Remove whole document outline"
+msgstr "Удалить оглавление всего документа"
 
 msgid "Save the document"
 msgstr "Сохранить документ"

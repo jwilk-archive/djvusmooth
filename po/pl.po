@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: djvusmooth 0.2.14\n"
 "Report-Msgid-Bugs-To: Jakub Wilk <jwilk@jwilk.net>\n"
-"POT-Creation-Date: 2012-11-11 17:05+0100\n"
+"POT-Creation-Date: 2013-02-20 17:57+0100\n"
 "PO-Revision-Date: 2012-10-09 20:41+0200\n"
 "Last-Translator: Jakub Wilk <jwilk@jwilk.net>\n"
 "Language-Team: none\n"
@@ -100,6 +100,9 @@ msgstr "&Odśwież"
 
 msgid "&Remove"
 msgstr "&Usuń"
+
+msgid "&Remove all"
+msgstr "&Usuń wszystko"
 
 msgid "&Save"
 msgstr "Za&pisz"
@@ -359,6 +362,9 @@ msgstr "Usuń szczegóły"
 
 msgid "Remove details from page text"
 msgstr "Usuń szczegóły z tekstu"
+
+msgid "Remove whole document outline"
+msgstr "Usuń cały konspekt dokumentu"
 
 msgid "Save the document"
 msgstr "Zapisz dokument"
