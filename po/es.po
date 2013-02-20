@@ -320,7 +320,7 @@ msgid "Opacity"
 msgstr "Opacidad"
 
 msgid "Open &recent"
-msgstr ""
+msgstr "Abrir &reciente"
 
 msgid "Open a DjVu document"
 msgstr "Abrir un documento DjVu"
