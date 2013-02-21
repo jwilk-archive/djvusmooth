@@ -1,4 +1,4 @@
-djvusmooth (0.2.14) UNRELEASED; urgency=low
+djvusmooth (0.2.14) unstable; urgency=low
 
   [ Jakub Wilk ]
   * Add “Open recent” submenu.
@@ -22,7 +22,7 @@ djvusmooth (0.2.14) UNRELEASED; urgency=low
   [ Kyrill Detinov ]
   * Update the Russian translation.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Thu, 21 Feb 2013 17:25:38 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Thu, 21 Feb 2013 23:18:33 +0100
 
 djvusmooth (0.2.13) unstable; urgency=low
 
