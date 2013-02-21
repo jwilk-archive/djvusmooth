@@ -167,10 +167,12 @@ djvusmooth (0.2.1) unstable; urgency=low
 
 djvusmooth (0.2.0) unstable; urgency=low
 
+  [ Mateusz Turcza ]
   * Remember last visited directory.
-    Thanks to Mateusz Turcza for providing a patch.
+  * Add Polish translation.
+
+  [ Jakub Wilk ]
   * Follow the XDG Base Directory Specification.
-  * Add Polish translation, contributed by Mateusz Turcza.
   * Fix a typo in variable name that was causing random crashes.
   * Provide a manual page.
 
