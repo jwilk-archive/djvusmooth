@@ -1,5 +1,5 @@
 # encoding=UTF-8
-# Copyright © 2008, 2009, 2010, 2011, 2012 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2008, 2009, 2010, 2011, 2012, 2013 Jakub Wilk <jwilk@jwilk.net>
 # Copyright © 2009 Mateusz Turcza <mturcza@mimuw.edu.pl>
 #
 # This package is free software; you can redistribute it and/or modify
@@ -22,7 +22,6 @@ import functools
 import locale
 import os.path
 import threading
-import tempfile
 from Queue import Queue, Empty as QueueEmpty
 
 import djvusmooth.dependencies as __dependencies
