@@ -35,12 +35,17 @@ djvusmooth (0.2.13) unstable; urgency=low
 
 djvusmooth (0.2.12) unstable; urgency=low
 
+  [ Jakub Wilk ]
   * Install desktop file.
-  * Update the Russian translation, thanks to Kyrill Detinov.
-  * Add Spanish translation, contributed by C. Daniel Sanchez R.
   * Rename menu item “Edit → Outline → Remove” to “… → Remove all”.
     Thanks to Maxim Leyenson for the bug report.
   * Use our own minimal XDG Base Directory implementation instead of PyXDG.
+
+  [ Kyrill Detinov ]
+  * Update the Russian translation.
+
+  [ C. Daniel Sanchez R. ]
+  * Add Spanish translation.
 
  -- Jakub Wilk <jwilk@jwilk.net>  Wed, 13 Jun 2012 20:53:49 +0200
 
@@ -85,7 +90,10 @@ djvusmooth (0.2.9) unstable; urgency=low
 
 djvusmooth (0.2.8) unstable; urgency=low
 
-  * Update the Russian translation, thanks to Kyrill Detinov.
+  [ Kyrill Detinov ]
+  * Update the Russian translation.
+
+  [ Jakub Wilk ]
   * Handle directories with non-ASCII characters.
     http://bugs.debian.org/595002
   * Fix editing line/arrow annotations.
@@ -95,7 +103,10 @@ djvusmooth (0.2.8) unstable; urgency=low
 
 djvusmooth (0.2.7) unstable; urgency=low
 
-  * Add Russian translation, contributed by Kyrill Detinov.
+  [ Kyrill Detinov ]
+  * Add Russian translation.
+
+  [ Jakub Wilk ]
   * Handle non-ASCII metadata keys.
     Thanks to Aleš Kapica for the bug report.
 
