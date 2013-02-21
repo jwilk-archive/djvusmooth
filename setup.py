@@ -32,7 +32,6 @@ Topic :: Multimedia :: Graphics
 import glob
 import os
 import re
-import subprocess as ipc
 
 import distutils.core
 import distutils.errors
