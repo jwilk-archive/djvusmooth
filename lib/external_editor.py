@@ -1,5 +1,5 @@
 # encoding=UTF-8
-# Copyright © 2008, 2009, 2011 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2008, 2009, 2011, 2013 Jakub Wilk <jwilk@jwilk.net>
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ class temporary_file(object):
 
     def read(self, n=-1):
         self._reopen()
-        return self.fp.read(s)
+        return self.fp.read(n)
 
     def __iter__(self):
         self._reopen()
