@@ -1,5 +1,6 @@
 djvusmooth (0.2.14) UNRELEASED; urgency=low
 
+  [ Jakub Wilk ]
   * Add “Open recent” submenu.
     https://bitbucket.org/jwilk/djvusmooth/issue/7
   * Do not abort opening a new file if user chose to save the current one.
@@ -15,7 +16,10 @@ djvusmooth (0.2.14) UNRELEASED; urgency=low
     + Fix compatiblity with Python 2.5 and 2.6 (broken in 0.2.12).
   * Improve error handilng.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Wed, 20 Feb 2013 17:54:31 +0100
+  [ C. Daniel Sanchez R. ]
+  * Update the Spanish translation.
+
+ -- Jakub Wilk <jwilk@jwilk.net>  Thu, 21 Feb 2013 10:46:33 +0100
 
 djvusmooth (0.2.13) unstable; urgency=low
 
