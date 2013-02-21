@@ -987,8 +987,17 @@ class MainWindow(wx.Frame):
         self.SetTitle(title)
 
     def on_about(self, event):
-        message = '%(APPLICATION_NAME)s %(__version__)s\n' + _('Author') + ': %(__author__)s\n' + _('License') + ': %(LICENSE)s'
-        message = message % globals()
+        message = (
+            '%(app)s %(version)s\n' +
+            _('Author') + ': %(author)s\n' +
+            _('License') + ': %(license)s'
+        )
+        message = message % dict(
+            app=APPLICATION_NAME,
+            version=__version__,
+            author=__author__,
+            license=LICENSE
+        )
         wx.MessageBox(message = message, caption = _(u'About…'))
 
     def handle_message(self, event):
