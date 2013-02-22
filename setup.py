@@ -61,7 +61,7 @@ class build_mo(distutils_build):
             if not os.path.isdir(modir):
                 os.makedirs(modir)
             moname = os.path.join(modir, 'djvusmooth.mo')
-            command = ['msgfmt', '-o', moname, '--check', '--check-accelerators', poname]
+            command = ['msgfmt', '-o', moname, '--verbose', '--check', '--check-accelerators', poname]
             self.make_file([poname], moname, distutils.spawn.spawn, [command])
             data_files.append((os.path.join('share', modir), [moname]))
 

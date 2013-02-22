@@ -1,8 +1,9 @@
 djvusmooth (0.2.15) UNRELEASED; urgency=low
 
-  * 
+  * Improve the setup script:
+    - Run msgfmt with the --verbose option.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Thu, 21 Feb 2013 23:23:30 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Fri, 22 Feb 2013 17:40:09 +0100
 
 djvusmooth (0.2.14) unstable; urgency=low
 
