@@ -20,8 +20,8 @@ djvusmooth (0.2.14) unstable; urgency=low
   * Improve the setup script:
     + Make “setup.py clean -a” remove compiled manual page (unless it was built
       by “setup.py sdist”).
-    + Fix compatiblity with Python 2.5 and 2.6 (broken in 0.2.12).
-  * Improve error handilng.
+    + Fix compatibility with Python 2.5 and 2.6 (broken in 0.2.12).
+  * Improve error handling.
 
   [ C. Daniel Sanchez R. ]
   * Update the Spanish translation.
