@@ -868,7 +868,7 @@ class MainWindow(wx.Frame):
             except text_mangle.LengthChanged:
                 self.error_box(_('Number of lines changed.'))
                 return
-            except:
+            except Exception:
                 self.on_external_edit_failed(exception)
                 return
         if sexpr is None:
