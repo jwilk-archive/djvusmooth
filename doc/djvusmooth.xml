@@ -41,6 +41,7 @@
         <itemizedlist>
             <listitem><para>edit document metadata,</para></listitem>
             <listitem><para>edit document outline (bookmarks),</para></listitem>
+            <listitem><para>add, remove or edit hyperlinks,</para></listitem>
             <listitem><para>correct occasional errors in the hidden text layer.</para></listitem>
         </itemizedlist>
     </para>
