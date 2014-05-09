@@ -3,8 +3,9 @@ djvusmooth (0.2.15) UNRELEASED; urgency=low
   * Improve the setup script:
     - Run msgfmt with the --verbose option.
   * Improve error handling.
+  * Use HTTPS URLs when they are available, in documentation and code.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Mon, 09 Dec 2013 13:44:31 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Fri, 09 May 2014 23:03:17 +0200
 
 djvusmooth (0.2.14) unstable; urgency=low
 
@@ -93,7 +94,7 @@ djvusmooth (0.2.9) unstable; urgency=low
     + Don't rely on atomic renames when saving configuration files.
   * Reset the SIGCHLD signal to SIG_IGN on start. Thanks to Heinrich
     Schwietering for the bug report.
-    http://bugs.debian.org/596232
+    https://bugs.debian.org/596232
   * Fix support for external editors that use the overwrite-by-rename
     technique. Thanks to Markus Baertschi for the bug report.
 
@@ -106,9 +107,9 @@ djvusmooth (0.2.8) unstable; urgency=low
 
   [ Jakub Wilk ]
   * Handle directories with non-ASCII characters.
-    http://bugs.debian.org/595002
+    https://bugs.debian.org/595002
   * Fix editing line/arrow annotations.
-    http://bugs.debian.org/595012
+    https://bugs.debian.org/595012
 
  -- Jakub Wilk <jwilk@jwilk.net>  Tue, 31 Aug 2010 15:15:01 +0200
 
@@ -151,13 +152,13 @@ djvusmooth (0.2.3) unstable; urgency=low
   * Fix issues with “Overprinted annotation properties” dialog:
     + Allow to turn off the “allow visible” property.
       Thanks to Janusz S. Bień for the bug report.
-      http://bugs.debian.org/574362
+      https://bugs.debian.org/574362
     + Disable the “allow visible” checkbox if a hyperlink has no border.
-      http://bugs.debian.org/574338
+      https://bugs.debian.org/574338
     + Display real border width instead of hard-coded 1.
     + Use the term “width” rather than “thickness” consistently.
   * Document that using shadow border thinner than 3 pixels is not portable.
-    http://bugs.debian.org/574361
+    https://bugs.debian.org/574361
 
  -- Jakub Wilk <jwilk@jwilk.net>  Wed, 17 Mar 2010 21:59:58 +0100
 
