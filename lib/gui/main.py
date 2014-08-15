@@ -62,10 +62,6 @@ WxDjVuMessage, wx.EVT_DJVU_MESSAGE = wx.lib.newevent.NewEvent()
 
 system_encoding = locale.getpreferredencoding()
 
-if wx.__version__.startswith('2.8.'):
-    wx.Choicebook = wx.Notebook
-    wx.EVT_CHOICEBOOK_PAGE_CHANGED = wx.EVT_NOTEBOOK_PAGE_CHANGED
-
 class OpenDialog(wx.FileDialog):
 
     __wildcard = _(
@@ -355,7 +351,7 @@ class MainWindow(wx.Frame):
         self.status_bar = self.CreateStatusBar(2, style = wx.ST_SIZEGRIP)
         self.splitter = wx.SplitterWindow(self, style = wx.SP_LIVE_UPDATE)
         self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.on_splitter_sash_changed)
-        self.sidebar = wx.Choicebook(self.splitter, wx.ID_ANY)
+        self.sidebar = wx.Notebook(self.splitter, wx.ID_ANY)
         self.text_browser = TextBrowser(self.sidebar)
         self.outline_browser = OutlineBrowser(self.sidebar)
         self.maparea_browser = MapAreaBrowser(self.sidebar)
@@ -363,7 +359,7 @@ class MainWindow(wx.Frame):
         self.sidebar.AddPage(self.maparea_browser, _('Hyperlinks'))
         self.sidebar.AddPage(self.text_browser, _('Text'))
         self.sidebar.Bind(
-            wx.EVT_CHOICEBOOK_PAGE_CHANGED,
+            wx.EVT_NOTEBOOK_PAGE_CHANGED,
             self._on_sidebar_page_changed(
                 self.on_display_no_nonraster,
                 self.on_display_maparea,

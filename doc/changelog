@@ -7,8 +7,9 @@ djvusmooth (0.2.15) UNRELEASED; urgency=low
   * Document that is possible to edit hyperlinks.
     Thanks to Janusz S. Bień for the bug report.
     https://bitbucket.org/jwilk/djvusmooth/issue/13
+  * Use the notebook widget regardless of wxPython version.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Fri, 09 May 2014 23:08:43 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Fri, 15 Aug 2014 20:44:24 +0200
 
 djvusmooth (0.2.14) unstable; urgency=low
 
