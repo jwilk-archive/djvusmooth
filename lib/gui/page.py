@@ -327,7 +327,7 @@ class TextShape(NodeShape):
     }
 
     def _get_frame_color(self):
-        return wx.Color(*self._FRAME_COLORS[self._node.type])
+        return wx.Colour(*self._FRAME_COLORS[self._node.type])
 
     def _get_text(self):
         if self._node.is_inner():
