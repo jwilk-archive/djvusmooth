@@ -1,7 +1,7 @@
 djvusmooth (0.2.15) UNRELEASED; urgency=low
 
   * Improve the setup script:
-    - Run msgfmt with the --verbose option.
+    + Run msgfmt with the --verbose option.
   * Improve error handling.
   * Use HTTPS URLs when they are available, in documentation and code.
   * Document that is possible to edit hyperlinks.
@@ -18,9 +18,9 @@ djvusmooth (0.2.14) unstable; urgency=low
   * Do not abort opening a new file if user chose to save the current one.
   * Check Python version at runtime.
   * Improve the manual page, as per man-pages(7) recommendations:
-    - Remove the “AUTHOR” section.
-    - Rename the “ENVIRONMENT VARIABLES” section as “ENVIRONMENT”.
-    - Make “PORTABILITY” and “REPORTING BUGS” subsections of the “BUGS”
+    + Remove the “AUTHOR” section.
+    + Rename the “ENVIRONMENT VARIABLES” section as “ENVIRONMENT”.
+    + Make “PORTABILITY” and “REPORTING BUGS” subsections of the “BUGS”
       section.
   * Improve the setup script:
     + Make “setup.py clean -a” remove compiled manual page (unless it was built
