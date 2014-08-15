@@ -21,9 +21,9 @@ PYTHON_DJVULIBRE_MIN_VERSION = (0, 1, 4)
 djvulibre_path = None
 
 def _check_signals():
-    # Protect from scanadf[0] and possibly other brain-dead software that set
-    # SIGCHLD to SIG_IGN.
-    # [0] https://bugs.debian.org/596232
+    # Protect from scanadf and possibly other software that sets SIGCHLD to
+    # SIG_IGN.
+    # https://bugs.debian.org/596232
     import os
     import signal
     if os.name == 'posix':
