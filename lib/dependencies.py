@@ -1,5 +1,5 @@
 # encoding=UTF-8
-# Copyright © 2008, 2009, 2010, 2011, 2012 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2008, 2009, 2010, 2011, 2012, 2014 Jakub Wilk <jwilk@jwilk.net>
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
 Checks for djvusmooth dependencies.
 '''
 
-WX_VERSIONS = ('2.8-unicode', '2.6-unicode')
 DDJVU_API_MIN_VERSION = 26
 PYTHON_DJVULIBRE_MIN_VERSION = (0, 1, 4)
 
@@ -54,9 +53,15 @@ def _check_wx():
         import wxversion
     except ImportError, ex:
         raise ImportError('%s; perhaps wxPython is not installed' % (ex,))
-    if not wxversion.checkInstalled(WX_VERSIONS):
-        raise ImportError('wxPython 2.6 or 2.8 with Unicode support is required')
-    wxversion.select(WX_VERSIONS)
+    for ver in ['2.8-unicode', '2.6-unicode']:
+        try:
+            wxversion.select(ver, optionsRequired=True)
+        except wxversion.VersionError:
+            continue
+        else:
+            break
+    else:
+        raise ImportError('wxPython 2.8 or 2.6 in Unicode mode is required')
 
 _check_signals()
 del _check_signals
