@@ -9,11 +9,12 @@ djvusmooth (0.2.15) UNRELEASED; urgency=low
     Thanks to Janusz S. Bień for the bug report.
     https://bitbucket.org/jwilk/djvusmooth/issue/13
   * Use the notebook widget regardless of wxPython version.
+  * Don't hardcode path to the binary in the desktop file.
 
   [ Daniel Stender ]
   * Add German translation for the desktop file.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Sat, 23 Aug 2014 17:47:14 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Mon, 25 Aug 2014 11:50:54 +0200
 
 djvusmooth (0.2.14) unstable; urgency=low
 
