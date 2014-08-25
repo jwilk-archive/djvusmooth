@@ -3,6 +3,7 @@ Version=1.0
 Type=Application
 Name=djvusmooth
 GenericName=Graphical editor for DjVu
+GenericName[de]=Grafischer Editor für DjVu-Dateien
 GenericName[pl]=Graficzny edytor plików DjVu
 Exec=/usr/bin/djvusmooth %f
 Terminal=false
