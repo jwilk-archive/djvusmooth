@@ -53,7 +53,7 @@ def _check_wx():
         import wxversion
     except ImportError, ex:
         raise ImportError('%s; perhaps wxPython is not installed' % (ex,))
-    for ver in ['2.8-unicode', '2.6-unicode']:
+    for ver in ['3.0', '2.8-unicode']:
         try:
             wxversion.select(ver, optionsRequired=True)
         except wxversion.VersionError:
@@ -61,7 +61,7 @@ def _check_wx():
         else:
             break
     else:
-        raise ImportError('wxPython 2.8 or 2.6 in Unicode mode is required')
+        raise ImportError('wxPython 3.0 or 2.8 in Unicode mode is required')
 
 _check_signals()
 del _check_signals
