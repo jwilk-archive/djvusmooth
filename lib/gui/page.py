@@ -626,7 +626,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
         if self.GetSize() == size:
             return
         self.SetSize(size)
-        self.SetBestFittingSize(size)
+        self.SetInitialSize(size)
         self.GetParent().Layout()
         self.GetParent().SetupScrolling()
 
