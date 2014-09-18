@@ -71,7 +71,7 @@ class OpenDialog(wx.FileDialog):
 
     def __init__(self, parent):
         wx.FileDialog.__init__(self, parent,
-            style=wx.OPEN,
+            style=wx.FD_OPEN,
             wildcard=self.__wildcard,
             message=_('Open a DjVu document')
         )
