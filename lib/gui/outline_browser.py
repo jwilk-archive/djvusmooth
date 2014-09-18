@@ -257,6 +257,6 @@ class OutlineBrowser(wx.TreeCtrl):
         if self._create_root_item():
             self._add_children(self._root_item, self.document.outline.root)
 
-__all__ = 'OutlineBrowser',
+__all__ = ['OutlineBrowser']
 
 # vim:ts=4 sw=4 et

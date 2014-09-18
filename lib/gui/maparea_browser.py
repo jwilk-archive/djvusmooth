@@ -200,6 +200,6 @@ class MapAreaBrowser(
         for node in self._model.mapareas:
             self._insert_item(node)
 
-__all__ = 'MapAreaBrowser',
+__all__ = ['MapAreaBrowser']
 
 # vim:ts=4 sw=4 et

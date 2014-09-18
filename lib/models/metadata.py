@@ -84,6 +84,6 @@ class SharedMetadata(PageMetadata):
     def export_select(self, djvused):
         djvused.create_shared_annotations()
 
-__all__ = 'Metadata', 'PageMetadata', 'SharedMetadata'
+__all__ = ['Metadata', 'PageMetadata', 'SharedMetadata']
 
 # vim:ts=4 sw=4 et

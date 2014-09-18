@@ -132,10 +132,9 @@ class LengthChanged(Exception):
 class CharacterZoneFound(Exception):
     pass
 
-__all__ = \
-(
+__all__ = [
     'import_', 'export',
     'NothingChanged', 'CharacterZoneFound', 'LengthChanged'
-)
+]
 
 # vim:ts=4 sw=4 et

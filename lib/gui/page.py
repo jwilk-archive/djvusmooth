@@ -670,10 +670,10 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
         except decode.NotAvailable:
             pass
 
-__all__ = (
+__all__ = [
     'Zoom', 'PercentZoom', 'OneToOneZoom', 'StretchZoom', 'FitWidthZoom', 'FitPageZoom',
     'PageWidget',
     'RENDER_NONRASTER_TEXT', 'RENDER_NONRASTER_MAPAREA'
-)
+]
 
 # vim:ts=4 sw=4 et

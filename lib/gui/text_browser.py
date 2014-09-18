@@ -156,6 +156,6 @@ class TextBrowser(wx.TreeCtrl):
             self._have_root = True
             self._add_children(root, node)
 
-__all__ = 'TextBrowser',
+__all__ = ['TextBrowser']
 
 # vim:ts=4 sw=4 et

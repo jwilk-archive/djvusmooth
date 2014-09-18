@@ -36,6 +36,6 @@ class MultiPageModel(object):
         for id in sorted(self._pages):
             self._pages[id].export(djvused)
 
-__all__ = 'MultiPageModel', 'SHARED_ANNOTATIONS_PAGENO'
+__all__ = ['MultiPageModel', 'SHARED_ANNOTATIONS_PAGENO']
 
 # vim:ts=4 sw=4 et

@@ -66,6 +66,6 @@ class FlattenTextDialog(wx.Dialog):
         label, zone = ZONES_MAP[self._zone_box.GetSelection()]
         return zone
 
-__all__ = 'FlattenTextDialog',
+__all__ = ['FlattenTextDialog']
 
 # vim:ts=4 sw=4 et

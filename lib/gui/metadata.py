@@ -137,6 +137,6 @@ class MetadataDialog(wx.Dialog):
         sizer.Add(button_sizer, 0, wx.EXPAND | wx.ALL, 5)
         self.SetSizerAndFit(sizer)
 
-__all__ = 'MetadataDialog',
+__all__ = ['MetadataDialog']
 
 # vim:ts=4 sw=4 et

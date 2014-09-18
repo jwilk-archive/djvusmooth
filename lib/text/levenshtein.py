@@ -68,6 +68,6 @@ def distance(s, t):
             break
     return reversed(ops)
 
-__all__ = 'distance',
+__all__ = ['distance']
 
 # vim:ts=4 sw=4 et

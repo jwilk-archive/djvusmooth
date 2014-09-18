@@ -400,6 +400,6 @@ class MapareaPropertiesDialog(wx.Dialog):
 
     node = property(get_node)
 
-__all__ = 'MapareaPropertiesDialog'
+__all__ = ['MapareaPropertiesDialog']
 
 # vim:ts=4 sw=4 et

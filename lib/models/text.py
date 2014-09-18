@@ -443,6 +443,6 @@ def _get_leafs(node):
             for item in _get_leafs(child):
                 yield item
 
-__all__ = 'Text', 'PageText'
+__all__ = ['Text', 'PageText']
 
 # vim:ts=4 sw=4 et
