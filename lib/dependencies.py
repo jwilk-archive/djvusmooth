@@ -53,7 +53,7 @@ def _check_wx():
         import wxversion
     except ImportError, ex:
         raise ImportError('%s; perhaps wxPython is not installed' % (ex,))
-    for ver in ['3.0', '2.8-unicode']:
+    for ver in ['2.8-unicode', '3.0']:
         try:
             wxversion.select(ver, optionsRequired=True)
         except wxversion.VersionError:
