@@ -11,7 +11,7 @@ djvusmooth (0.2.15) UNRELEASED; urgency=low
   * Use the notebook widget regardless of wxPython version.
   * Don't hardcode path to the binary in the desktop file.
   * Port to wxPython 3.0.
-    Thanks to Olly Betts for the bug report and the inital patch.
+    Thanks to Olly Betts for the bug report and the initial patch.
     https://bugs.debian.org/758950
   * Drop support for wxPython 2.6.
 
