@@ -118,6 +118,7 @@ class OutlineBrowser(wx.TreeCtrl):
         try:
             method = self._WXK_TO_METHOD[key_code]
         except KeyError:
+            event.Skip()
             return
         item = self.GetSelection()
         node = self.GetPyData(item)

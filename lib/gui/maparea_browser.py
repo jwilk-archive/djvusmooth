@@ -82,6 +82,7 @@ class MapAreaBrowser(
         try:
             method = self._WXK_TO_METHOD[key_code]
         except KeyError:
+            event.Skip()
             return
         item = self.GetFirstSelected()
         node = self.GetPyData(item)
