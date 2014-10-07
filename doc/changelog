@@ -1,4 +1,4 @@
-djvusmooth (0.2.15) UNRELEASED; urgency=low
+djvusmooth (0.2.15) unstable; urgency=low
 
   [ Jakub Wilk ]
   * Improve the setup script:
@@ -18,7 +18,7 @@ djvusmooth (0.2.15) UNRELEASED; urgency=low
   [ Daniel Stender ]
   * Add German translation for the desktop file.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 07 Oct 2014 20:31:19 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 07 Oct 2014 21:46:07 +0200
 
 djvusmooth (0.2.14) unstable; urgency=low
 
