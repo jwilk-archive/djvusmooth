@@ -1,5 +1,5 @@
 # encoding=UTF-8
-# Copyright © 2008, 2009, 2010 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2008, 2009, 2010, 2013, 2014 Jakub Wilk <jwilk@jwilk.net>
 # Copyright © 2009 Mateusz Turcza <mturcza@mimuw.edu.pl>
 #
 # This package is free software; you can redistribute it and/or modify
@@ -17,6 +17,7 @@ import djvusmooth.models.text
 from djvusmooth import models
 from djvusmooth.varietes import replace_control_characters
 from djvusmooth.i18n import _
+from djvusmooth.gui import wxcompat
 
 def get_label_for_node(node):
     zone_type = str(node.type)
@@ -54,6 +55,10 @@ class TextBrowser(wx.TreeCtrl):
         self.Bind(wx.EVT_TREE_BEGIN_LABEL_EDIT, self.on_begin_edit, self)
         self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.on_end_edit, self)
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_selection_changed, self)
+        self.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
+
+    def on_key_down(self, event):
+        return wxcompat.on_key_down(self, event)
 
     def on_node_change(self, node):
         try:

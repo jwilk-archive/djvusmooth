@@ -1,5 +1,5 @@
 # encoding=UTF-8
-# Copyright © 2008, 2009 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2008, 2009, 2014 Jakub Wilk <jwilk@jwilk.net>
 # Copyright © 2009 Mateusz Turcza <mturcza@mimuw.edu.pl>
 #
 # This package is free software; you can redistribute it and/or modify
@@ -19,6 +19,7 @@ from djvusmooth import models
 import djvusmooth.gui.maparea_menu
 from djvusmooth import gui
 from djvusmooth.i18n import _
+from djvusmooth.gui import wxcompat
 
 class PageAnnotationsCallback(models.annotations.PageAnnotationsCallback):
 
@@ -68,7 +69,7 @@ class MapAreaBrowser(
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_selection_changed, self)
         self.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.on_item_right_click, self)
         self.Bind(wx.EVT_CHAR, self.on_char, self)
-
+        self.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
 
     def do_remove_node(self, node):
         node.delete()
@@ -89,6 +90,9 @@ class MapAreaBrowser(
         if node is None:
             return
         method(self, node)
+
+    def on_key_down(self, event):
+        return wxcompat.on_key_down(self, event)
 
     def on_node_add(self, node):
         item = self._insert_item(node)
