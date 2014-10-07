@@ -94,6 +94,8 @@ class OutlineBrowser(wx.TreeCtrl):
         source_node.notify_select()
 
     def do_goto_node(self, node):
+        if isinstance(node, models.outline.RootNode):
+            return
         uri = node.uri
         if uri.startswith('#'):
             try:
