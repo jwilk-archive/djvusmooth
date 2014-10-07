@@ -1,4 +1,4 @@
-__version__ = '0.2.15'
+__version__ = '0.2.16'
 __author__ = 'Jakub Wilk <jwilk@jwilk.net>'
 
 import sys

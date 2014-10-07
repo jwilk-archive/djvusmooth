@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the djvusmooth package.
 msgid ""
 msgstr ""
-"Project-Id-Version: djvusmooth 0.2.15\n"
+"Project-Id-Version: djvusmooth 0.2.16\n"
 "Report-Msgid-Bugs-To: Jakub Wilk <jwilk@jwilk.net>\n"
 "POT-Creation-Date: 2013-02-20 17:57+0100\n"
 "PO-Revision-Date: 2012-10-09 20:41+0200\n"
