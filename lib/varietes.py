@@ -175,4 +175,4 @@ class idict(object):
             ', '.join('%s=%r' % (k, v) for k, v in self.__dict__.iteritems())
         )
 
-# vim:ts=4 sw=4 et
+# vim:ts=4 sts=4 sw=4 et

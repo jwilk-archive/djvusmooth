@@ -60,4 +60,4 @@ if wx.VERSION < (3, 0):
     def on_key_down(ctrl, event):
         event.Skip()
 
-# vim:ts=4 sw=4 et
+# vim:ts=4 sts=4 sw=4 et

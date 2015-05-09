@@ -446,4 +446,4 @@ def _get_leafs(node):
 
 __all__ = ['Text', 'PageText']
 
-# vim:ts=4 sw=4 et
+# vim:ts=4 sts=4 sw=4 et

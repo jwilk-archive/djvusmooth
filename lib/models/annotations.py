@@ -924,4 +924,4 @@ class SharedAnnotations(object):
     def export_select(self, djvused):
         djvused.create_shared_annotations()
 
-# vim:ts=4 sw=4 et
+# vim:ts=4 sts=4 sw=4 et

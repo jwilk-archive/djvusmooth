@@ -164,4 +164,4 @@ class TextBrowser(wx.TreeCtrl):
 
 __all__ = ['TextBrowser']
 
-# vim:ts=4 sw=4 et
+# vim:ts=4 sts=4 sw=4 et

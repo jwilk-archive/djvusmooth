@@ -140,4 +140,4 @@ class MetadataDialog(wx.Dialog):
 
 __all__ = ['MetadataDialog']
 
-# vim:ts=4 sw=4 et
+# vim:ts=4 sts=4 sw=4 et

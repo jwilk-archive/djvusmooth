@@ -39,4 +39,4 @@ class MultiPageModel(object):
 
 __all__ = ['MultiPageModel', 'SHARED_ANNOTATIONS_PAGENO']
 
-# vim:ts=4 sw=4 et
+# vim:ts=4 sts=4 sw=4 et

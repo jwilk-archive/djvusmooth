@@ -300,4 +300,4 @@ class Outline(object):
         tree[0:1] = djvu.const.EMPTY_OUTLINE
         self.raw_value = djvu.sexpr.Expression(tree)
 
-# vim:ts=4 sw=4 et
+# vim:ts=4 sts=4 sw=4 et
