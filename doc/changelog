@@ -1,8 +1,8 @@
 djvusmooth (0.2.16) UNRELEASED; urgency=low
 
-  * 
+  * Drop support for Python 2.5.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 07 Oct 2014 21:55:50 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Wed, 03 Jun 2015 14:44:52 +0200
 
 djvusmooth (0.2.15) unstable; urgency=low
 
