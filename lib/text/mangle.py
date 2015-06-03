@@ -11,6 +11,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 # General Public License for more details.
 
+from __future__ import print_function
+
 import itertools
 
 import djvu.sexpr
@@ -105,7 +107,7 @@ def linearize_for_import(expr):
 
 def export(sexpr, stream):
     for line in linearize_for_export(sexpr):
-        print >>stream, line
+        print(line, file=stream)
 
 def import_(sexpr, stdin):
     exported = tuple(linearize_for_export(sexpr))
