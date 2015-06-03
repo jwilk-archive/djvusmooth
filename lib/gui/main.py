@@ -620,7 +620,7 @@ class MainWindow(wx.Frame):
                 self.document = self.context.new_document(djvu.decode.FileURI(self.path))
                 for model in self.models:
                     model.reset_document(self.document)
-            except Exception, exception:
+            except Exception as exception:
                 pass
             else:
                 exception = None
@@ -810,7 +810,7 @@ class MainWindow(wx.Frame):
                     self.external_editor(tmp_file.name)
                     tmp_file.seek(0)
                     new_repr = map(str.expandtabs, itertools.imap(str.rstrip, tmp_file))
-            except Exception, exception:
+            except Exception as exception:
                 pass
             else:
                 exception = None
@@ -846,7 +846,7 @@ class MainWindow(wx.Frame):
                         new_sexpr = text_mangle.import_(sexpr, tmp_file)
                     except text_mangle.NothingChanged:
                         pass
-            except Exception, exception:
+            except Exception as exception:
                 pass
             else:
                 exception = None

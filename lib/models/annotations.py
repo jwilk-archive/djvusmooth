@@ -262,7 +262,7 @@ class MapArea(Annotation):
                     key = key.value
                     value = True
                 kwargs['s_%s' % key] = value
-        except (StopIteration, TypeError), ex:
+        except (StopIteration, TypeError) as ex:
             raise MapAreaSyntaxError(ex)
         return cls(*args, **kwargs)
 
@@ -320,7 +320,7 @@ class MapArea(Annotation):
             self._border = SolidBorder(parse_color(options.pop('s_%s' % djvu.const.MAPAREA_BORDER_SOLID_COLOR)))
         except KeyError:
             pass
-        except (TypeError, ValueError), ex:
+        except (TypeError, ValueError) as ex:
             raise MapAreaSyntaxError(ex)
 
     def _parse_shadow_border_options(self, options):
@@ -329,7 +329,7 @@ class MapArea(Annotation):
                 width = self._parse_width(options.pop('s_%s' % border_style))
             except KeyError:
                 continue
-            except (TypeError, ValueError), ex:
+            except (TypeError, ValueError) as ex:
                 raise MapAreaSyntaxError(ex)
             cls = MAPAREA_SHADOW_BORDER_TO_CLASS[border_style]
             self._border = cls(width)
@@ -509,7 +509,7 @@ class RectangleMapArea(XywhMapArea):
             self._highlight_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_HIGHLIGHT_COLOR))
         except KeyError:
             self._highlight_color = None
-        except (TypeError, ValueError), ex:
+        except (TypeError, ValueError) as ex:
             raise MapAreaSyntaxError(ex)
         try:
             self._opacity = int(options.pop('s_%s' % djvu.const.MAPAREA_OPACITY))
@@ -517,7 +517,7 @@ class RectangleMapArea(XywhMapArea):
                 raise MapAreaSyntaxError
         except KeyError:
             self._opacity = djvu.const.MAPAREA_OPACITY_DEFAULT
-        except (TypeError, ValueError), ex:
+        except (TypeError, ValueError) as ex:
             raise MapAreaSyntaxError(ex)
         self._parse_common_options(options)
         self._check_invalid_options(options)
@@ -691,13 +691,13 @@ class LineMapArea(MapArea):
                 raise ValueError
         except KeyError:
             self._line_width = djvu.const.MAPAREA_LINE_MIN_WIDTH
-        except (TypeError, ValueError), ex:
+        except (TypeError, ValueError) as ex:
             raise MapAreaSyntaxError(ex)
         try:
             self._line_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_LINE_COLOR))
         except KeyError:
             self._line_color = djvu.const.MAPAREA_LINE_COLOR_DEFAULT
-        except (TypeError, ValueError), ex:
+        except (TypeError, ValueError) as ex:
             raise MapAreaSyntaxError(ex)
         self._parse_border_options(options)
         self._parse_common_options(options)
@@ -762,13 +762,13 @@ class TextMapArea(XywhMapArea):
             self._background_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_BACKGROUND_COLOR))
         except KeyError:
             self._background_color = None
-        except (TypeError, ValueError), ex:
+        except (TypeError, ValueError) as ex:
             raise MapAreaSyntaxError(ex)
         try:
             self._text_color = parse_color(options.pop('s_%s' % djvu.const.MAPAREA_TEXT_COLOR))
         except KeyError:
             self._text_color = djvu.const.MAPAREA_TEXT_COLOR_DEFAULT
-        except (TypeError, ValueError), ex:
+        except (TypeError, ValueError) as ex:
             raise MapAreaSyntaxError(ex)
         try:
             del options['s_%s' % djvu.const.MAPAREA_PUSHPIN]

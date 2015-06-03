@@ -40,7 +40,7 @@ def _check_djvu():
         djvulibre_path = set_dll_search_path()
     try:
         from djvu.decode import __version__ as djvu_decode_version
-    except ImportError, ex:
+    except ImportError as ex:
         raise ImportError('%s; perhaps python-djvulibre is not installed' % (ex,))
     python_djvu_decode_version, ddjvu_api_version = djvu_decode_version.split('/')
     if int(ddjvu_api_version) < DDJVU_API_MIN_VERSION:
@@ -52,7 +52,7 @@ def _check_djvu():
 def _check_wx():
     try:
         import wxversion
-    except ImportError, ex:
+    except ImportError as ex:
         raise ImportError('%s; perhaps wxPython is not installed' % (ex,))
     for ver in ['2.8-unicode', '3.0']:
         try:

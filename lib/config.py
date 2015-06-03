@@ -88,7 +88,7 @@ class Config(object):
     def _load(self, path):
         try:
             file = open(path, 'r')
-        except IOError, ex:
+        except IOError as ex:
             if ex.errno == errno.ENOENT:
                 return
         try:
@@ -130,7 +130,7 @@ class Config(object):
         if self._legacy_path is not None:
             try:
                 os.remove(self._legacy_path)
-            except OSError, ex:
+            except OSError as ex:
                 if ex.errno != errno.ENOENT:
                     raise
         self._dirty = False
