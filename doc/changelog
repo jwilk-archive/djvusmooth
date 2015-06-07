@@ -169,7 +169,7 @@ djvusmooth (0.2.4) unstable; urgency=low
 djvusmooth (0.2.3) unstable; urgency=low
 
   * Fix issues with “Overprinted annotation properties” dialog:
-    + Allow to turn off the “allow visible” property.
+    + Allow turning off the “allow visible” property.
       Thanks to Janusz S. Bień for the bug report.
       https://bugs.debian.org/574362
     + Disable the “allow visible” checkbox if a hyperlink has no border.
