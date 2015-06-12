@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # encoding=UTF-8
 
-# Copyright © 2008-2014 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2008-2015 Jakub Wilk <jwilk@jwilk.net>
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@ License :: OSI Approved :: GNU General Public License (GPL)
 Operating System :: OS Independent
 Programming Language :: Python
 Programming Language :: Python :: 2
+Programming Language :: Python :: 2.6
+Programming Language :: Python :: 2.7
 Topic :: Text Processing
 Topic :: Multimedia :: Graphics
 '''.strip().splitlines()
