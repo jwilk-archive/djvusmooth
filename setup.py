@@ -117,7 +117,7 @@ class build_doc(distutils_build):
             )
             # Use RFC 3339 date format:
             contents = self._date_regex.sub(
-                lambda m: '{year}-{month}-{day}'.format(**m.groupdict()),
+                lambda m: r'{year}\-{month}\-{day}'.format(**m.groupdict()),
                 contents
             )
             file.seek(0)
