@@ -89,7 +89,7 @@ class check_po(distutils_build):
                     with open(checkname) as file:
                         entries = file.read()
                     if entries:
-                        raise IOError(None, '%s has %s entries' % (poname, feature))
+                        raise IOError(None, '{po} has {n} entries'.format(po=poname, n=feature))
             finally:
                 os.unlink(checkname)
 
@@ -112,12 +112,12 @@ class build_doc(distutils_build):
             contents = file.read()
             # Format URLs:
             contents = self._url_regex.sub(
-                lambda m: r'\m[blue]\fI%s\fR\m[]' % m.groups(),
+                lambda m: r'\m[blue]\fI{0}\fR\m[]'.format(*m.groups()),
                 contents,
             )
             # Use RFC 3339 date format:
             contents = self._date_regex.sub(
-                lambda m: '%(year)s-%(month)s-%(day)s' % m.groupdict(),
+                lambda m: '{year}-{month}-{day}'.format(**m.groupdict()),
                 contents
             )
             file.seek(0)
@@ -156,7 +156,7 @@ class clean(distutils_clean):
             with open(manname, 'r') as file:
                 stamp = file.readline()
             if stamp != sdist.manpage_stamp:
-                self.execute(os.unlink, [manname], 'removing %s' % manname)
+                self.execute(os.unlink, [manname], 'removing {0}'.format(manname))
 
 class sdist(distutils_sdist):
 
@@ -179,7 +179,7 @@ class sdist(distutils_sdist):
     def make_release_tree(self, base_dir, files):
         distutils_sdist.make_release_tree(self, base_dir, files)
         for manname in glob.iglob(os.path.join(base_dir, 'doc', '*.1')):
-            self.execute(self._rewrite_manpage, [manname], 'rewriting %s' % manname)
+            self.execute(self._rewrite_manpage, [manname], 'rewriting {0}'.format(manname))
 
 distutils.core.setup(
     name = 'djvusmooth',
@@ -191,7 +191,10 @@ distutils.core.setup(
     url = 'http://jwilk.net/software/djvusmooth',
     author = 'Jakub Wilk',
     author_email = 'jwilk@jwilk.net',
-    packages = ['djvusmooth'] + ['djvusmooth.%s' % x for x in 'gui models text'.split()],
+    packages = (
+        ['djvusmooth'] +
+        ['djvusmooth.{mod}'.format(mod=mod) for mod in ['gui', 'models', 'text']]
+    ),
     package_dir = dict(djvusmooth='lib'),
     scripts = ['djvusmooth'],
     data_files = data_files,
