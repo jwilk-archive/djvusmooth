@@ -182,23 +182,23 @@ class sdist(distutils_sdist):
             self.execute(self._rewrite_manpage, [manname], 'rewriting {0}'.format(manname))
 
 distutils.core.setup(
-    name = 'djvusmooth',
-    version = __version__,
-    license = 'GNU GPL 2',
-    description = 'graphical editor for DjVu',
-    long_description = __doc__.strip(),
-    classifiers = classifiers,
-    url = 'http://jwilk.net/software/djvusmooth',
-    author = 'Jakub Wilk',
-    author_email = 'jwilk@jwilk.net',
-    packages = (
+    name='djvusmooth',
+    version=__version__,
+    license='GNU GPL 2',
+    description='graphical editor for DjVu',
+    long_description=__doc__.strip(),
+    classifiers=classifiers,
+    url='http://jwilk.net/software/djvusmooth',
+    author='Jakub Wilk',
+    author_email='jwilk@jwilk.net',
+    packages=(
         ['djvusmooth'] +
         ['djvusmooth.{mod}'.format(mod=mod) for mod in ['gui', 'models', 'text']]
     ),
-    package_dir = dict(djvusmooth='lib'),
-    scripts = ['djvusmooth'],
-    data_files = data_files,
-    cmdclass = dict(
+    package_dir=dict(djvusmooth='lib'),
+    scripts=['djvusmooth'],
+    data_files=data_files,
+    cmdclass=dict(
         build_doc=build_doc,
         build_mo=build_mo,
         check_po=check_po,
