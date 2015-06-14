@@ -1,6 +1,6 @@
 # encoding=UTF-8
 
-# Copyright © 2008-2009 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2008-2015 Jakub Wilk <jwilk@jwilk.net>
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,8 +39,8 @@ def not_overridden(f):
         cls = type(self)
         warnings.warn(
             '`%s.%s.%s()` is not overridden' % (cls.__module__, cls.__name__, f.__name__),
-            category = NotOverriddenWarning,
-            stacklevel = 2
+            category=NotOverriddenWarning,
+            stacklevel=2
         )
         return f(self, *args, **kwargs)
     return new_f
@@ -100,11 +100,10 @@ def indents_to_tree(lines):
         memo += (indent, current),
     return root
 
-URI_SPECIAL_CHARACTERS = \
-(
-    ':/?#[]@' +    # RFC 3986, `gen-delims`
-    '!$&()*+,;=' + # RFC 3986, `sub-delims`
-    '%'            # RFC 3986, `pct-encoded`
+URI_SPECIAL_CHARACTERS = (
+    ':/?#[]@' +  # RFC 3986, `gen-delims`
+    '!$&()*+,;=' +  # RFC 3986, `sub-delims`
+    '%'  # RFC 3986, `pct-encoded`
 )
 
 def fix_uri(s):
@@ -168,8 +167,7 @@ class idict(object):
         self.__dict__.update(kwargs)
 
     def __repr__(self):
-        return '%s.%s(%s)' % \
-        (
+        return '%s.%s(%s)' % (
             self.__module__,
             self.__class__.__name__,
             ', '.join('%s=%r' % (k, v) for k, v in self.__dict__.iteritems())
