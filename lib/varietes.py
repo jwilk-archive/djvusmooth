@@ -38,7 +38,7 @@ def not_overridden(f):
     def new_f(self, *args, **kwargs):
         cls = type(self)
         warnings.warn(
-            '`%s.%s.%s()` is not overridden' % (cls.__module__, cls.__name__, f.__name__),
+            '`{mod}.{cls}.{func}()` is not overridden'.format(mod=cls.__module__, cls=cls.__name__, func=f.__name__),
             category=NotOverriddenWarning,
             stacklevel=2
         )
@@ -167,10 +167,10 @@ class idict(object):
         self.__dict__.update(kwargs)
 
     def __repr__(self):
-        return '%s.%s(%s)' % (
-            self.__module__,
-            self.__class__.__name__,
-            ', '.join('%s=%r' % (k, v) for k, v in self.__dict__.iteritems())
+        return '{mod}.{cls}({init})'.format(
+            mod=self.__module__,
+            cls=self.__class__.__name__,
+            init=', '.join('{k}={v!r}'.format(k=k, v=v) for k, v in self.__dict__.iteritems())
         )
 
 # vim:ts=4 sts=4 sw=4 et
