@@ -1,6 +1,6 @@
 # encoding=UTF-8
 
-# Copyright © 2014 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2014-2015 Jakub Wilk <jwilk@jwilk.net>
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@ def on_key_down(ctrl, event):
         wx.PostEvent(window, evt)
 
 if wx.VERSION < (3, 0):
+    del on_key_down  # quieten pyflakes
     def on_key_down(ctrl, event):
         event.Skip()
 
