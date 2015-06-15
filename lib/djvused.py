@@ -33,17 +33,15 @@ if djvused_path is None or not os.path.isfile(djvused_path):
     # Let's hope it's within $PATH...
     djvused_path = 'djvused'
 
-DJVUSED_PATH = djvused_path
-
 def _djvused_usability_check():
     try:
-        djvused = subprocess.Popen([DJVUSED_PATH], stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        djvused = subprocess.Popen([djvused_path], stdout = subprocess.PIPE, stderr = subprocess.PIPE)
         djvused.communicate()
         if djvused.returncode == 10:
             return
     except (IOError, OSError):
         pass
-    raise IOError('%r does not seem to be usable' % DJVUSED_PATH)
+    raise IOError('%r does not seem to be usable' % djvused_path)
 
 _djvused_usability_check()
 
@@ -142,7 +140,7 @@ class StreamEditor(object):
         result[0] = fo.read(),
 
     def _execute(self, commands, save = False):
-        args = [DJVUSED_PATH]
+        args = [djvused_path]
         if save:
             args += '-s',
         args += self._file_name,
