@@ -41,7 +41,7 @@ def _djvused_usability_check():
             return
     except (IOError, OSError):
         pass
-    raise IOError('%r does not seem to be usable' % djvused_path)
+    raise IOError('{path!r} does not seem to be usable'.format(path=djvused_path))
 
 _djvused_usability_check()
 
