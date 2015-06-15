@@ -1,6 +1,6 @@
 # encoding=UTF-8
 
-# Copyright © 2008-2011 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2008-2015 Jakub Wilk <jwilk@jwilk.net>
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,7 +11,6 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 # General Public License for more details.
 
-import pkgconfig
 import os.path
 import subprocess
 import threading
@@ -23,6 +22,7 @@ if os.name =='nt':
     from . import dependencies
     djvused_path = os.path.join(dependencies.djvulibre_path, 'djvused.exe')
 else:
+    from . import pkgconfig
     try:
         djvulibre_bin_path = os.path.join(pkgconfig.Package('ddjvuapi').variable('exec_prefix'), 'bin')
     except (IOError, OSError):
