@@ -141,7 +141,7 @@ class StreamEditor(object):
         self._add('save')
 
     def _reader_thread(self, fo, result):
-        result[0] = fo.read(),
+        result[0] = fo.read()
 
     def _execute(self, commands, save=False):
         args = [djvused_path]
