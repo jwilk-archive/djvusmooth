@@ -199,7 +199,7 @@ class LeafNode(Node):
         return property(get, set)
 
     def remove_child(self, child):
-        raise TypeError('%r is not having children' % (self,))
+        raise TypeError('{0!r} cannot have children'.format(self))
 
     def strip(self, zone_type):
         if self.type <= zone_type:
