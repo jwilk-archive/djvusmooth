@@ -18,7 +18,7 @@ import threading
 from djvu.sexpr import Expression, Symbol
 
 djvused_path = None
-if os.name =='nt':
+if os.name == 'nt':
     from . import dependencies
     djvused_path = os.path.join(dependencies.djvulibre_path, 'djvused.exe')
 else:
@@ -35,7 +35,11 @@ if djvused_path is None or not os.path.isfile(djvused_path):
 
 def _djvused_usability_check():
     try:
-        djvused = subprocess.Popen([djvused_path], stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        djvused = subprocess.Popen(
+            [djvused_path],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
         djvused.communicate()
         if djvused.returncode == 10:
             return
@@ -50,7 +54,7 @@ class IOError(IOError):
 
 class StreamEditor(object):
 
-    def __init__(self, file_name, autosave = False):
+    def __init__(self, file_name, autosave=False):
         self._file_name = file_name
         self._commands = []
         self._autosave = autosave
@@ -121,7 +125,7 @@ class StreamEditor(object):
     def set_page_title(self, title):
         self._add('set-page-title %s' % Expression(title))
 
-    def save_page(self, file_name, include = False):
+    def save_page(self, file_name, include=False):
         command = 'save-page'
         if include:
             command += '-with'
@@ -139,14 +143,21 @@ class StreamEditor(object):
     def _reader_thread(self, fo, result):
         result[0] = fo.read(),
 
-    def _execute(self, commands, save = False):
+    def _execute(self, commands, save=False):
         args = [djvused_path]
         if save:
             args += '-s',
         args += self._file_name,
-        djvused = subprocess.Popen(args, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        djvused = subprocess.Popen(args,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
         result = [None]
-        reader_thread = threading.Thread(target = self._reader_thread, args = (djvused.stdout, result))
+        reader_thread = threading.Thread(
+            target=self._reader_thread,
+            args=(djvused.stdout, result)
+        )
         reader_thread.setDaemon(True)
         reader_thread.start()
         stdin = djvused.stdin
@@ -161,7 +172,7 @@ class StreamEditor(object):
 
     def commit(self):
         try:
-            return self._execute(self._commands, save = self._autosave)
+            return self._execute(self._commands, save=self._autosave)
         finally:
             self._commands = []
 
