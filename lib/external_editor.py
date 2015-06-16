@@ -71,7 +71,7 @@ class RunMailcapEditor(object):
     def __call__(self, file_name):
         file_name = os.path.abspath(file_name)
         edit = subprocess.Popen(
-            ['edit', 'text/plain:%s' % file_name],
+            ['edit', 'text/plain:{path}'.format(path=file_name)],
             stdin = subprocess.PIPE,
             stdout = subprocess.PIPE,
         )
