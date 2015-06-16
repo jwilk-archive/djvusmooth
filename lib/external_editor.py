@@ -63,15 +63,15 @@ class temporary_file(object):
 
 class Editor(object):
 
-    def __call__(self, file_name):
+    def __call__(self, path):
         raise NotImplementedError
 
 class RunMailcapEditor(object):
 
-    def __call__(self, file_name):
-        file_name = os.path.abspath(file_name)
+    def __call__(self, path):
+        path = os.path.abspath(path)
         edit = subprocess.Popen(
-            ['edit', 'text/plain:{path}'.format(path=file_name)],
+            ['edit', 'text/plain:{path}'.format(path=path)],
             stdin = subprocess.PIPE,
             stdout = subprocess.PIPE,
         )
@@ -85,10 +85,10 @@ class CustomEditor(object):
         self._command = [command]
         self._command += extra_args
 
-    def __call__(self, file_name):
-        file_name = os.path.abspath(file_name)
+    def __call__(self, path):
+        path = os.path.abspath(path)
         edit = subprocess.Popen(
-            self._command + [file_name],
+            self._command + [path],
             stdin = subprocess.PIPE,
             stdout = subprocess.PIPE,
         )
