@@ -1,7 +1,9 @@
 language: python
 python:
- - "2.6"
- - "2.7"
+- "2.6"
+- "2.7"
 script:
- - python -m compileall -f .
- - nosetests --with-doctest --verbose lib/varietes.py
+- python -m compileall -f .
+- nosetests --with-doctest --verbose lib/varietes.py
+
+# vim:ts=2 sts=2 sw=2 et
