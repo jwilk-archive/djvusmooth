@@ -67,14 +67,7 @@ def _check_wx():
         raise ImportError('wxPython 3.0 or 2.8 in Unicode mode is required')
 
 _check_signals()
-del _check_signals
-try:
-    _check_djvu()
-finally:
-    del _check_djvu
-try:
-    _check_wx()
-finally:
-    del _check_wx
+_check_djvu()
+_check_wx()
 
 # vim:ts=4 sts=4 sw=4 et
