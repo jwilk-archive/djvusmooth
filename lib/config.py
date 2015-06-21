@@ -58,7 +58,9 @@ class Config(object):
         self._data = {}
         self._resource = resource
         for directory in xdg.load_config_paths(resource):
-            self._load(os.path.join(directory, '%s.conf' % resource))
+            self._load(
+                os.path.join(directory, '{res}.conf'.format(res=resource))
+            )
         self._legacy_path = legacy_path
         if legacy_path is not None:
             self._load(legacy_path)
@@ -107,14 +109,14 @@ class Config(object):
         if not self._dirty:
             return
         directory = xdg.save_config_path(self._resource)
-        path = os.path.join(directory, '%s.conf' % self._resource)
+        path = os.path.join(directory, '{res}.conf'.format(res=self._resource))
         tmp_path = path + '.tmp'
         file = open(tmp_path, 'w')
         try:
             for key, value in sorted(self._data.iteritems()):
                 if isinstance(value, unicode):
                     value = value.encode('UTF-8')
-                file.write('%s=%s\n' % (key, value))
+                file.write('{key}={val}\n'.format(key=key, val=value))
             file.flush()
             os.fsync(file.fileno())
         finally:
