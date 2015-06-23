@@ -22,7 +22,7 @@ class FileHistory(object):
         self._config = config
         to_add = []
         for i in itertools.count(0):
-            key = 'recent[%d]' % i
+            key = 'recent[{0}]'.format(i)
             path = config.read(key, None)
             if path is None:
                 break
@@ -38,7 +38,7 @@ class FileHistory(object):
         config = self._config
         config.del_array('recent')
         for n, path in enumerate(self):
-            config['recent[%d]' % n] = path
+            config['recent[{0}]'.format(n)] = path
         self._enable_menu_item()
 
     def set_menu(self, window, menu_item, on_click):
