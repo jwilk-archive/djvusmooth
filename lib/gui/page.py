@@ -244,7 +244,7 @@ class NodeShape(wx.lib.ogl.RectangleShape):
         self._update_size()
         self._update_text()
         canvas = self.GetCanvas()
-        canvas.Refresh() # FIXME: something lighter here?
+        canvas.Refresh()  # FIXME: something lighter here?
 
     def _update_node_size(self):
         x, y, w, h = self.GetX(), self.GetY(), self.GetWidth(), self.GetHeight()
@@ -485,11 +485,11 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
         # TODO: something lighter
 
     def _on_shape_selected(self, shape):
-        shape.select(notify=False) # in case it was selected otherwhere
+        shape.select(notify=False)  # in case it was selected otherwhere
         self._current_shape = shape
 
     def _on_shape_deselected(self, shape):
-        shape.deselect(notify=False) # in case it was selected otherwhere
+        shape.deselect(notify=False)  # in case it was selected otherwhere
         self._current_shape = None
 
     def on_parent_resize(self, event):

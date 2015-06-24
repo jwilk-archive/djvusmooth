@@ -201,7 +201,7 @@ class MapareaPropertiesDialog(wx.Dialog):
         self.Bind(wx.EVT_RADIOBUTTON, self.on_select_nonshadow_border, radio_xor)
         self.Bind(wx.EVT_RADIOBUTTON, self.on_select_no_border, radio_none)
         self.Bind(wx.EVT_RADIOBUTTON, self.on_select_solid_border, radio_solid)
-        avis_checkbox = wx.CheckBox(self, label=_('Always visible')) # TODO: hide it for irrelevant shapes, i.e. `line` and maybe `text`
+        avis_checkbox = wx.CheckBox(self, label=_('Always visible'))  # TODO: hide it for irrelevant shapes, i.e. `line` and maybe `text`
         if border is None or isinstance(border, models.annotations.NoBorder):
             avis_checkbox.Enable(False)
         elif node is not None and node.border_always_visible is True:

@@ -363,7 +363,7 @@ class PageText(object):
         return property(get, set)
 
     def strip(self, zone_type):
-        zone_type = djvu.const.get_text_zone_type(zone_type) # ensure it's not a plain Symbol
+        zone_type = djvu.const.get_text_zone_type(zone_type)  # ensure it's not a plain Symbol
         if self._root is None:
             return
         stripped_root = self._root.strip(zone_type)

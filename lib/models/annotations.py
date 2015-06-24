@@ -741,7 +741,7 @@ class LineMapArea(MapArea):
         def get(self):
             return NotImplemented
         def set(self, value):
-            pass # FIXME?
+            pass  # FIXME?
         return property(get, set)
 
 class TextMapArea(XywhMapArea):

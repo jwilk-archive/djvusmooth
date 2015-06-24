@@ -147,7 +147,7 @@ class AnnotationsModel(models.annotations.Annotations):
         self.__djvused = StreamEditor(document_path)
 
     def reset_document(self, document):
-        pass # Nothing to do
+        pass  # Nothing to do
 
     def acquire_data(self, n):
         djvused = self.__djvused
@@ -156,11 +156,11 @@ class AnnotationsModel(models.annotations.Annotations):
         else:
             djvused.select(n + 1)
         djvused.print_annotations()
-        s = '(%s)' % djvused.commit() # FIXME: optimize
+        s = '(%s)' % djvused.commit()  # FIXME: optimize
         try:
             return djvu.sexpr.Expression.from_string(s)
         except djvu.sexpr.ExpressionSyntaxError:
-            raise # FIXME
+            raise  # FIXME
 
 class MetadataModel(models.metadata.Metadata):
 
@@ -874,7 +874,7 @@ class MainWindow(wx.Frame):
         try:
             percent = self.page_widget.zoom.percent
         except ValueError:
-            return # FIXME
+            return  # FIXME
         candidates = [k for k in self.zoom_menu_items.iterkeys() if k < percent]
         if not candidates:
             return
@@ -884,7 +884,7 @@ class MainWindow(wx.Frame):
         try:
             percent = self.page_widget.zoom.percent
         except ValueError:
-            return # FIXME
+            return  # FIXME
         candidates = [k for k in self.zoom_menu_items.iterkeys() if k > percent]
         if not candidates:
             return
@@ -936,7 +936,7 @@ class MainWindow(wx.Frame):
                 clear_models()
                 self.document = None
                 # Do *not* display error message here. It will be displayed by `handle_message()`.
-        self.page_no = 0 # again, to set status bar text
+        self.page_no = 0  # again, to set status bar text
         self.update_title()
         self.update_page_widget(new_document=True, new_page=True)
         self.dirty = False

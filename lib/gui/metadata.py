@@ -96,7 +96,7 @@ class MetadataTable(wx.grid.PyGridTableBase):
                 self.delete_key(y)
                 # Delete a row
             elif value in self._model:
-                pass # TODO: raise an exception
+                pass  # TODO: raise an exception
             else:
                 value = djvu.sexpr.Symbol(value.encode('UTF-8'))
                 if key is None:

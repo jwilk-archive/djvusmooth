@@ -188,7 +188,7 @@ class InnerNode(Node):
         stream.write('    ' * indent)
         stream.write(self.uri)
         stream.write(' ')
-        stream.write(self.text.encode('UTF-8')) # TODO: what about control characters etc.?
+        stream.write(self.text.encode('UTF-8'))  # TODO: what about control characters etc.?
         stream.write('\n')
         for child in self:
             child.export_as_plaintext(stream, indent=(indent + 1))
