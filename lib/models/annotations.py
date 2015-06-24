@@ -583,14 +583,20 @@ class PolygonMapArea(MapArea):
         x0 = y0 = 1e999
         x1 = y1 = -1e999
         for (x, y) in self._coords:
-            if x < x0: x0 = x
-            if y < y0: y0 = y
-            if x > x1: x1 = x
-            if y > y1: y1 = y
+            if x < x0:
+                x0 = x
+            if y < y0:
+                y0 = y
+            if x > x1:
+                x1 = x
+            if y > y1:
+                y1 = y
         w = x1 - x0
         h = y1 - y0
-        if w <= 0: w = 1
-        if h <= 0: h = 1
+        if w <= 0:
+            w = 1
+        if h <= 0:
+            h = 1
         return (x0, y0, w, h)
 
     def _set_rect(self, rect):
@@ -914,10 +920,12 @@ class PageAnnotations(object):
             callback.notify_node_delete(node)
 
     def notify_node_select(self, node):
-        for callback in self._callbacks: callback.notify_node_select(node)
+        for callback in self._callbacks:
+            callback.notify_node_select(node)
 
     def notify_node_deselect(self, node):
-        for callback in self._callbacks: callback.notify_node_deselect(node)
+        for callback in self._callbacks:
+            callback.notify_node_deselect(node)
 
 class SharedAnnotations(object):
 

@@ -25,18 +25,25 @@ class Operation(object):
     def __add__(self, other):
         return self.cost + other
 
-class Delete(Operation): pass
-class Insert(Operation): pass
-class Substitute(Operation): pass
-class Drop(Operation): pass
-class Append(Operation): pass
+class Delete(Operation):
+    pass
+class Insert(Operation):
+    pass
+class Substitute(Operation):
+    pass
+class Drop(Operation):
+    pass
+class Append(Operation):
+    pass
 
 def distance(s, t):
     len_s = len(s)
     len_t = len(t)
     d = [[None for j in xrange(len_t + 1)] for i in xrange(len_s + 1)]
-    for i in xrange(len_s + 1): d[i][0] = Drop(i)
-    for j in xrange(len_t + 1): d[0][j] = Append(j)
+    for i in xrange(len_s + 1):
+        d[i][0] = Drop(i)
+    for j in xrange(len_t + 1):
+        d[0][j] = Append(j)
     for i in xrange(1, len_s + 1):
         for j in xrange(1, len_t + 1):
             subst_cost = int(s[i-1] != t[j-1])

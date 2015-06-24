@@ -396,10 +396,12 @@ class PageText(object):
             callback.notify_node_children_change(node)
 
     def notify_node_select(self, node):
-        for callback in self._callbacks: callback.notify_node_select(node)
+        for callback in self._callbacks:
+            callback.notify_node_select(node)
 
     def notify_node_deselect(self, node):
-        for callback in self._callbacks: callback.notify_node_deselect(node)
+        for callback in self._callbacks:
+            callback.notify_node_deselect(node)
 
     def notify_tree_change(self):
         self._dirty = True
