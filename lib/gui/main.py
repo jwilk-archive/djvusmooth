@@ -447,10 +447,10 @@ class MainWindow(wx.Frame):
             submenu_item(caption, help, method, id=id)
         submenu.AppendSeparator()
         for caption, help, zoom, id in [
-            (_('Fit &width'),  _('Set magnification to fit page width'),  FitWidthZoom(), None),
-            (_('Fit &page'),   _('Set magnification to fit page'),        FitPageZoom(),  wx.ID_ZOOM_FIT),
-            (_('&Stretch'),    _('Stretch the image to the window size'), StretchZoom(),  None),
-            (_('One &to one'), _('Set full resolution magnification.'),   OneToOneZoom(), wx.ID_ZOOM_100),
+            (_('Fit &width'), _('Set magnification to fit page width'), FitWidthZoom(), None),
+            (_('Fit &page'), _('Set magnification to fit page'), FitPageZoom(), wx.ID_ZOOM_FIT),
+            (_('&Stretch'), _('Stretch the image to the window size'), StretchZoom(), None),
+            (_('One &to one'), _('Set full resolution magnification.'), OneToOneZoom(), wx.ID_ZOOM_100),
         ]:
             id = id or wx.ID_ANY
             submenu_item(caption, help, self.on_zoom(zoom), style=wx.ITEM_RADIO, id=id)
@@ -470,11 +470,11 @@ class MainWindow(wx.Frame):
         submenu = wx.Menu()
         submenu_item = functools.partial(self._create_menu_item, submenu)
         for caption, help, method in [
-            (_('&Color') + '\tAlt+C', _('Display everything'),                                            self.on_display_everything),
-            (_('&Stencil'),           _('Display only the document bitonal stencil'),                     self.on_display_stencil),
-            (_('&Foreground'),        _('Display only the foreground layer'),                             self.on_display_foreground),
-            (_('&Background'),        _('Display only the background layer'),                             self.on_display_background),
-            (_('&None') + '\tAlt+N',  _('Neither display the foreground layer nor the background layer'), self.on_display_none)
+            (_('&Color') + '\tAlt+C', _('Display everything'), self.on_display_everything),
+            (_('&Stencil'), _('Display only the document bitonal stencil'), self.on_display_stencil),
+            (_('&Foreground'), _('Display only the foreground layer'), self.on_display_foreground),
+            (_('&Background'), _('Display only the background layer'), self.on_display_background),
+            (_('&None') + '\tAlt+N', _('Neither display the foreground layer nor the background layer'), self.on_display_none)
         ]:
             submenu_item(caption, help, method, style=wx.ITEM_RADIO)
         menu.AppendMenu(wx.ID_ANY, _('&Image'), submenu)
@@ -482,9 +482,9 @@ class MainWindow(wx.Frame):
         submenu_item = functools.partial(self._create_menu_item, submenu)
         _tmp_items = []
         for caption, help, method in [
-            (_('&None'),                   _('Don\'t display non-raster data'),   self.on_display_no_nonraster),
+            (_('&None'), _('Don\'t display non-raster data'), self.on_display_no_nonraster),
             (_('&Hyperlinks') + '\tAlt+H', _('Display overprinted annotations'), self.on_display_maparea),
-            (_('&Text') + '\tAlt+T',       _('Display the text layer'),          self.on_display_text),
+            (_('&Text') + '\tAlt+T', _('Display the text layer'), self.on_display_text),
         ]:
             _tmp_items += [submenu_item(caption, help, method, style=wx.ITEM_RADIO)]
         self.menu_item_display_no_nonraster, self.menu_item_display_maparea, self.menu_item_display_text = _tmp_items
@@ -498,11 +498,11 @@ class MainWindow(wx.Frame):
         menu = wx.Menu()
         menu_item = functools.partial(self._create_menu_item, menu)
         for caption, help, method, icon in [
-            (_('&First page') + '\tCtrl-Home', _('Jump to first document page'),    self.on_first_page,    None),
-            (_('&Previous page') + '\tPgUp',   _('Jump to previous document page'), self.on_previous_page, wx.ART_GO_UP),
-            (_('&Next page') + '\tPgDn',       _('Jump to next document page'),     self.on_next_page,     wx.ART_GO_DOWN),
-            (_('&Last page') + '\tCtrl-End',   _('Jump to last document page'),     self.on_last_page,     None),
-            (_(u'&Go to page…') + '\tCtrl-G',  _(u'Jump to page…'),                 self.on_goto_page,     None)
+            (_('&First page') + '\tCtrl-Home', _('Jump to first document page'), self.on_first_page, None),
+            (_('&Previous page') + '\tPgUp', _('Jump to previous document page'), self.on_previous_page, wx.ART_GO_UP),
+            (_('&Next page') + '\tPgDn', _('Jump to next document page'), self.on_next_page, wx.ART_GO_DOWN),
+            (_('&Last page') + '\tCtrl-End', _('Jump to last document page'), self.on_last_page, None),
+            (_(u'&Go to page…') + '\tCtrl-G', _(u'Jump to page…'), self.on_goto_page, None)
         ]:
             menu_item(caption, help, method, icon=icon)
         return menu

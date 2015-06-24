@@ -318,11 +318,11 @@ class PageTextCallback(models.text.PageTextCallback):
 class TextShape(NodeShape):
 
     _FRAME_COLORS = {
-        djvu.const.TEXT_ZONE_COLUMN:    (0x80, 0x80, 0x00),
-        djvu.const.TEXT_ZONE_REGION:    (0x80, 0x80, 0x80),
+        djvu.const.TEXT_ZONE_COLUMN: (0x80, 0x80, 0x00),
+        djvu.const.TEXT_ZONE_REGION: (0x80, 0x80, 0x80),
         djvu.const.TEXT_ZONE_PARAGRAPH: (0x80, 0x00, 0x00),
-        djvu.const.TEXT_ZONE_LINE:      (0x80, 0x00, 0x80),
-        djvu.const.TEXT_ZONE_WORD:      (0x00, 0x00, 0x80),
+        djvu.const.TEXT_ZONE_LINE: (0x80, 0x00, 0x80),
+        djvu.const.TEXT_ZONE_WORD: (0x00, 0x00, 0x80),
         djvu.const.TEXT_ZONE_CHARACTER: (0x00, 0x80, 0x00),
     }
 
@@ -394,10 +394,10 @@ class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 class PageWidget(wx.lib.ogl.ShapeCanvas):
 
     _WXK_TO_LINK_GETTER = {
-        wx.WXK_LEFT:  lambda node: node.left_sibling,
+        wx.WXK_LEFT: lambda node: node.left_sibling,
         wx.WXK_RIGHT: lambda node: node.right_sibling,
-        wx.WXK_UP:    lambda node: node.parent,
-        wx.WXK_DOWN:  lambda node: node.left_child
+        wx.WXK_UP: lambda node: node.parent,
+        wx.WXK_DOWN: lambda node: node.left_child
     }
 
     def __init__(self, parent):

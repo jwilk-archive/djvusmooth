@@ -20,12 +20,12 @@ import djvu.const
 from djvusmooth.i18n import _
 
 ZONES_MAP = (
-    (_('all'),        djvu.const.TEXT_ZONE_PAGE),
-    (_('columns'),    djvu.const.TEXT_ZONE_COLUMN),
-    (_('regions'),    djvu.const.TEXT_ZONE_REGION),
+    (_('all'), djvu.const.TEXT_ZONE_PAGE),
+    (_('columns'), djvu.const.TEXT_ZONE_COLUMN),
+    (_('regions'), djvu.const.TEXT_ZONE_REGION),
     (_('paragraphs'), djvu.const.TEXT_ZONE_PARAGRAPH),
-    (_('lines'),      djvu.const.TEXT_ZONE_LINE),
-    (_('words'),      djvu.const.TEXT_ZONE_WORD),
+    (_('lines'), djvu.const.TEXT_ZONE_LINE),
+    (_('words'), djvu.const.TEXT_ZONE_WORD),
     (_('characters'), djvu.const.TEXT_ZONE_CHARACTER)
 )
 

@@ -46,9 +46,9 @@ SHAPES = (
 )
 
 SHADOW_BORDERS = (
-    idict(model_class=models.annotations.BorderShadowIn,  label=_('Shadow in')),
+    idict(model_class=models.annotations.BorderShadowIn, label=_('Shadow in')),
     idict(model_class=models.annotations.BorderShadowOut, label=_('Shadow out')),
-    idict(model_class=models.annotations.BorderEtchedIn,  label=_('Etched in')),
+    idict(model_class=models.annotations.BorderEtchedIn, label=_('Etched in')),
     idict(model_class=models.annotations.BorderEtchedOut, label=_('Etched out'))
 )
 
