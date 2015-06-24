@@ -101,7 +101,7 @@ class FitPageZoom(Zoom):
         return True
 
     def get_page_screen_size(self, page_job, (viewport_width, viewport_height)):
-        real_width, real_height  = (page_job.width, page_job.height)
+        real_width, real_height = (page_job.width, page_job.height)
         ratio = 1.0 * real_height / real_width
         screen_height = int(viewport_width * ratio)
         if screen_height <= viewport_height:
