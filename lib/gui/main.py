@@ -389,9 +389,9 @@ class MainWindow(wx.Frame):
         menu_bar.Append(self._create_file_menu(), _('&File'))
         menu_bar.Append(self._create_edit_menu(), _('&Edit'))
         menu_bar.Append(self._create_view_menu(), _('&View'))
-        menu_bar.Append(self._create_go_menu(), _('&Go'));
-        menu_bar.Append(self._create_settings_menu(), _('&Settings'));
-        menu_bar.Append(self._create_help_menu(), _('&Help'));
+        menu_bar.Append(self._create_go_menu(), _('&Go'))
+        menu_bar.Append(self._create_settings_menu(), _('&Settings'))
+        menu_bar.Append(self._create_help_menu(), _('&Help'))
         self.SetMenuBar(menu_bar)
 
     def _create_menu_item(self, menu, caption, help, method, style=wx.ITEM_NORMAL, icon=None, id=wx.ID_ANY):
