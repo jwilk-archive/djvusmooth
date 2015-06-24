@@ -317,8 +317,7 @@ class PageTextCallback(models.text.PageTextCallback):
 
 class TextShape(NodeShape):
 
-    _FRAME_COLORS = \
-    {
+    _FRAME_COLORS = {
         djvu.const.TEXT_ZONE_COLUMN:    (0x80, 0x80, 0x00),
         djvu.const.TEXT_ZONE_REGION:    (0x80, 0x80, 0x80),
         djvu.const.TEXT_ZONE_PARAGRAPH: (0x80, 0x00, 0x00),
@@ -394,8 +393,7 @@ class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
 
 class PageWidget(wx.lib.ogl.ShapeCanvas):
 
-    _WXK_TO_LINK_GETTER = \
-    {
+    _WXK_TO_LINK_GETTER = {
         wx.WXK_LEFT:  lambda node: node.left_sibling,
         wx.WXK_RIGHT: lambda node: node.right_sibling,
         wx.WXK_UP:    lambda node: node.parent,
@@ -646,8 +644,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
     def setup_maparea_shapes(self, have_text=False):
         xform_real_to_screen = self._xform_real_to_screen
         try:
-            items = \
-            [
+            items = [
                 (node, MapareaShape(node, have_text, xform_real_to_screen))
                 for node in self._page_annotations.mapareas
             ]
@@ -660,8 +657,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
         xform_text_to_screen = self._xform_text_to_screen
         try:
             page_type = sexpr.Symbol('page')
-            items = \
-            [
+            items = [
                 (node, TextShape(node, have_text, xform_text_to_screen))
                 for node in self._page_text.get_preorder_nodes()
                 if node is not None and node.type < djvu.const.TEXT_ZONE_PAGE

@@ -19,8 +19,7 @@ import djvu.const
 
 from djvusmooth.i18n import _
 
-ZONES_MAP = \
-(
+ZONES_MAP = (
     (_('all'),        djvu.const.TEXT_ZONE_PAGE),
     (_('columns'),    djvu.const.TEXT_ZONE_COLUMN),
     (_('regions'),    djvu.const.TEXT_ZONE_REGION),

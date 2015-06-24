@@ -223,8 +223,7 @@ class MapareaPropertiesDialog(wx.Dialog):
 
     def _setup_extra_boxes(self):
         node = self._node
-        extra_boxes = \
-        [
+        extra_boxes = [
             wx.StaticBox(self, label=label)
             for label in (_('Highlight color and opacity'), _('Line-specific properties'), _('Text-specific properties'))
         ]

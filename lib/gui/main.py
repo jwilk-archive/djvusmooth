@@ -440,15 +440,13 @@ class MainWindow(wx.Frame):
         menu_item = functools.partial(self._create_menu_item, menu)
         submenu = wx.Menu()
         submenu_item = functools.partial(self._create_menu_item, submenu)
-        for caption, help, method, id in \
-        [
+        for caption, help, method, id in [
             (_('Zoom &in') + '\tCtrl++', _('Increase the magnification'), self.on_zoom_in, wx.ID_ZOOM_IN),
             (_('Zoom &out') + '\tCtrl+-', _('Decrease the magnification'), self.on_zoom_out, wx.ID_ZOOM_OUT),
         ]:
             submenu_item(caption, help, method, id=id)
         submenu.AppendSeparator()
-        for caption, help, zoom, id in \
-        [
+        for caption, help, zoom, id in [
             (_('Fit &width'),  _('Set magnification to fit page width'),  FitWidthZoom(), None),
             (_('Fit &page'),   _('Set magnification to fit page'),        FitPageZoom(),  wx.ID_ZOOM_FIT),
             (_('&Stretch'),    _('Stretch the image to the window size'), StretchZoom(),  None),
@@ -471,8 +469,7 @@ class MainWindow(wx.Frame):
         menu.AppendMenu(wx.ID_ANY, _('&Zoom'), submenu)
         submenu = wx.Menu()
         submenu_item = functools.partial(self._create_menu_item, submenu)
-        for caption, help, method in \
-        [
+        for caption, help, method in [
             (_('&Color') + '\tAlt+C', _('Display everything'),                                            self.on_display_everything),
             (_('&Stencil'),           _('Display only the document bitonal stencil'),                     self.on_display_stencil),
             (_('&Foreground'),        _('Display only the foreground layer'),                             self.on_display_foreground),
@@ -484,8 +481,7 @@ class MainWindow(wx.Frame):
         submenu = wx.Menu()
         submenu_item = functools.partial(self._create_menu_item, submenu)
         _tmp_items = []
-        for caption, help, method in \
-        [
+        for caption, help, method in [
             (_('&None'),                   _('Don\'t display non-raster data'),   self.on_display_no_nonraster),
             (_('&Hyperlinks') + '\tAlt+H', _('Display overprinted annotations'), self.on_display_maparea),
             (_('&Text') + '\tAlt+T',       _('Display the text layer'),          self.on_display_text),
@@ -501,8 +497,7 @@ class MainWindow(wx.Frame):
     def _create_go_menu(self):
         menu = wx.Menu()
         menu_item = functools.partial(self._create_menu_item, menu)
-        for caption, help, method, icon in \
-        [
+        for caption, help, method, icon in [
             (_('&First page') + '\tCtrl-Home', _('Jump to first document page'),    self.on_first_page,    None),
             (_('&Previous page') + '\tPgUp',   _('Jump to previous document page'), self.on_previous_page, wx.ART_GO_UP),
             (_('&Next page') + '\tPgDn',       _('Jump to next document page'),     self.on_next_page,     wx.ART_GO_DOWN),
