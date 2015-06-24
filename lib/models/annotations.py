@@ -832,8 +832,7 @@ MAPAREA_SHAPE_TO_CLASS = dict(
     for cls in (RectangleMapArea, OvalMapArea, PolygonMapArea, LineMapArea, TextMapArea)
 )
 
-ANNOTATION_TYPE_TO_CLASS = \
-{
+ANNOTATION_TYPE_TO_CLASS = {
     djvu.const.ANNOTATION_MAPAREA: MapArea
 }
 
