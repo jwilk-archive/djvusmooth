@@ -718,7 +718,7 @@ class MainWindow(wx.Frame):
             if n < 0 or n >= len(self.document.pages):
                 return
             self._page_no = n
-            self.status_bar.SetStatusText(_('Page %(pageno)d of %(npages)d') % {'pageno':(n + 1), 'npages':len(self.document.pages)}, 1)
+            self.status_bar.SetStatusText(_('Page %(pageno)d of %(npages)d') % {'pageno': (n + 1), 'npages': len(self.document.pages)}, 1)
             self.update_page_widget(new_page=True)
         return property(get, set)
 
