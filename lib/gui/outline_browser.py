@@ -42,7 +42,7 @@ class OutlineCallback(models.outline.OutlineCallback):
 
 class OutlineBrowser(wx.TreeCtrl):
 
-    def __init__(self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.DefaultSize, style = wx.TR_HAS_BUTTONS | wx.TR_EDIT_LABELS):
+    def __init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize, style=(wx.TR_HAS_BUTTONS | wx.TR_EDIT_LABELS)):
         wx.TreeCtrl.__init__(self, parent, id, pos, size, style)
         self._items = {}
         self._root_item = None

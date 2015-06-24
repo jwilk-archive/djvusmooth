@@ -215,10 +215,10 @@ class MapArea(Annotation):
         self = cls(
             *cls.DEFAULT_ARGUMENTS,
             **dict(
-                uri = uri,
-                target = target,
-                comment = comment,
-                owner = owner
+                uri=uri,
+                target=target,
+                comment=comment,
+                owner=owner
             )
         )
         if maparea is None:
@@ -251,7 +251,7 @@ class MapArea(Annotation):
             shape_iter = iter(shape)
             cls = MAPAREA_SHAPE_TO_CLASS[shape_iter.next().value]
             args = [int(item) for item in shape_iter]
-            kwargs = dict(uri = uri, target = target, comment = comment, owner = owner)
+            kwargs = dict(uri=uri, target=target, comment=comment, owner=owner)
             for item in sexpr:
                 try:
                     key, value = item

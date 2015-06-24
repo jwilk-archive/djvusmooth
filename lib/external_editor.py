@@ -72,8 +72,8 @@ class RunMailcapEditor(object):
         path = os.path.abspath(path)
         edit = subprocess.Popen(
             ['edit', 'text/plain:{path}'.format(path=path)],
-            stdin = subprocess.PIPE,
-            stdout = subprocess.PIPE,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
         )
         edit.stdin.close()
         edit.stdout.close()
@@ -89,8 +89,8 @@ class CustomEditor(object):
         path = os.path.abspath(path)
         edit = subprocess.Popen(
             self._command + [path],
-            stdin = subprocess.PIPE,
-            stdout = subprocess.PIPE,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
         )
         edit.stdin.close()
         edit.stdout.close()

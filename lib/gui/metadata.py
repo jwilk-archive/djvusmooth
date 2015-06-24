@@ -119,14 +119,14 @@ class MetadataGrid(wx.grid.Grid, wx.lib.mixins.grid.GridAutoEditMixin):
 class MetadataDialog(wx.Dialog):
 
     def __init__(self, parent, models, known_keys):
-        wx.Dialog.__init__(self, parent, title=_('Edit metadata'), style = wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
+        wx.Dialog.__init__(self, parent, title=_('Edit metadata'), style=(wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER))
         sizer = wx.BoxSizer(wx.VERTICAL)
         tabs = wx.Notebook(self, -1)
         for model in models:
             grid = MetadataGrid(tabs, model, known_keys)
             tabs.AddPage(grid, model.title)
         sizer.Add(tabs, 1, wx.EXPAND | wx.ALL, 5)
-        line = wx.StaticLine(self, -1, style = wx.LI_HORIZONTAL)
+        line = wx.StaticLine(self, -1, style=wx.LI_HORIZONTAL)
         sizer.Add(line, 0, wx.EXPAND | wx.BOTTOM | wx.TOP, 5)
         button_sizer = wx.StdDialogButtonSizer()
         button = wx.Button(self, wx.ID_OK)

@@ -15,7 +15,7 @@ import wx
 
 class ProgressDialog(wx.ProgressDialog):
 
-    def __init__(self, title, message, maximum = 100, parent = None, style = wx.PD_AUTO_HIDE | wx.PD_APP_MODAL):
+    def __init__(self, title, message, maximum=100, parent=None, style=(wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)):
         wx.ProgressDialog.__init__(self, title, message, maximum, parent, style)
         self.__max = maximum
         self.__n = 0
@@ -31,8 +31,8 @@ try:
     NumberEntryDialog = wx.NumberEntryDialog
 except AttributeError:
     class NumberEntryDialog(wx.SingleChoiceDialog):
-        def __init__(self, parent, message, prompt, caption, value, min, max, pos = wx.DefaultPosition):
-            wx.SingleChoiceDialog.__init__(self, parent = parent, message = message, caption = caption, choices = map(str, xrange(min, max + 1)), pos = pos)
+        def __init__(self, parent, message, prompt, caption, value, min, max, pos=wx.DefaultPosition):
+            wx.SingleChoiceDialog.__init__(self, parent=parent, message=message, caption=caption, choices=map(str, xrange(min, max + 1)), pos=pos)
             self.SetSelection(value - min)
 
         def GetValue(self):

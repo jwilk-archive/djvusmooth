@@ -111,7 +111,7 @@ class PageProxy(object):
 
     @property
     def page_job(self):
-        return self._page.decode(wait = False)
+        return self._page.decode(wait=False)
 
     @property
     def text(self):
@@ -347,8 +347,8 @@ class MainWindow(wx.Frame):
         self._page_text_callback = PageTextCallback(self)
         self._page_annotations_callback = PageAnnotationsCallback(self)
         self._outline_callback = OutlineCallback(self)
-        self.status_bar = self.CreateStatusBar(2, style = wx.ST_SIZEGRIP)
-        self.splitter = wx.SplitterWindow(self, style = wx.SP_LIVE_UPDATE)
+        self.status_bar = self.CreateStatusBar(2, style=wx.ST_SIZEGRIP)
+        self.splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.on_splitter_sash_changed)
         self.sidebar = wx.Notebook(self.splitter, wx.ID_ANY)
         self.text_browser = TextBrowser(self.sidebar)
@@ -576,8 +576,8 @@ class MainWindow(wx.Frame):
             self.enable_save(value)
         return property(get, set)
 
-    def error_box(self, message, caption = _('Error')):
-        wx.MessageBox(message = message, caption = caption, style = wx.OK | wx.ICON_ERROR, parent = self)
+    def error_box(self, message, caption=_('Error')):
+        wx.MessageBox(message=message, caption=caption, style=(wx.OK | wx.ICON_ERROR), parent=self)
 
     def on_exit(self, event):
         if self.do_open(None):
@@ -623,25 +623,25 @@ class MainWindow(wx.Frame):
             else:
                 exception = None
             queue.put(exception)
-        thread = threading.Thread(target = job)
+        thread = threading.Thread(target=job)
         thread.start()
         dialog = None
         try:
             try:
-                exception = queue.get(block = True, timeout = 0.1)
+                exception = queue.get(block=True, timeout=0.1)
                 if exception is not None:
                     self.on_save_failed(exception)
                     return False
             except QueueEmpty:
                 dialog = dialogs.ProgressDialog(
-                    title = _('Saving document'),
-                    message = _(u'Saving the document, please wait…'),
-                    parent = self,
-                    style = wx.PD_APP_MODAL | wx.PD_ELAPSED_TIME
+                    title=_('Saving document'),
+                    message=_(u'Saving the document, please wait…'),
+                    parent=self,
+                    style=(wx.PD_APP_MODAL | wx.PD_ELAPSED_TIME),
                 )
             while dialog is not None:
                 try:
-                    exception = queue.get(block = True, timeout = 0.1)
+                    exception = queue.get(block=True, timeout=0.1)
                     if exception is not None:
                         self.on_save_failed(exception)
                         return False
@@ -702,7 +702,7 @@ class MainWindow(wx.Frame):
     def on_refresh(self, event):
         self.Refresh()
 
-    def get_page_uri(self, page_no = None):
+    def get_page_uri(self, page_no=None):
         if page_no is None:
             page_no = self.page_no
         try:
@@ -724,7 +724,7 @@ class MainWindow(wx.Frame):
                 return
             self._page_no = n
             self.status_bar.SetStatusText(_('Page %(pageno)d of %(npages)d') % {'pageno':(n + 1), 'npages':len(self.document.pages)}, 1)
-            self.update_page_widget(new_page = True)
+            self.update_page_widget(new_page=True)
         return property(get, set)
 
     def on_first_page(self, event):
@@ -741,13 +741,13 @@ class MainWindow(wx.Frame):
 
     def on_goto_page(self, event):
         dialog = dialogs.NumberEntryDialog(
-            parent = self,
-            message = _('Go to page') + ':',
-            prompt = '',
-            caption = _('Go to page'),
-            value = self.page_no + 1,
-            min = 1,
-            max = len(self.document.pages)
+            parent=self,
+            message=(_('Go to page') + ':'),
+            prompt='',
+            caption=_('Go to page'),
+            value=self.page_no + 1,
+            min=1,
+            max=len(self.document.pages)
         )
         try:
             rc = dialog.ShowModal()
@@ -943,27 +943,27 @@ class MainWindow(wx.Frame):
                 # Do *not* display error message here. It will be displayed by `handle_message()`.
         self.page_no = 0 # again, to set status bar text
         self.update_title()
-        self.update_page_widget(new_document = True, new_page = True)
+        self.update_page_widget(new_document=True, new_page=True)
         self.dirty = False
         return True
 
-    def update_page_widget(self, new_document = False, new_page = False):
+    def update_page_widget(self, new_document=False, new_page=False):
         if self.document is None:
             self.page_widget.Hide()
             self.page = self.page_job = self.page_proxy = self.document_proxy = None
         elif self.page_job is None or new_page:
             self.page_widget.Show()
             self.page = self.document.pages[self.page_no]
-            self.page_job = self.page.decode(wait = False)
+            self.page_job = self.page.decode(wait=False)
             self.page_proxy = PageProxy(
-                page = self.page,
-                text_model = self.text_model[self.page_no],
-                annotations_model = self.annotations_model[self.page_no]
+                page=self.page,
+                text_model=self.text_model[self.page_no],
+                annotations_model=self.annotations_model[self.page_no]
             )
             self.page_proxy.register_text_callback(self._page_text_callback)
             self.page_proxy.register_annotations_callback(self._page_annotations_callback)
             if new_document:
-                self.document_proxy = DocumentProxy(document = self.document, outline = self.outline_model)
+                self.document_proxy = DocumentProxy(document=self.document, outline=self.outline_model)
                 self.document_proxy.register_outline_callback(self._outline_callback)
         self.page_widget.page = self.page_proxy
         self.text_browser.page = self.page_proxy
@@ -993,12 +993,12 @@ class MainWindow(wx.Frame):
             author=__author__,
             license=LICENSE
         )
-        wx.MessageBox(message = message, caption = _(u'About…'))
+        wx.MessageBox(message=message, caption=_(u'About…'))
 
     def handle_message(self, event):
         message = event.message
         if isinstance(message, djvu.decode.ErrorMessage):
-            self.error_box(message = str(message))
+            self.error_box(message=str(message))
         elif message.document is not self.document:
             # Bogus, non-error message are ignored.
             pass
@@ -1036,7 +1036,7 @@ class Application(wx.App):
         message = _('An unhandled exception occurred. Ideally, this should not happen. Please report the bug to the author.\n\n')
         message += ''.join(format_exception(type_, value, traceback))
         caption = _('Unhandled exception: %s' % type_.__name__)
-        wx.MessageBox(message=message, caption=caption, style = wx.OK | wx.ICON_ERROR)
+        wx.MessageBox(message=message, caption=caption, style=(wx.OK | wx.ICON_ERROR))
 
     def OnInit(self):
         wx.lib.ogl.OGLInitialize()

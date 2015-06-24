@@ -57,7 +57,7 @@ class MapAreaBrowser(
     wx.lib.mixins.listctrl.TextEditMixin
 ):
 
-    def __init__(self, parent, id = wx.ID_ANY, pos = wx.DefaultPosition, size = wx.DefaultSize, style = wx.LC_REPORT):
+    def __init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.LC_REPORT):
         wx.ListCtrl.__init__(self, parent, id, pos, size, style)
         self.InsertColumn(0, _('URI'))
         self.InsertColumn(1, _('Comment'))
@@ -150,7 +150,7 @@ class MapAreaBrowser(
             self._recreate_items()
         return property(get, set)
 
-    def SetStringItem(self, item, col, label, super = False):
+    def SetStringItem(self, item, col, label, super=False):
         wx.ListCtrl.SetStringItem(self, item, col, label)
         if super:
             return
@@ -186,7 +186,7 @@ class MapAreaBrowser(
         del self._data[i]
         self.DeleteItem(i)
 
-    def _insert_item(self, node, replace_node = None):
+    def _insert_item(self, node, replace_node=None):
         if replace_node in self._data_map:
             item = self._data_map[replace_node]
             i = item_to_id(item)
@@ -194,7 +194,7 @@ class MapAreaBrowser(
             i = self.GetItemCount()
             item = self.InsertStringItem(i, '')
         for i, s in enumerate((node.uri, node.comment)):
-            self.SetStringItem(item, i, s, super = True)
+            self.SetStringItem(item, i, s, super=True)
         self.SetPyData(item, node)
         return item
 

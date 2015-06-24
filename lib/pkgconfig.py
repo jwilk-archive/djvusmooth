@@ -24,8 +24,8 @@ class Package(object):
     def variable(self, variable_name):
         pkgconfig = subprocess.Popen(
             ['pkg-config', '--variable=' + str(variable_name), self._name],
-            stdout = subprocess.PIPE,
-            stderr = subprocess.PIPE
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
         )
         stdout, stderr = pkgconfig.communicate()
         if pkgconfig.returncode:

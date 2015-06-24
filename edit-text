@@ -30,20 +30,20 @@ from djvusmooth.text.mangle import import_, export
 def do_export(djvu_file_name, page_no):
     context = djvu.decode.Context()
     document = context.new_document(djvu.decode.FileURI(djvu_file_name))
-    text = djvu.decode.PageText(document.pages[page_no], details = djvu.decode.TEXT_DETAILS_WORD)
+    text = djvu.decode.PageText(document.pages[page_no], details=djvu.decode.TEXT_DETAILS_WORD)
     text.wait()
     export(text.sexpr, sys.stdout)
 
 def do_import(djvu_file_name, page_no):
     context = djvu.decode.Context()
     document = context.new_document(djvu.decode.FileURI(djvu_file_name))
-    text = djvu.decode.PageText(document.pages[page_no], details = djvu.decode.TEXT_DETAILS_WORD)
+    text = djvu.decode.PageText(document.pages[page_no], details=djvu.decode.TEXT_DETAILS_WORD)
     text.wait()
     print import_(text.sexpr, sys.stdin)
 
 def main():
     from optparse import OptionParser
-    oparser = OptionParser(usage = '%prog {--import | --export} --page N')
+    oparser = OptionParser(usage='%prog {--import | --export} --page N')
     oparser.add_option('-p', '--page', dest='page_no', action='store', type='int')
     oparser.add_option('-x', '--export', dest='action', action='store_const', const=do_export)
     oparser.add_option('-i', '--import', dest='action', action='store_const', const=do_import)

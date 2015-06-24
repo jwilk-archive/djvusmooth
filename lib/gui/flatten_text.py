@@ -33,22 +33,22 @@ ZONES_MAP = \
 class FlattenTextDialog(wx.Dialog):
 
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, title = _('Flatten text'))
+        wx.Dialog.__init__(self, parent, title=_('Flatten text'))
         sizer = wx.BoxSizer(wx.VERTICAL)
         self._scope_box = wx.RadioBox(self,
-            label = _('Scope') + ':',
-            choices = (_('current page'), _('all pages')),
+            label=(_('Scope') + ':'),
+            choices=(_('current page'), _('all pages')),
             style = wx.RA_HORIZONTAL
         )
         self._zone_box = wx.RadioBox(self,
-            label = _('Remove details') + ':',
-            choices = [label for label, type in ZONES_MAP],
-            style = wx.RA_SPECIFY_COLS, majorDimension = 2
+            label=(_('Remove details') + ':'),
+            choices=[label for label, type in ZONES_MAP],
+            style=wx.RA_SPECIFY_COLS, majorDimension=2
         )
         self._zone_box.SetSelection(len(ZONES_MAP) - 1)
         for box in self._scope_box, self._zone_box:
             sizer.Add(box, 0, wx.EXPAND | wx.ALL, 5)
-        line = wx.StaticLine(self, -1, style = wx.LI_HORIZONTAL)
+        line = wx.StaticLine(self, -1, style=wx.LI_HORIZONTAL)
         sizer.Add(line, 0, wx.EXPAND | wx.BOTTOM | wx.TOP, 5)
         button_sizer = wx.StdDialogButtonSizer()
         button = wx.Button(self, wx.ID_OK)

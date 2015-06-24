@@ -53,7 +53,7 @@ class Zoom(object):
 
 class PercentZoom(Zoom):
 
-    def __init__(self, percent = 100):
+    def __init__(self, percent=100):
         self._percent = float(percent)
 
     def rezoom_on_resize(self):
@@ -261,7 +261,7 @@ class NodeShape(wx.lib.ogl.RectangleShape):
         canvas.PrepareDC(dc)
         return canvas, dc
 
-    def deselect(self, notify = True, cdc = None):
+    def deselect(self, notify=True, cdc=None):
         if not self.Selected():
             return
         try:
@@ -273,7 +273,7 @@ class NodeShape(wx.lib.ogl.RectangleShape):
         if notify:
             self.node.notify_deselect()
 
-    def select(self, notify = True, cdc = None):
+    def select(self, notify=True, cdc=None):
         if self.Selected():
             return
         try:
@@ -384,9 +384,9 @@ class ShapeEventHandler(wx.lib.ogl.ShapeEvtHandler):
         dc = wx.ClientDC(canvas)
         canvas.PrepareDC(dc)
         if shape.Selected():
-            shape.deselect(notify = True)
+            shape.deselect(notify=True)
         else:
-            shape.select(notify = True)
+            shape.select(notify=True)
 
     def OnRightClick(self, x, y, keys=0, attachment=0):
         shape = self.GetShape()
@@ -487,11 +487,11 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
         # TODO: something lighter
 
     def _on_shape_selected(self, shape):
-        shape.select(notify = False) # in case it was selected otherwhere
+        shape.select(notify=False) # in case it was selected otherwhere
         self._current_shape = shape
 
     def _on_shape_deselected(self, shape):
-        shape.deselect(notify = False) # in case it was selected otherwhere
+        shape.deselect(notify=False) # in case it was selected otherwhere
         self._current_shape = None
 
     def on_parent_resize(self, event):
@@ -588,18 +588,18 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
                 self._image = None
             if page_job is not None:
                 image = PageImage(self,
-                    page_job = page_job,
-                    real_page_size = real_page_size,
-                    viewport_size = viewport_size,
-                    screen_page_size = screen_page_size,
-                    xform_real_to_screen = xform_real_to_screen,
-                    render_mode = self.render_mode,
-                    zoom = self.zoom)
+                    page_job=page_job,
+                    real_page_size=real_page_size,
+                    viewport_size=viewport_size,
+                    screen_page_size=screen_page_size,
+                    xform_real_to_screen=xform_real_to_screen,
+                    render_mode=self.render_mode,
+                    zoom=self.zoom)
                 image.SetDraggable(False, False)
                 self._image = image
             self.setup_nonraster_shapes()
             self.recreate_shapes()
-        return property(fset = set)
+        return property(fset=set)
 
     def recreate_shapes(self):
         self.remove_all_shapes()
@@ -643,7 +643,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
         self._nonraster_shapes = ()
         self._nonraster_shapes_map = {}
 
-    def setup_maparea_shapes(self, have_text = False):
+    def setup_maparea_shapes(self, have_text=False):
         xform_real_to_screen = self._xform_real_to_screen
         try:
             items = \
@@ -656,7 +656,7 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
         except decode.NotAvailable:
             pass
 
-    def setup_text_shapes(self, have_text = False):
+    def setup_text_shapes(self, have_text=False):
         xform_text_to_screen = self._xform_text_to_screen
         try:
             page_type = sexpr.Symbol('page')

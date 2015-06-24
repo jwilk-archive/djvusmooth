@@ -60,7 +60,7 @@ class PageMetadata(dict):
         self.export_select(djvused)
         djvused.set_metadata(self)
 
-    def revert(self, key = None):
+    def revert(self, key=None):
         if key is None:
             self.clear()
             self.update(self._old_data)
