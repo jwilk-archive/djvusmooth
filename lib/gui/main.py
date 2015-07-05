@@ -813,7 +813,10 @@ class MainWindow(wx.Frame):
         thread.start()
 
     def on_external_edit_failed(self, exception):
-        self.error_box(_('External edit failed:\n%s') % exception)
+        self.error_box(
+            _('External edit failed:\n%s') %
+            str(exception).decode(system_encoding, 'replace')
+        )
 
     def after_external_edit_outline(self, new_repr, disabler, exception):
         if exception is not None:
