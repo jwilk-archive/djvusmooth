@@ -53,7 +53,12 @@ SHADOW_BORDERS = (
 )
 
 def color_as_html(color):
-    return '#%02x%02x%02x' % color.Get()
+    '''
+    >>> c = wx.Colour(6, 23, 42)
+    >>> color_as_html(c)
+    '#06172a'
+    '''
+    return '#{0:02x}{1:02x}{2:02x}'.format(*color)
 
 class MapareaPropertiesDialog(wx.Dialog):
 
