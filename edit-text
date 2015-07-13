@@ -21,11 +21,6 @@ import sys
 import djvu.decode
 import djvu.sexpr
 
-try:
-    import djvusmooth_importer
-except ImportError:
-    pass
-
 from djvusmooth.text.mangle import import_, export
 
 def do_export(djvu_file_name, page_no):
