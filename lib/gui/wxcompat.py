@@ -19,7 +19,7 @@ import wx
 
 # In wxPython 3.0, if the focus is on a wxTreeCtrl or a wxListCtrl, menu
 # events for at last Page Up, Page Down, Ctrl+Home and Ctrl+End are getting
-# lost. This module implementes wxEVT_KEY_DOWN handler to work-around this
+# lost. This module implements wxEVT_KEY_DOWN handler to work-around this
 # problem.
 #
 # https://bugs.debian.org/758950#26
