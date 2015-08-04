@@ -1,6 +1,6 @@
 # encoding=UTF-8
 
-# Copyright © 2008-2014 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2008-2015 Jakub Wilk <jwilk@jwilk.net>
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +20,10 @@ class Operation(object):
         return cmp(self.cost, other.cost)
 
     def __repr__(self):
-        return '%s(cost=%r)' % (self.__class__.__name__, self.cost)
+        return '{cls}(cost={cost})'.format(
+            cls=self.__class__.__name__,
+            cost=self.cost
+        )
 
     def __add__(self, other):
         return self.cost + other
