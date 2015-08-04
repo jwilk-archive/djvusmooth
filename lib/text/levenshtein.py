@@ -21,7 +21,7 @@ class Operation(object):
 
     def __repr__(self):
         return '{cls}(cost={cost})'.format(
-            cls=self.__class__.__name__,
+            cls=type(self).__name__,
             cost=self.cost
         )
 
