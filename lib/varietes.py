@@ -169,7 +169,7 @@ class idict(object):
     def __repr__(self):
         return '{mod}.{cls}({init})'.format(
             mod=self.__module__,
-            cls=self.__class__.__name__,
+            cls=type(self).__name__,
             init=', '.join('{k}={v!r}'.format(k=k, v=v) for k, v in self.__dict__.iteritems())
         )
 
