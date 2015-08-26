@@ -12,7 +12,7 @@
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 # FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 # more details.
-#
+
 project_name = $(shell head -n1 doc/changelog | cut -d' ' -f1)
 project_version = $(shell head -n1 doc/changelog | sed -n -e 's/.*(\([0-9.]\+\)).*/\1/ p')
 bugs_address = $(shell sed -n -e '/ -- \(.*\)  .*/ {s//\1/p;q}' doc/changelog)
