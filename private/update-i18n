@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-# Copyright © 2009-2012 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2009-2015 Jakub Wilk <jwilk@jwilk.net>
 #
 # This file is part of djvusmooth.
 #
@@ -21,14 +21,21 @@ po_files = $(wildcard po/*.po)
 mo_files = $(patsubst po/%.po,locale/%/LC_MESSAGES/$(project_name).mo,$(po_files))
 source_files = $(shell find -name '*.py' -o -name 'build' -prune -a -false)
 
+gettext_common_options = \
+	--no-location \
+	--sort-output \
+	--no-wrap \
+
 xgettext_options = \
+	$(gettext_common_options) \
 	--language=python \
 	--keyword=_ --keyword=N_ \
 	--package-name=$(project_name) \
 	--package-version=$(project_version) \
 	--msgid-bugs-address='$(bugs_address)' \
-	--no-location \
-	--sort-output
+
+msgmerge_options = \
+	$(gettext_common_options) \
 
 .PHONY: all
 
