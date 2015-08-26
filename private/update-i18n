@@ -36,6 +36,8 @@ xgettext_options = \
 
 msgmerge_options = \
 	$(gettext_common_options) \
+	--update \
+	--verbose \
 
 .PHONY: all
 
@@ -45,7 +47,7 @@ po/$(project_name).pot: $(source_files)
 	xgettext $(xgettext_options) $(source_files) -o $(@)
 
 %.po: po/$(project_name).pot
-	msgmerge --no-wrap -o $(@) $(@) $(<)
+	msgmerge $(msgmerge_options) $(@) $(<)
 
 locale/%/LC_MESSAGES/$(project_name).mo: po/%.po
 	python setup.py build_mo
