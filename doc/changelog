@@ -1,4 +1,4 @@
-djvusmooth (0.2.16) UNRELEASED; urgency=low
+djvusmooth (0.2.16) unstable; urgency=low
 
   * Drop support for Python 2.5.
   * Improve error handling.
@@ -9,7 +9,7 @@ djvusmooth (0.2.16) UNRELEASED; urgency=low
     Thanks to Daniel Stender for the bug report.
     https://bitbucket.org/jwilk/djvusmooth/issues/17
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 15 Sep 2015 10:08:03 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 15 Sep 2015 11:12:06 +0200
 
 djvusmooth (0.2.15) unstable; urgency=low
 
