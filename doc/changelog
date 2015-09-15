@@ -4,8 +4,12 @@ djvusmooth (0.2.16) UNRELEASED; urgency=low
   * Improve error handling.
   * Improve the manual page:
     + Use minus sign instead of hyphen in dates.
+  * Remove python-djvulibre version checks.
+    This fixes compatiblity with python-djvulibre ≥ 0.5.
+    Thanks to Daniel Stender for the bug report.
+    https://bitbucket.org/jwilk/djvusmooth/issues/17
 
- -- Jakub Wilk <jwilk@jwilk.net>  Sun, 05 Jul 2015 12:53:18 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 15 Sep 2015 10:08:03 +0200
 
 djvusmooth (0.2.15) unstable; urgency=low
 
