@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: djvusmooth 0.2.16\n"
 "Report-Msgid-Bugs-To: Jakub Wilk <jwilk@jwilk.net>\n"
-"POT-Creation-Date: 2013-02-20 17:57+0100\n"
+"POT-Creation-Date: 2015-09-15 10:51+0200\n"
 "PO-Revision-Date: 2013-02-21 18:33+0300\n"
 "Last-Translator: Kyrill Detinov <lazy.kent@opensuse.org>\n"
 "Language-Team: openSUSE Translation Team\n"
@@ -17,129 +17,171 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: lib/gui/main.py
 msgid "&About"
 msgstr "&О программе"
 
+#: lib/gui/main.py
 msgid "&Background"
 msgstr "&Фон"
 
+#: lib/gui/main.py
 msgid "&Bookmark this page"
 msgstr "Добавить &закладку на эту страницу"
 
+#: lib/gui/main.py
 msgid "&Close"
 msgstr "&Закрыть"
 
+#: lib/gui/main.py
 msgid "&Color"
 msgstr "&Цвет"
 
+#: lib/gui/main.py
 msgid "&Edit"
 msgstr "&Правка"
 
+#: lib/gui/main.py
 msgid "&External editor"
 msgstr "&Внешний редактор"
 
+#: lib/gui/main.py
 msgid "&File"
 msgstr "&Файл"
 
+#: lib/gui/main.py
 msgid "&First page"
 msgstr "Перв&ая страница"
 
+#: lib/gui/main.py
 msgid "&Flatten"
 msgstr "&Упростить структуру"
 
+#: lib/gui/main.py
 msgid "&Foreground"
 msgstr "&Передний план"
 
+#: lib/gui/main.py
 msgid "&Go"
 msgstr "П&ерейти"
 
+#: lib/gui/main.py
 msgid "&Go to page…"
 msgstr "Перейти &на страницу…"
 
+#: lib/gui/main.py
 msgid "&Help"
 msgstr "&Справка"
 
+#: lib/gui/main.py
 msgid "&Hyperlinks"
 msgstr "&Ссылки"
 
+#: lib/gui/main.py
 msgid "&Image"
 msgstr "&Изображение"
 
+#: lib/gui/main.py
 msgid "&Last page"
 msgstr "Последн&яя страница"
 
+#: lib/gui/main.py
 msgid "&Metadata"
 msgstr "&Метаданные"
 
+#: lib/gui/maparea_menu.py
 msgid "&New hyperlink…"
 msgstr "&Новая ссылка…"
 
+#: lib/gui/main.py
 msgid "&Next page"
 msgstr "&Следующая страница"
 
+#: lib/gui/main.py
 msgid "&Non-raster data"
 msgstr "&Нерастровые данные"
 
+#: lib/gui/main.py
 msgid "&None"
 msgstr "&Ничего"
 
+#: lib/gui/main.py
 msgid "&Open"
 msgstr "&Открыть"
 
+#: lib/gui/main.py
 msgid "&Outline"
 msgstr "&Оглавление"
 
+#: lib/gui/main.py
 msgid "&Previous page"
 msgstr "&Предыдущая страница"
 
+#: lib/gui/maparea_menu.py
 msgid "&Properties…"
 msgstr "&Свойства…"
 
+#: lib/gui/main.py
 msgid "&Quit"
 msgstr "&Выйти"
 
+#: lib/gui/main.py
 msgid "&Refresh"
 msgstr "&Обновить"
 
+#: lib/gui/maparea_menu.py
 msgid "&Remove"
 msgstr "&Удалить"
 
+#: lib/gui/main.py
 msgid "&Remove all"
 msgstr "&Удалить всё"
 
+#: lib/gui/main.py
 msgid "&Save"
 msgstr "&Сохранить"
 
+#: lib/gui/main.py
 msgid "&Settings"
 msgstr "&Настройка"
 
+#: lib/gui/main.py
 msgid "&Stencil"
 msgstr "&Шаблон"
 
+#: lib/gui/main.py
 msgid "&Stretch"
 msgstr "&Растянуть"
 
+#: lib/gui/main.py
 msgid "&Text"
 msgstr "&Текст"
 
+#: lib/gui/main.py
 msgid "&View"
 msgstr "&Вид"
 
+#: lib/gui/main.py
 msgid "&Zoom"
 msgstr "&Масштаб"
 
+#: lib/gui/main.py
 msgid "(no title)"
 msgstr "(без названия)"
 
+#: lib/gui/main.py
 msgid "About…"
 msgstr "О программе…"
 
+#: lib/gui/main.py
 msgid "Add the current to document outline"
 msgstr "Добавить в оглавление"
 
+#: lib/gui/maparea_properties.py
 msgid "Always visible"
 msgstr "Всегда показывать"
 
+#: lib/gui/main.py
 msgid ""
 "An unhandled exception occurred. Ideally, this should not happen. Please report the bug to the author.\n"
 "\n"
@@ -147,84 +189,111 @@ msgstr ""
 "Непредвиденная ситуация. Так не должно быть. Пожалуйста, сообщите об ошибке автору.\n"
 "\n"
 
+#: lib/gui/maparea_properties.py
 msgid "Arrow"
 msgstr "Стрелка"
 
+#: lib/gui/main.py
 msgid "Author"
 msgstr "Автор"
 
+#: lib/gui/maparea_properties.py
 msgid "Background color"
 msgstr "Цвет фона"
 
+#: lib/gui/maparea_properties.py
 msgid "Border"
 msgstr "Рамка"
 
+#: lib/gui/main.py
 msgid "Cannot edit text with character zones."
 msgstr "Невозможно редактировать текст с зоной символов"
 
+#: lib/gui/main.py
 msgid "Close the document"
 msgstr "Закрыть документ"
 
+#: lib/gui/maparea_browser.py lib/gui/maparea_properties.py
 msgid "Comment"
 msgstr "Примечание"
 
+#: lib/gui/main.py
 msgid "Decrease the magnification"
 msgstr "Уменьшить масштаб"
 
+#: lib/gui/main.py
 msgid "Display everything"
 msgstr "Показать всё"
 
+#: lib/gui/main.py
 msgid "Display only the background layer"
 msgstr "Показать только фон"
 
+#: lib/gui/main.py
 msgid "Display only the document bitonal stencil"
 msgstr "Показать только битональный шаблон"
 
+#: lib/gui/main.py
 msgid "Display only the foreground layer"
 msgstr "Показать только передний план"
 
+#: lib/gui/main.py
 msgid "Display overprinted annotations"
 msgstr "Показывать комментарии (ссылки)"
 
+#: lib/gui/main.py
 msgid "Display the text layer"
 msgstr "Показать текстовый слой"
 
+#: lib/gui/main.py
 msgid "DjVu files (*.djvu, *.djv)|*.djvu;*.djv|All files|*"
 msgstr "DjVu файлы (*.djvu, *.djv)|*.djvu;*.djv|All files|*"
 
+#: lib/gui/main.py
 msgid "Do you want to save your changes?"
 msgstr "Вы хотите сохранить изменения?"
 
+#: lib/gui/main.py
 msgid "Document metadata"
 msgstr "Метаданные документа"
 
+#: lib/gui/main.py
 msgid "Don't display non-raster data"
 msgstr "Не показывать нерастровые данные"
 
+#: lib/gui/main.py
 msgid "Edit document outline in an external editor"
 msgstr "Редактировать оглавление документа в редакторе"
 
+#: lib/gui/metadata.py
 msgid "Edit metadata"
 msgstr "Изменить метаданные"
 
+#: lib/gui/main.py
 msgid "Edit page text in an external editor"
 msgstr "Редактировать во внешнем редакторе"
 
+#: lib/gui/main.py
 msgid "Edit the document or page metadata"
 msgstr "Изменить документ или метаданные"
 
+#: lib/gui/main.py
 msgid "Enter path to your favourite text editor."
 msgstr "Путь к текстовому редактору"
 
+#: lib/gui/main.py
 msgid "Error"
 msgstr "Ошибка"
 
+#: lib/gui/maparea_properties.py
 msgid "Etched in"
 msgstr "Вогнутая"
 
+#: lib/gui/maparea_properties.py
 msgid "Etched out"
 msgstr "Выпуклая"
 
+#: lib/gui/main.py
 #, python-format
 msgid ""
 "External edit failed:\n"
@@ -233,148 +302,195 @@ msgstr ""
 "Ошибка внешнего редактирования:\n"
 "%s"
 
+#: lib/gui/main.py
 msgid "External editor…"
 msgstr "&Внешний редактор…"
 
+#: lib/gui/main.py
 msgid "Fit &page"
 msgstr "Страница &целиком"
 
+#: lib/gui/main.py
 msgid "Fit &width"
 msgstr "По &ширине страницы"
 
+#: lib/gui/flatten_text.py
 msgid "Flatten text"
 msgstr "Упростить структуру текста"
 
+#: lib/gui/main.py
 msgid "Go to page"
 msgstr "Перейти к странице"
 
+#: lib/gui/maparea_properties.py
 msgid "Highlight color"
 msgstr "Подсветка"
 
+#: lib/gui/maparea_properties.py
 msgid "Highlight color and opacity"
 msgstr "Цвет и прозрачность"
 
+#: lib/gui/main.py
 msgid "Hyperlinks"
 msgstr "Ссылки"
 
+#: lib/gui/main.py
 msgid "Increase the magnification"
 msgstr "Увеличить масштаб"
 
+#: lib/gui/main.py
 msgid "Jump to first document page"
 msgstr "Перейти к первой странице"
 
+#: lib/gui/main.py
 msgid "Jump to last document page"
 msgstr "Перейти к последней странице"
 
+#: lib/gui/main.py
 msgid "Jump to next document page"
 msgstr "Перейти к следующей странице"
 
+#: lib/gui/main.py
 msgid "Jump to page…"
 msgstr "Перейти на страницу…"
 
+#: lib/gui/main.py
 msgid "Jump to previous document page"
 msgstr "Перейти к предыдущей странице"
 
+#: lib/gui/main.py
 msgid "License"
 msgstr "Лицензия"
 
+#: lib/gui/maparea_properties.py
 msgid "Line"
 msgstr "Линия"
 
+#: lib/gui/maparea_properties.py
 msgid "Line color"
 msgstr "Цвет линии"
 
+#: lib/gui/maparea_properties.py
 msgid "Line width"
 msgstr "Ширина линии"
 
+#: lib/gui/maparea_properties.py
 msgid "Line-specific properties"
 msgstr "Параметры, специфичные для строки"
 
+#: lib/gui/main.py
 #, python-format
 msgid "Link: %s"
 msgstr "Ссылка: %s"
 
+#: lib/gui/main.py
 #, python-format
 msgid "Magnify %d%%"
 msgstr "Увеличение %d%%"
 
+#: lib/gui/maparea_properties.py
 msgid "Main properties"
 msgstr "Основные свойства"
 
+#: lib/gui/main.py
 msgid "More information about this program"
 msgstr "Больше информации о программе"
 
+#: lib/gui/main.py
 msgid "Neither display the foreground layer nor the background layer"
 msgstr "Не показывать фон и передний план"
 
+#: lib/gui/main.py
 msgid "No text layer to edit."
 msgstr "Нет текстового слоя для редактирования"
 
+#: lib/gui/maparea_properties.py
 msgid "None"
 msgstr "Ничего"
 
+#: lib/gui/main.py
 msgid "Number of lines changed."
 msgstr "Количество строк изменено"
 
+#: lib/gui/main.py
 msgid "One &to one"
 msgstr "&Один к одному"
 
+#: lib/gui/maparea_properties.py
 msgid "Opacity"
 msgstr "Прозрачность"
 
+#: lib/gui/main.py
 msgid "Open &recent"
 msgstr "&Недавние файлы"
 
+#: lib/gui/main.py
 msgid "Open a DjVu document"
 msgstr "Открыть DjVu документ"
 
+#: lib/gui/main.py
 msgid "Outline"
 msgstr "Оглавление"
 
+#: lib/gui/maparea_properties.py
 msgid "Oval"
 msgstr "Овал"
 
+#: lib/gui/maparea_properties.py
 msgid "Overprinted annotation (hyperlink) properties"
 msgstr "Вид комментария (ссылки)"
 
+#: lib/gui/main.py
 #, python-format
 msgid "Page %(pageno)d of %(npages)d"
 msgstr "Страница %(pageno)d из %(npages)d"
 
+#: lib/gui/main.py
 #, python-format
 msgid "Page %d metadata"
 msgstr "Метаданные страницы %d"
 
+#: lib/gui/maparea_properties.py
 msgid "Polygon"
 msgstr "Многоугольник"
 
+#: lib/gui/maparea_properties.py
 msgid "Pushpin"
 msgstr "Канцелярская кнопка"
 
+#: lib/gui/main.py
 msgid "Quit the application"
 msgstr "Выйти из программы"
 
+#: lib/gui/maparea_properties.py
 msgid "Rectangle"
 msgstr "Прямоугольник"
 
+#: lib/gui/main.py
 msgid "Refresh the window"
 msgstr "Обновить окно"
 
+#: lib/gui/flatten_text.py
 msgid "Remove details"
 msgstr "Удалить детали"
 
+#: lib/gui/main.py
 msgid "Remove details from page text"
 msgstr "Уменьшить детализацию текста"
 
+#: lib/gui/main.py
 msgid "Remove whole document outline"
 msgstr "Удалить оглавление всего документа"
 
+#: lib/gui/main.py
 msgid "Save the document"
 msgstr "Сохранить документ"
 
+#: lib/gui/main.py
 msgid "Saving document"
 msgstr "Сохранение документа"
 
+#: lib/gui/main.py
 #, python-format
 msgid ""
 "Saving document failed:\n"
@@ -383,132 +499,175 @@ msgstr ""
 "Не удалось сохранить файл:\n"
 "%s"
 
+#: lib/gui/main.py
 msgid "Saving the document, please wait…"
 msgstr "Сохранение документа, подождите…"
 
+#: lib/gui/flatten_text.py
 msgid "Scope"
 msgstr "Область"
 
+#: lib/gui/main.py
 msgid "Set full resolution magnification."
 msgstr "Фактический размер"
 
+#: lib/gui/main.py
 msgid "Set magnification to fit page"
 msgstr "Показать страницу целиком"
 
+#: lib/gui/main.py
 msgid "Set magnification to fit page width"
 msgstr "Масштабировать по ширине страницы"
 
+#: lib/gui/main.py
 msgid "Setup an external editor"
 msgstr "Выбрать внешний редактор"
 
+#: lib/gui/maparea_properties.py
 msgid "Shadow in"
 msgstr "Затемнение внутрь"
 
+#: lib/gui/maparea_properties.py
 msgid "Shadow out"
 msgstr "Затемнение наружу"
 
+#: lib/gui/maparea_properties.py
 msgid "Shape"
 msgstr "Форма"
 
+#: lib/gui/main.py
 msgid "Show &sidebar"
 msgstr "Показать &боковую панель"
 
+#: lib/gui/main.py
 msgid "Show/hide the sidebar"
 msgstr "Показать/скрыть боковую панель"
 
+#: lib/gui/maparea_properties.py
 msgid "Solid color"
 msgstr "Сплошная заливка"
 
+#: lib/gui/main.py
 msgid "Stretch the image to the window size"
 msgstr "Масштабировать страницу по размеру окна"
 
+#: lib/gui/maparea_properties.py
 msgid "Target frame"
 msgstr "Цель фрейма"
 
+#: lib/gui/main.py lib/gui/maparea_properties.py
 msgid "Text"
 msgstr "Текст"
 
+#: lib/gui/maparea_properties.py
 msgid "Text color"
 msgstr "Цвет текста"
 
+#: lib/gui/maparea_properties.py
 msgid "Text-specific properties"
 msgstr "Параметры, специфичные для текста"
 
+#: lib/gui/maparea_browser.py
 msgid "URI"
 msgstr "URI"
 
+#: lib/gui/main.py
 #, python-format
 msgid "Unhandled exception: %s"
 msgstr "Непредвиденная ситуация: %s"
 
+#: lib/gui/maparea_properties.py
 msgid "Width"
 msgstr "Ширина"
 
+#: lib/gui/maparea_properties.py
 msgid "XOR"
 msgstr "XOR"
 
+#: lib/gui/main.py
 msgid "Zoom &in"
 msgstr "У&величить"
 
+#: lib/gui/main.py
 msgid "Zoom &out"
 msgstr "У&меньшить"
 
+#: lib/gui/main.py
 msgid "[Text layer]"
 msgstr "[Текстовый слой]"
 
+#: lib/gui/flatten_text.py
 msgid "all"
 msgstr "все"
 
+#: lib/gui/flatten_text.py
 msgid "all pages"
 msgstr "все страницы"
 
+#: lib/i18n.py
 msgid "bookmarks"
 msgstr "закладки"
 
+#: lib/i18n.py
 msgid "char"
 msgstr "символ"
 
+#: lib/gui/flatten_text.py
 msgid "characters"
 msgstr "символы"
 
+#: lib/i18n.py
 msgid "column"
 msgstr "столбец"
 
+#: lib/gui/flatten_text.py
 msgid "columns"
 msgstr "столбцы"
 
+#: lib/gui/flatten_text.py
 msgid "current page"
 msgstr "текущая страница"
 
+#: lib/gui/metadata.py
 msgid "key"
 msgstr "ключ"
 
+#: lib/i18n.py
 msgid "line"
 msgstr "строка"
 
+#: lib/gui/flatten_text.py
 msgid "lines"
 msgstr "строки"
 
+#: lib/i18n.py
 msgid "page"
 msgstr "страница"
 
+#: lib/i18n.py
 msgid "para"
 msgstr "параграф"
 
+#: lib/gui/flatten_text.py
 msgid "paragraphs"
 msgstr "параграфы"
 
+#: lib/i18n.py
 msgid "region"
 msgstr "область"
 
+#: lib/gui/flatten_text.py
 msgid "regions"
 msgstr "области"
 
+#: lib/gui/metadata.py
 msgid "value"
 msgstr "значение"
 
+#: lib/i18n.py
 msgid "word"
 msgstr "слово"
 
+#: lib/gui/flatten_text.py
 msgid "words"
 msgstr "слова"

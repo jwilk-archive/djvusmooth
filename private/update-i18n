@@ -22,7 +22,7 @@ mo_files = $(patsubst po/%.po,locale/%/LC_MESSAGES/$(project_name).mo,$(po_files
 source_files = $(shell find -name '*.py' -o -name 'build' -prune -a -false)
 
 gettext_common_options = \
-	--no-location \
+	--add-location=file \
 	--sort-output \
 	--no-wrap \
 
