@@ -17,8 +17,6 @@
 Checks for djvusmooth dependencies.
 '''
 
-DDJVU_API_MIN_VERSION = 26
-
 djvulibre_path = None
 
 def _check_signals():
