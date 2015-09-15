@@ -41,6 +41,7 @@ def _check_djvu():
         import djvu.decode
     except ImportError as exc:
         raise ImportError('{exc}; perhaps python-djvulibre is not installed'.format(exc=exc))
+    del djvu  # quieten pyflakes
 
 def _check_wx():
     try:
