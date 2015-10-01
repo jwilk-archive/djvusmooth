@@ -5,7 +5,7 @@ djvusmooth (0.2.16) unstable; urgency=low
   * Improve the manual page:
     + Use minus sign instead of hyphen in dates.
   * Remove python-djvulibre version checks.
-    This fixes compatiblity with python-djvulibre ≥ 0.5.
+    This fixes compatibility with python-djvulibre ≥ 0.5.
     Thanks to Daniel Stender for the bug report.
     https://bitbucket.org/jwilk/djvusmooth/issues/17
 
@@ -237,7 +237,7 @@ djvusmooth (0.1.2) unstable; urgency=low
 
 djvusmooth (0.1.1) unstable; urgency=low
 
-  * Don't require pkg-config nor develoment files of DjVuLibre.
+  * Don't require pkg-config nor development files of DjVuLibre.
 
  -- Jakub Wilk <jwilk@jwilk.net>  Wed, 14 May 2008 11:22:49 +0200
 
