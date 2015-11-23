@@ -129,7 +129,7 @@ class MapareaPropertiesDialog(wx.Dialog):
         self.do_select_shape(shape)
 
     def enable_border_width(self, enable):
-        for widget in self._edit_border_width, self._label_border_thickenss:
+        for widget in self._edit_border_width, self._label_border_thickness:
             widget.Enable(enable)
 
     def enable_solid_border(self, enable):
@@ -222,7 +222,7 @@ class MapareaPropertiesDialog(wx.Dialog):
         self._edit_border_shadows = shadow_widgets
         self._edit_border_always_visible = avis_checkbox
         self._edit_border_width = border_width_edit
-        self._label_border_thickenss = border_width_label
+        self._label_border_thickness = border_width_label
         self.enable_border_width(have_shadow_border)
         if have_shadow_border:
             border_width_edit.SetValue(border.width)
