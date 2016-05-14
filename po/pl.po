@@ -236,7 +236,7 @@ msgstr "Pokaż tylko pierwszy plan"
 
 #: lib/gui/main.py
 msgid "Display overprinted annotations"
-msgstr "Pokazuj obwódki wokół hiperłącz"
+msgstr "Pokazuj obwódki wokół hiperłączy"
 
 #: lib/gui/main.py
 msgid "Display the text layer"

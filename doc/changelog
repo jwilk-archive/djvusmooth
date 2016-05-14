@@ -1,8 +1,9 @@
 djvusmooth (0.2.17) UNRELEASED; urgency=low
 
   * Update the XDG Base Directory Specification URL.
+  * Fix typo in the Polish translation.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Mon, 22 Feb 2016 17:34:40 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Sat, 14 May 2016 16:11:52 +0200
 
 djvusmooth (0.2.16) unstable; urgency=low
 
