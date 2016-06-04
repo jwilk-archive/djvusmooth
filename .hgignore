@@ -1,6 +1,6 @@
 syntax: glob
 
-*.pyc
+*.py[co]
 MANIFEST
 doc/*.1
 locale/*/LC_MESSAGES/*.mo
