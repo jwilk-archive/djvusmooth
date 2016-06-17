@@ -289,7 +289,8 @@ class MainWindow(wx.Frame):
                 for key, value
                 in (('x', -1), ('y', -1), ('width', 640), ('height', 480))
             )
-        def set(self, (x, y, w, h)):
+        def set(self, xywh):
+            (x, y, w, h) = xywh
             for key, value in dict(x=x, y=y, width=w, height=h).iteritems():
                 self._config['main_window_%s' % key] = value
         return property(get, set)

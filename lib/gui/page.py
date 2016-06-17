@@ -92,7 +92,8 @@ class FitWidthZoom(Zoom):
     def rezoom_on_resize(self):
         return True
 
-    def get_page_screen_size(self, page_job, (viewport_width, viewport_height)):
+    def get_page_screen_size(self, page_job, viewport_size):
+        (viewport_width, viewport_height) = viewport_size
         real_width, real_height = (page_job.width, page_job.height)
         ratio = 1.0 * real_height / real_width
         return (viewport_width, int(viewport_width * ratio))
@@ -102,7 +103,8 @@ class FitPageZoom(Zoom):
     def rezoom_on_resize(self):
         return True
 
-    def get_page_screen_size(self, page_job, (viewport_width, viewport_height)):
+    def get_page_screen_size(self, page_job, viewport_size):
+        (viewport_width, viewport_height) = viewport_size
         real_width, real_height = (page_job.width, page_job.height)
         ratio = 1.0 * real_height / real_width
         screen_height = int(viewport_width * ratio)

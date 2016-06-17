@@ -395,7 +395,8 @@ class MapArea(Annotation):
     def _get_orign(self):
         return self._get_rect()[:2]
 
-    def _set_origin(self, (x1, y1)):
+    def _set_origin(self, xy):
+        (x1, y1) = xy
         x0, y0, w, h = self._get_rect()
         self._set_rect((x1, y1, w, h))
 
@@ -477,7 +478,8 @@ class XywhMapArea(MapArea):
             raise ValueError
         self._x, self._y, self._w, self._h = x, y, w, h
 
-    def _set_rect(self, (x, y, w, h)):
+    def _set_rect(self, xywh):
+        (x, y, w, h) = xywh
         self._parse_xywh(x, y, w, h)
 
     def _get_rect(self):
