@@ -24,7 +24,7 @@ from __future__ import with_statement
 
 classifiers = '''
 Development Status :: 4 - Beta
-Environment :: Console
+Environment :: X11 Applications :: GTK
 Intended Audience :: End Users/Desktop
 License :: OSI Approved :: GNU General Public License (GPL)
 Operating System :: OS Independent
