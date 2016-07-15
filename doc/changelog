@@ -2,8 +2,10 @@ djvusmooth (0.2.17) UNRELEASED; urgency=low
 
   * Update the XDG Base Directory Specification URL.
   * Fix typo in the Polish translation.
+  * Don't hardcode the Python interpreter path in script shebangs; use
+    “#!/usr/bin/env python” instead.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Sat, 14 May 2016 16:11:52 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Fri, 15 Jul 2016 10:43:43 +0200
 
 djvusmooth (0.2.16) unstable; urgency=low
 
