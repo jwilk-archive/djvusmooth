@@ -51,11 +51,11 @@ def distance(s, t):
         d[0][j] = Append(j)
     for i in xrange(1, len_s + 1):
         for j in xrange(1, len_t + 1):
-            subst_cost = int(s[i-1] != t[j-1])
+            subst_cost = int(s[i - 1] != t[j - 1])
             d[i][j] = min(
-                Delete(d[i-1][j] + 1),
-                Insert(d[i][j-1] + 1),
-                Substitute(d[i-1][j-1] + subst_cost)
+                Delete(d[i - 1][j] + 1),
+                Insert(d[i][j - 1] + 1),
+                Substitute(d[i - 1][j - 1] + subst_cost)
             )
     i = len_s
     j = len_t
@@ -74,10 +74,10 @@ def distance(s, t):
             if s[i] != t[j]:
                 ops += (i, s[i], t[j],),
         elif isinstance(op, Append):
-            ops += ((i, '', t[jj]) for jj in xrange(j-1, -1, -1))
+            ops += ((i, '', t[jj]) for jj in xrange(j - 1, -1, -1))
             break
         elif isinstance(op, Drop):
-            ops += ((ii, s[ii], '') for ii in xrange(i-1, -1, -1))
+            ops += ((ii, s[ii], '') for ii in xrange(i - 1, -1, -1))
             break
     return reversed(ops)
 

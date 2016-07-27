@@ -39,7 +39,7 @@ class FlattenTextDialog(wx.Dialog):
         self._scope_box = wx.RadioBox(self,
             label=(_('Scope') + ':'),
             choices=(_('current page'), _('all pages')),
-            style = wx.RA_HORIZONTAL
+            style=wx.RA_HORIZONTAL
         )
         self._zone_box = wx.RadioBox(self,
             label=(_('Remove details') + ':'),

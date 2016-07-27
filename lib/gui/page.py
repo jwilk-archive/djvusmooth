@@ -252,7 +252,7 @@ class NodeShape(wx.lib.ogl.RectangleShape):
 
     def _update_node_size(self):
         x, y, w, h = self.GetX(), self.GetY(), self.GetWidth(), self.GetHeight()
-        screen_rect = x - w//2, y - h//2, w, h
+        screen_rect = (x - w // 2, y - h // 2, w, h)
         self._node.rect = self._xform_real_to_screen.inverse(screen_rect)
 
     def OnMovePost(self, dc, x, y, old_x, old_y, display):

@@ -79,8 +79,8 @@ class MapareaPropertiesDialog(wx.Dialog):
         target_label = wx.StaticText(self, label=(_('Target frame') + ': '))
         target_edit = wx.ComboBox(self,
             size=(self.DEFAULT_TEXT_WIDTH, -1),
-            style = wx.CB_DROPDOWN,
-            choices = HTML_TARGETS
+            style=wx.CB_DROPDOWN,
+            choices=HTML_TARGETS
         )
         if node is not None:
             target_edit.SetValue(self._node.target or '')
@@ -256,7 +256,7 @@ class MapareaPropertiesDialog(wx.Dialog):
         opacity_slider = wx.Slider(self,
             value=djvu.const.MAPAREA_OPACITY_DEFAULT,
             size=(self.DEFAULT_TEXT_WIDTH, -1),
-            style = wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS
+            style=(wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS)
         )
         for widget in highlight_color_label, highlight_color_selector, opacity_label, opacity_slider:
             highlight_specific_sizer.Add(widget, 0, wx.ALIGN_CENTER_VERTICAL)
