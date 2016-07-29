@@ -489,11 +489,11 @@ class PageWidget(wx.lib.ogl.ShapeCanvas):
         # TODO: something lighter
 
     def _on_shape_selected(self, shape):
-        shape.select(notify=False)  # in case it was selected elsewhere
+        shape.select(notify=False)  # if it was selected elsewhere
         self._current_shape = shape
 
     def _on_shape_deselected(self, shape):
-        shape.deselect(notify=False)  # in case it was selected elsewhere
+        shape.deselect(notify=False)  # if it was selected elsewhere
         self._current_shape = None
 
     def on_parent_resize(self, event):
