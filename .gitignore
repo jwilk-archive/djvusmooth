@@ -3,4 +3,3 @@ MANIFEST
 doc/*.1
 locale/*/LC_MESSAGES/*.mo
 po/*.pot
-secret/
