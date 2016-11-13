@@ -22,7 +22,7 @@ djvusmooth (0.2.16) unstable; urgency=low
   * Remove python-djvulibre version checks.
     This fixes compatibility with python-djvulibre ≥ 0.5.
     Thanks to Daniel Stender for the bug report.
-    https://bitbucket.org/jwilk/djvusmooth/issues/17
+    https://github.com/jwilk/djvusmooth/issues/17
 
  -- Jakub Wilk <jwilk@jwilk.net>  Tue, 15 Sep 2015 11:12:06 +0200
 
@@ -35,7 +35,7 @@ djvusmooth (0.2.15) unstable; urgency=low
   * Use HTTPS URLs when they are available, in documentation and code.
   * Document that is possible to edit hyperlinks.
     Thanks to Janusz S. Bień for the bug report.
-    https://bitbucket.org/jwilk/djvusmooth/issues/13
+    https://github.com/jwilk/djvusmooth/issues/13
   * Use the notebook widget regardless of wxPython version.
   * Don't hardcode path to the binary in the desktop file.
   * Add experimental support for wxPython 3.0.
@@ -52,7 +52,7 @@ djvusmooth (0.2.14) unstable; urgency=low
 
   [ Jakub Wilk ]
   * Add “Open recent” submenu.
-    https://bitbucket.org/jwilk/djvusmooth/issues/7
+    https://github.com/jwilk/djvusmooth/issues/7
   * Do not abort opening a new file if user chose to save the current one.
   * Check Python version at runtime.
   * Improve the manual page, as per man-pages(7) recommendations:
@@ -77,7 +77,7 @@ djvusmooth (0.2.14) unstable; urgency=low
 djvusmooth (0.2.13) unstable; urgency=low
 
   * Add keyboard shortcuts for “Zoom in” and “Zoom out”.
-    https://bitbucket.org/jwilk/djvusmooth/issues/8
+    https://github.com/jwilk/djvusmooth/issues/8
   * Fix editing text in external editor: when a zone broader than line without
     sub-zones existed, djvusmooth incorrectly skipped it when importing text.
     Thanks to Janusz S. Bień for the bug report.
