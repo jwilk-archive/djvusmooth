@@ -1,6 +1,9 @@
 djvusmooth (0.2.18) UNRELEASED; urgency=low
 
-  * 
+  * Improve the setup script:
+    + Fix the “Environment” classifier.
+  * Update bug tracker URLs.
+    The project repo has moved to GitHub.
 
  -- Jakub Wilk <jwilk@jwilk.net>  Fri, 15 Jul 2016 11:50:31 +0200
 
