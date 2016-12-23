@@ -5,6 +5,7 @@ include djvusmooth.py
 include doc/*.1
 include doc/*.txt
 include doc/*.xml
+include doc/COPYING
 include doc/changelog
 include extra/*
 include po/*.po
