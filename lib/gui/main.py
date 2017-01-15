@@ -14,9 +14,6 @@
 # FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 # more details.
 
-APPLICATION_NAME = 'djvusmooth'
-LICENSE = 'GPL-2'
-
 import sys
 import itertools
 import functools
@@ -56,6 +53,9 @@ from djvusmooth import config
 from djvusmooth import __version__, __author__
 
 from djvusmooth.i18n import _
+
+APPLICATION_NAME = 'djvusmooth'
+LICENSE = 'GPL-2'
 
 MENU_ICON_SIZE = (16, 16)
 
