@@ -19,7 +19,7 @@ bugs_address = $(shell sed -n -e '/ -- \(.*\)  .*/ {s//\1/p;q}' doc/changelog)
 
 po_files = $(wildcard po/*.po)
 mo_files = $(patsubst po/%.po,locale/%/LC_MESSAGES/$(project_name).mo,$(po_files))
-source_files = $(shell find -name '*.py' -o -name 'build' -prune -a -false)
+source_files = $(shell find . -name '*.py' -o -name 'build' -prune -a -false)
 
 gettext_common_options = \
 	--add-location=file \
