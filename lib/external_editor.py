@@ -19,7 +19,7 @@ import tempfile
 
 class temporary_file(object):
 
-    def __init__(self, suffix='', prefix='tmp', dir=None, text=False):
+    def __init__(self, suffix='', prefix='djvusmooth.', dir=None, text=False):
         fd, self.name = tempfile.mkstemp(suffix=suffix, prefix=prefix, dir=dir, text=text)
         self.mode = 'r+' + 'bt'[bool(text)]
         self.fp = os.fdopen(fd, self.mode)
