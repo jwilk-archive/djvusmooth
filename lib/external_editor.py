@@ -14,19 +14,21 @@
 # more details.
 
 import os.path
+import shutil
 import subprocess
 import tempfile
 
 class temporary_file(object):
 
-    def __init__(self, suffix='', prefix='djvusmooth.', dir=None, text=False):
-        fd, self.name = tempfile.mkstemp(suffix=suffix, prefix=prefix, dir=dir, text=text)
-        self.mode = 'r+' + 'bt'[bool(text)]
-        self.fp = os.fdopen(fd, self.mode)
+    def __init__(self, name):
+        self.dir = self.fp = None
+        self.dir = tempfile.mkdtemp(prefix='djvusmooth.')
+        self.name = os.path.join(self.dir, name)
+        self.fp = open(self.name, 'w+')
 
     def _reopen(self):
         if self.fp is None:
-            self.fp = open(self.name, self.mode)
+            self.fp = open(self.name, 'r+')
 
     def flush(self):
         if self.fp is None:
@@ -35,11 +37,11 @@ class temporary_file(object):
         self.fp = None
 
     def close(self):
-        if self.name is None:
+        if self.dir is None:
             return
         self.flush()
-        os.remove(self.name)
-        self.name = None
+        shutil.rmtree(self.dir)
+        self.dir = None
 
     def seek(self, offset, whence=0):
         self._reopen()

@@ -800,7 +800,7 @@ class MainWindow(wx.Frame):
         def job(disabler):
             new_repr = None
             try:
-                with external_editor.temporary_file(suffix='.txt') as tmp_file:
+                with external_editor.temporary_file('outline.txt') as tmp_file:
                     model.export_as_plaintext(tmp_file)
                     tmp_file.flush()
                     self.external_editor(tmp_file.name)
@@ -836,7 +836,7 @@ class MainWindow(wx.Frame):
         def job(disabler):
             new_sexpr = None
             try:
-                with external_editor.temporary_file(suffix='.txt') as tmp_file:
+                with external_editor.temporary_file('text.txt') as tmp_file:
                     text_mangle.export(sexpr, tmp_file)
                     tmp_file.flush()
                     self.external_editor(tmp_file.name)
