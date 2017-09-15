@@ -124,7 +124,7 @@ def fix_uri(s):
         s = s.encode('UTF-8')
     return quote(s, safe=URI_SPECIAL_CHARACTERS)
 
-replace_control_characters = re.compile('[\0-\x1f]+').sub
+replace_control_characters = re.compile('[\0-\x1F]+').sub
 
 _is_html_color = re.compile('^[#][0-9a-fA-F]{6}$').match
 
