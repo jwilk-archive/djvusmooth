@@ -1,10 +1,10 @@
-djvusmooth (0.2.19) UNRELEASED; urgency=low
+djvusmooth (0.2.19) unstable; urgency=low
 
   * Create temporary files in a subdirectory of /tmp.
     This is necessary, because some editors can't securely open files
     directly in /tmp.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Fri, 15 Sep 2017 23:24:42 +0200
+ -- Jakub Wilk <jwilk@jwilk.net>  Sat, 16 Sep 2017 17:05:51 +0200
 
 djvusmooth (0.2.18) unstable; urgency=low
 
