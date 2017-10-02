@@ -1,5 +1,5 @@
 *.py[co]
-MANIFEST
-doc/*.1
-locale/*/LC_MESSAGES/*.mo
-po/*.pot
+/MANIFEST
+/doc/*.1
+/locale/*/LC_MESSAGES/*.mo
+/po/*.pot
