@@ -1,0 +1,29 @@
+Overview
+========
+
+**djvusmooth** is a graphical editor for DjVu_ documents.
+
+It allows you to:
+
+* edit document metadata,
+* edit document outline (bookmarks),
+* add, remove or edit hyperlinks,
+* correct occasional errors in the hidden text layer.
+
+.. _DjVu:
+   http://djvu.org
+
+Prerequisites
+=============
+
+* Python (2.7 or 2.6)
+* DjVuLibre_ (including command-line tools)
+* python-djvulibre_
+* wxPython (3.0 or 2.8) in Unicode mode
+
+.. _DjVuLibre:
+   http://djvu.sourceforge.net/
+.. _python-djvulibre:
+   https://pypi.python.org/pypi/python-djvulibre
+
+.. vim:ft=rst ts=3 sts=3 sw=3 et
