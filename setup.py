@@ -14,7 +14,7 @@
 # more details.
 
 '''
-*djvusmooth* is a graphical editor for `DjVu <http://djvu.org>`_ documents.
+*djvusmooth* is a graphical editor for DjVu documents.
 '''
 
 b''  # Python >= 2.6 is required
