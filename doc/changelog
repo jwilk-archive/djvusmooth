@@ -1,3 +1,9 @@
+djvusmooth (0.2.20) UNRELEASED; urgency=low
+
+  * 
+
+ -- Jakub Wilk <jwilk@jwilk.net>  Tue, 16 Jan 2018 13:13:48 +0100
+
 djvusmooth (0.2.19) unstable; urgency=low
 
   * Create temporary files in a subdirectory of /tmp.
