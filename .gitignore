@@ -1,6 +1,7 @@
 *.py[co]
 /MANIFEST
 /build
+/dist
 /doc/*.1
 /locale/*/LC_MESSAGES/*.mo
 /po/*.pot
