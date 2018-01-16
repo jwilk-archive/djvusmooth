@@ -4,11 +4,11 @@ include MANIFEST.in
 include djvusmooth edit-text
 include djvusmooth.py
 include doc/*.1
-include doc/*.txt
 include doc/*.xml
 include doc/COPYING
 include doc/README
 include doc/changelog
+include doc/credits
 include extra/*
 include po/*.po
 include private/*
