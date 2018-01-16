@@ -118,19 +118,19 @@ class build_doc(distutils_build):
     def run(self):
         if os.name != 'posix':
             return
-        for xmlname in glob.iglob(os.path.join('doc', '*.xml')):
-            manname = os.path.splitext(xmlname)[0] + '.1'
-            command = [
-                'xsltproc', '--nonet',
-                '--param', 'man.authors.section.enabled', '0',
-                '--param', 'man.charmap.use.subset', '0',
-                '--param', 'man.font.links', '"I"',
-                '--output', 'doc/',
-                'http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl',
-                xmlname,
-            ]
-            self.make_file([xmlname], manname, self.build_man, [manname, command])
-            data_files.append(('share/man/man1', [manname]))
+        xmlname = 'doc/manpage.xml'
+        manname = 'doc/djvusmooth.1'
+        command = [
+            'xsltproc', '--nonet',
+            '--param', 'man.authors.section.enabled', '0',
+            '--param', 'man.charmap.use.subset', '0',
+            '--param', 'man.font.links', '"I"',
+            '--output', 'doc/',
+            'http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl',
+            xmlname,
+        ]
+        self.make_file([xmlname], manname, self.build_man, [manname, command])
+        data_files.append(('share/man/man1', [manname]))
 
 distutils_build.sub_commands[:0] = [
     ('build_doc', None),
