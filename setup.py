@@ -42,7 +42,7 @@ data_files = []
 
 if os.name == 'posix':
     data_files += [
-        (os.path.join('share', 'applications'), ['extra/djvusmooth.desktop'])
+        ('share/applications', ['extra/djvusmooth.desktop'])
     ]
 
 class build_mo(distutils_build):
@@ -52,7 +52,7 @@ class build_mo(distutils_build):
     def run(self):
         if os.name != 'posix':
             return
-        for poname in glob.iglob(os.path.join('po', '*.po')):
+        for poname in glob.iglob('po/*.po'):
             lang, _ = os.path.splitext(os.path.basename(poname))
             modir = os.path.join('locale', lang, 'LC_MESSAGES')
             if not os.path.isdir(modir):
@@ -67,7 +67,7 @@ class check_po(distutils_build):
     description = 'perform some checks on message catalogs'
 
     def run(self):
-        for poname in glob.iglob(os.path.join('po', '*.po')):
+        for poname in glob.iglob('po/*.po'):
             checkname = poname + '.sdist-check'
             with open(checkname, 'w'):
                 pass
@@ -143,7 +143,7 @@ class clean(distutils_clean):
         distutils_clean.run(self)
         if not self.all:
             return
-        for manname in glob.iglob(os.path.join('doc', '*.1')):
+        for manname in glob.iglob('doc/*.1'):
             with open(manname, 'r') as file:
                 stamp = file.readline()
             if stamp != sdist.manpage_stamp:
@@ -175,7 +175,7 @@ class sdist(distutils_sdist):
 
     def make_release_tree(self, base_dir, files):
         distutils_sdist.make_release_tree(self, base_dir, files)
-        for manname in glob.iglob(os.path.join(base_dir, 'doc', '*.1')):
+        for manname in glob.iglob(os.path.join(base_dir, 'doc/*.1')):
             self.execute(self._rewrite_manpage, [manname], 'rewriting {0}'.format(manname))
         self._maybe_move_file(base_dir, 'COPYING', 'doc/COPYING')
 
