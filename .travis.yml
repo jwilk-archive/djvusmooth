@@ -11,10 +11,13 @@ addons:
     - docbook-xsl
     - libxml2-utils
     - xsltproc
+install:
+- pip install docutils
 script:
 - python -m compileall -f .
 - nosetests --with-doctest --verbose lib/varietes.py
 - xmllint --nonet --noout --valid doc/*.xml
+- private/check-rst
 - python setup.py install
 - command -v djvusmooth
 - export MANPATH="$VIRTUAL_ENV/share/man" MANWIDTH=80
