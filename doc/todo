@@ -1,0 +1,21 @@
+Add “Save as” function.
+
+Allow adding/deleting lines/words.
+
+Fix translation of exception handling message.
+
+Improve error handling.
+
+Disable antialiasing for fonts.
+
+Improve hyperlinks resolving.
+
+Implement scroll by mouse dragging.
+
+Zoom should be aware of the current position.
+
+Use different shapes for different maparea nodes.
+
+Document how to build the package.
+
+.. vim:ts=3 sts=3 sw=3 et ft=rst
