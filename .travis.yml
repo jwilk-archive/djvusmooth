@@ -12,9 +12,10 @@ addons:
     - libxml2-utils
     - xsltproc
 install:
+- pip install pydiatra
 - pip install docutils
 script:
-- python -m compileall -f .
+- private/run-pydiatra
 - nosetests --with-doctest --verbose lib/varietes.py
 - xmllint --nonet --noout --valid doc/*.xml
 - private/check-rst
