@@ -15,7 +15,7 @@ install:
 - pip install pydiatra
 - pip install docutils
 script:
-- private/run-pydiatra
+- py2diatra .
 - nosetests --with-doctest --verbose lib/varietes.py
 - xmllint --nonet --noout --valid doc/*.xml
 - private/check-rst
