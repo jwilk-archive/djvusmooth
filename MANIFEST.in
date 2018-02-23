@@ -1,5 +1,5 @@
 include COPYING
-exclude README
+exclude README.rst
 include MANIFEST.in
 include djvusmooth edit-text
 include djvusmooth.py
