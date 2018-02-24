@@ -36,14 +36,17 @@ except ImportError:
 else:
     distutils644.install()
 
-from lib import __version__
-
 data_files = []
 
 if os.name == 'posix':
     data_files += [
         ('share/applications', ['extra/djvusmooth.desktop'])
     ]
+
+def get_version():
+    with open('doc/changelog', 'r') as file:
+        line = file.readline()
+    return line.split()[1].strip('()')
 
 class build_mo(distutils_build):
 
@@ -195,7 +198,7 @@ Topic :: Multimedia :: Graphics
 
 distutils.core.setup(
     name='djvusmooth',
-    version=__version__,
+    version=get_version(),
     license='GNU GPL 2',
     description='graphical editor for DjVu',
     long_description=__doc__.strip(),
