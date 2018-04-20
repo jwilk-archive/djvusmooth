@@ -24,6 +24,6 @@ Prerequisites
 .. _DjVuLibre:
    http://djvu.sourceforge.net/
 .. _python-djvulibre:
-   https://pypi.python.org/pypi/python-djvulibre
+   https://pypi.org/project/python-djvulibre/
 
 .. vim:ft=rst ts=3 sts=3 sw=3 et
