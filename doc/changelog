@@ -1,8 +1,9 @@
 djvusmooth (0.2.20) UNRELEASED; urgency=low
 
-  * 
+  * Reorganize documentation.
+  * Improve the setup script.
 
- -- Jakub Wilk <jwilk@jwilk.net>  Tue, 16 Jan 2018 13:13:48 +0100
+ -- Jakub Wilk <jwilk@jwilk.net>  Fri, 20 Apr 2018 18:27:22 +0200
 
 djvusmooth (0.2.19) unstable; urgency=low
 
