@@ -110,12 +110,12 @@ URI_SPECIAL_CHARACTERS = (
 
 def fix_uri(s):
     r'''
-    >>> uri = 'http://eggs.spam/'
+    >>> uri = 'http://example.com/'
     >>> fix_uri(uri) == uri
     True
-    >>> uri = fix_uri('http://eggs.spam/eggs and spam/')
+    >>> uri = fix_uri('http://example.com/eggs and spam/')
     >>> uri
-    'http://eggs.spam/eggs%20and%20spam/'
+    'http://example.com/eggs%20and%20spam/'
     >>> fix_uri(uri) == uri
     True
     '''
