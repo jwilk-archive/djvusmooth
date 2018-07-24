@@ -1,8 +1,8 @@
 #!/bin/sh
-version=${1:?"no version number provided"}
+export version=${1:?"no version number provided"}
 set -e
 set -x
 dch -m -v "$version" -u low -c doc/changelog
-sed -i -E -e "s/^(__version__) = '[0-9.]+'$/\1 = '$version'/" lib/__init__.py
-sed -i -E -e "s/<(!ENTITY version) '[0-9.]+'>/<\1 '$version'>/" doc/*.xml
-sed -i -E -e "s/^(\"Project-Id-Version: djvusmooth) ([0-9.]+)/\1 $version/" po/*.po po/*.pot
+perl -pi -e 's/^__version__ = \047\K[0-9.]+/$ENV{version}/' lib/__init__.py
+perl -pi -e 's/<!ENTITY version \047\K[0-9.]+/$ENV{version}/' doc/*.xml
+perl -pi -e 's/^"Project-Id-Version: \S+ \K[0-9.]+/$ENV{version}/' po/*.po po/*.pot
