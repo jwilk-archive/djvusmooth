@@ -17,8 +17,7 @@
 *djvusmooth* is a graphical editor for DjVu documents.
 '''
 
-b''  # Python >= 2.6 is required
-exec b''  # Python 2.X is required
+exec b''  # Python 2.6 or 2.7 is required
 
 import glob
 import os
