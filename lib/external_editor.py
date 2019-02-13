@@ -15,8 +15,9 @@
 
 import os.path
 import shutil
-import subprocess
 import tempfile
+
+from . import ipc
 
 class temporary_file(object):
 
@@ -74,10 +75,10 @@ class RunMailcapEditor(object):
 
     def __call__(self, path):
         path = os.path.abspath(path)
-        edit = subprocess.Popen(
+        edit = ipc.Subprocess(
             ['edit', 'text/plain:{path}'.format(path=path)],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
+            stdin=ipc.PIPE,
+            stdout=ipc.PIPE,
         )
         edit.stdin.close()
         edit.stdout.close()
@@ -91,10 +92,10 @@ class CustomEditor(object):
 
     def __call__(self, path):
         path = os.path.abspath(path)
-        edit = subprocess.Popen(
+        edit = ipc.Subprocess(
             self._command + [path],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
+            stdin=ipc.PIPE,
+            stdout=ipc.PIPE,
         )
         edit.stdin.close()
         edit.stdout.close()

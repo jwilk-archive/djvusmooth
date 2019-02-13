@@ -13,7 +13,7 @@
 # FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 # more details.
 
-import subprocess
+from . import ipc
 
 class IOError(IOError):
     pass
@@ -24,10 +24,10 @@ class Package(object):
         self._name = name
 
     def variable(self, variable_name):
-        pkgconfig = subprocess.Popen(
+        pkgconfig = ipc.Subprocess(
             ['pkg-config', '--variable=' + str(variable_name), self._name],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stdout=ipc.PIPE,
+            stderr=ipc.PIPE
         )
         stdout, stderr = pkgconfig.communicate()
         if pkgconfig.returncode:

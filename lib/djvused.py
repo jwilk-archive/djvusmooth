@@ -14,10 +14,11 @@
 # more details.
 
 import os.path
-import subprocess
 import threading
 
 from djvu.sexpr import Expression, Symbol
+
+from . import ipc
 
 djvused_path = None
 if os.name == 'nt':
@@ -37,10 +38,10 @@ if djvused_path is None or not os.path.isfile(djvused_path):
 
 def _djvused_usability_check():
     try:
-        djvused = subprocess.Popen(
+        djvused = ipc.Subprocess(
             [djvused_path],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stdout=ipc.PIPE,
+            stderr=ipc.PIPE
         )
         djvused.communicate()
         if djvused.returncode == 10:
@@ -150,10 +151,10 @@ class StreamEditor(object):
         if save:
             args += '-s',
         args += self._file_name,
-        djvused = subprocess.Popen(args,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+        djvused = ipc.Subprocess(args,
+            stdin=ipc.PIPE,
+            stdout=ipc.PIPE,
+            stderr=ipc.PIPE
         )
         result = [None]
         reader_thread = threading.Thread(

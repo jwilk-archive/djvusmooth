@@ -19,15 +19,6 @@ Checks for djvusmooth dependencies.
 
 djvulibre_path = None
 
-def _check_signals():
-    # Protect from scanadf and possibly other software that sets SIGCHLD to
-    # SIG_IGN.
-    # https://bugs.debian.org/596232
-    import os
-    import signal
-    if os.name == 'posix':
-        signal.signal(signal.SIGCHLD, signal.SIG_DFL)
-
 def _check_djvu():
     # On Windows, special measures may be needed to find the DjVuLibre DLL.
     global djvulibre_path
@@ -58,7 +49,6 @@ def _check_wx():
     else:
         raise ImportError('wxPython 3.0 or 2.8 in Unicode mode is required')
 
-_check_signals()
 _check_djvu()
 _check_wx()
 
