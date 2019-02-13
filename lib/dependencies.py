@@ -40,14 +40,14 @@ def _check_djvu():
     try:
         import djvu.decode
     except ImportError as exc:
-        raise ImportError('{exc}; perhaps python-djvulibre is not installed'.format(exc=exc))
+        raise ImportError('{exc}; is python-djvulibre installed?'.format(exc=exc))
     del djvu  # quieten pyflakes
 
 def _check_wx():
     try:
         import wxversion
     except ImportError as exc:
-        raise ImportError('{exc}; perhaps wxPython is not installed'.format(exc=exc))
+        raise ImportError('{exc}; is wxPython installed?'.format(exc=exc))
     for ver in ['2.8-unicode', '3.0']:
         try:
             wxversion.select(ver, optionsRequired=True)
