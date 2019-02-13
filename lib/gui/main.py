@@ -22,7 +22,7 @@ import os.path
 import threading
 from Queue import Queue, Empty as QueueEmpty
 
-import djvusmooth.dependencies as __dependencies
+import djvusmooth.dependencies
 
 import wx
 import wx.lib.ogl
