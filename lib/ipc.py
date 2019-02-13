@@ -17,7 +17,11 @@
 
 import os
 import signal
-import subprocess
+
+if os.name == 'posix':
+    import subprocess32 as subprocess
+else:
+    import subprocess
 
 Subprocess = subprocess.Popen
 PIPE = subprocess.PIPE
