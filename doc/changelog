@@ -1,6 +1,7 @@
 djvusmooth (0.3) UNRELEASED; urgency=low
 
   * Require the subprocess32 module.
+    https://github.com/jwilk/djvusmooth/issues/23
   * Reorganize documentation.
   * Improve error handling.
   * Improve the setup script.
