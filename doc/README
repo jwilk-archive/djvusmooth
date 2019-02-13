@@ -19,11 +19,14 @@ Prerequisites
 * Python (2.7 or 2.6)
 * DjVuLibre_ (including command-line tools)
 * python-djvulibre_
+* subprocess32_
 * wxPython (3.0 or 2.8) in Unicode mode
 
 .. _DjVuLibre:
    http://djvu.sourceforge.net/
 .. _python-djvulibre:
    https://pypi.org/project/python-djvulibre/
+.. _subprocess32:
+   https://pypi.org/project/subprocess32/
 
 .. vim:ft=rst ts=3 sts=3 sw=3 et
