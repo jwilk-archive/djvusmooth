@@ -1,6 +1,6 @@
 # encoding=UTF-8
 
-# Copyright © 2008-2015 Jakub Wilk <jwilk@jwilk.net>
+# Copyright © 2008-2019 Jakub Wilk <jwilk@jwilk.net>
 # Copyright © 2009 Mateusz Turcza <mturcza@mimuw.edu.pl>
 #
 # This file is part of djvusmooth.
