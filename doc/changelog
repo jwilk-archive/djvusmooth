@@ -1,3 +1,9 @@
+djvusmooth (0.3.1) UNRELEASED; urgency=low
+
+  * 
+
+ -- Jakub Wilk <jwilk@jwilk.net>  Sat, 16 Feb 2019 14:37:33 +0100
+
 djvusmooth (0.3) unstable; urgency=low
 
   * Require the subprocess32 module.
