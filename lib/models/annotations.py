@@ -256,11 +256,11 @@ class MapArea(Annotation):
             kwargs = dict(uri=uri, target=target, comment=comment, owner=owner)
             for item in sexpr:
                 try:
-                    key, value = item
+                    [key, value] = item
                     key = key.value
                     value = value.value
                 except ValueError:
-                    key, = item
+                    [key] = item
                     key = key.value
                     value = True
                 kwargs['s_%s' % key] = value
