@@ -203,7 +203,7 @@ distutils.core.setup(
     description='graphical editor for DjVu',
     long_description=__doc__.strip(),
     classifiers=classifiers,
-    url='http://jwilk.net/software/djvusmooth',
+    url='https://jwilk.net/software/djvusmooth',
     author='Jakub Wilk',
     author_email='jwilk@jwilk.net',
     packages=(
