@@ -16,7 +16,7 @@ It allows you to:
 Prerequisites
 =============
 
-* Python (2.7 or 2.6)
+* Python 2.7
 * DjVuLibre_ (including command-line tools)
 * python-djvulibre_
 * subprocess32_

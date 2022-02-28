@@ -17,7 +17,7 @@
 *djvusmooth* is a graphical editor for DjVu documents.
 '''
 
-exec b''  # Python 2.6 or 2.7 is required
+exec {b''}.pop()  # Python 2.7 is required
 
 import glob
 import os
@@ -190,7 +190,6 @@ License :: OSI Approved :: GNU General Public License (GPL)
 Operating System :: OS Independent
 Programming Language :: Python
 Programming Language :: Python :: 2
-Programming Language :: Python :: 2.6
 Programming Language :: Python :: 2.7
 Topic :: Text Processing
 Topic :: Multimedia :: Graphics
