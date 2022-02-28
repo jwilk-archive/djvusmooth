@@ -826,15 +826,15 @@ class TextMapArea(XywhMapArea):
             self._notify_change()
         return property(get, set)
 
-MAPAREA_SHADOW_BORDER_TO_CLASS = dict(
-    (cls.SYMBOL, cls)
+MAPAREA_SHADOW_BORDER_TO_CLASS = {
+    cls.SYMBOL: cls
     for cls in (BorderShadowIn, BorderShadowOut, BorderEtchedIn, BorderEtchedOut)
-)
+}
 
-MAPAREA_SHAPE_TO_CLASS = dict(
-    (cls.SYMBOL, cls)
+MAPAREA_SHAPE_TO_CLASS = {
+    cls.SYMBOL: cls
     for cls in (RectangleMapArea, OvalMapArea, PolygonMapArea, LineMapArea, TextMapArea)
-)
+}
 
 ANNOTATION_TYPE_TO_CLASS = {
     djvu.const.ANNOTATION_MAPAREA: MapArea
@@ -854,7 +854,7 @@ class PageAnnotations(object):
         self._callbacks[callback] = 1
 
     def _classify_data(self, items):
-        result = dict((key, []) for key in ANNOTATION_TYPE_TO_CLASS.itervalues())
+        result = {key: [] for key in ANNOTATION_TYPE_TO_CLASS.itervalues()}
         result[None] = []
         for item in items:
             cls = ANNOTATION_TYPE_TO_CLASS.get(item[0].value)
