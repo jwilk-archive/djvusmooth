@@ -25,8 +25,8 @@ from djvusmooth.varietes import idict
 from djvusmooth.i18n import _
 
 # See:
-# <http://www.w3.org/TR/html4/present/frames.html#target-info>,
-# <http://www.w3.org/TR/html4/types.html#type-frame-target>
+# <https://www.w3.org/TR/html4/present/frames.html#target-info>,
+# <https://www.w3.org/TR/html4/types.html#type-frame-target>
 # for details.
 
 HTML_TARGETS = '_blank _self _parent _top'.split()
