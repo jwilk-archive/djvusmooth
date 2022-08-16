@@ -172,7 +172,7 @@ class idict(object):
         return '{mod}.{cls}({init})'.format(
             mod=self.__module__,
             cls=type(self).__name__,
-            init=', '.join('{k}={v!r}'.format(k=k, v=v) for k, v in self.__dict__.iteritems())
+            init=str.join(', ', ('{k}={v!r}'.format(k=k, v=v) for k, v in self.__dict__.iteritems()))
         )
 
 # vim:ts=4 sts=4 sw=4 et

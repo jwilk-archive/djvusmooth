@@ -85,7 +85,7 @@ def linearize_for_export(expr):
     if len(expr) == 6 and isinstance(expr[5], djvu.sexpr.StringExpression):
         yield expr[5].value
     elif expr[0].value == djvu.const.TEXT_ZONE_LINE:
-        yield ' '.join(linearize_for_export(expr[5:]))
+        yield str.join(' ', linearize_for_export(expr[5:]))
     else:
         for subexpr in expr:
             if not isinstance(subexpr, djvu.sexpr.ListExpression):
