@@ -23,7 +23,7 @@ Prerequisites
 * wxPython (3.0 or 2.8) in Unicode mode
 
 .. _DjVuLibre:
-   http://djvu.sourceforge.net/
+   https://djvu.sourceforge.net/
 .. _python-djvulibre:
    https://pypi.org/project/python-djvulibre/
 .. _subprocess32:
